@@ -1,6 +1,14 @@
 import { Linkedin, Mail, Phone, Instagram, Youtube, ArrowUp } from 'lucide-react'
 import logo from '../assets/logo.png'
 
+const SOCIALS = [
+  { Icon: Linkedin, label: 'LinkedIn', href: '#contact' },
+  { Icon: Instagram, label: 'Instagram', href: '#contact' },
+  { Icon: Youtube, label: 'YouTube', href: '#contact' },
+  { Icon: Mail, label: 'Email', href: 'mailto:projects@madrasswastic.com' },
+  { Icon: Phone, label: 'Phone', href: 'tel:+914400000000' },
+]
+
 const LINKS = [
   {
     title: 'Company',
@@ -60,13 +68,15 @@ export default function Footer() {
             </p>
 
             <div className="mt-6 flex items-center gap-2">
-              {[Linkedin, Instagram, Youtube, Mail, Phone].map((Icon, i) => (
+              {SOCIALS.map(({ Icon, label, href }) => (
                 <a
-                  key={i}
-                  href="#contact"
+                  key={label}
+                  href={href}
+                  aria-label={label}
+                  rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
                   className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-white/70 transition-all duration-300 hover:border-gold-400/40 hover:text-gold-400"
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className="h-4 w-4" aria-hidden="true" />
                 </a>
               ))}
             </div>
