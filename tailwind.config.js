@@ -26,9 +26,10 @@ export default {
         },
       },
       fontFamily: {
-        display: ['Sora', 'system-ui', 'sans-serif'],
-        body: ['Manrope', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+        display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        body: ['Montserrat', 'system-ui', 'sans-serif'],
+        // mono alias kept for backwards compat — points at Montserrat now.
+        mono: ['Montserrat', 'system-ui', 'sans-serif'],
       },
       backgroundImage: {
         'radial-glow': 'radial-gradient(circle at center, rgba(37,99,235,0.25), transparent 70%)',

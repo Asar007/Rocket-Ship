@@ -18,7 +18,7 @@ body,
 }
 
 body {
-  font-family: 'Manrope', system-ui, sans-serif;
+  font-family: 'Montserrat', system-ui, sans-serif;
   color: rgba(255, 255, 255, 0.92);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -92,10 +92,11 @@ body {
     height: 1px;
   }
 
-  /* Tiny label with monospace tracker */
+  /* Tiny tracker label — Montserrat uppercase, wide tracking. */
   .eyebrow {
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-family: 'Montserrat', system-ui, sans-serif;
     font-size: 11px;
+    font-weight: 500;
     letter-spacing: 0.32em;
     text-transform: uppercase;
     color: rgba(240, 198, 116, 0.85);
@@ -132,7 +133,7 @@ body {
     gap: 0.6rem;
     padding: 0.85rem 1.4rem;
     border-radius: 9999px;
-    font-family: 'Sora', system-ui, sans-serif;
+    font-family: 'Montserrat', system-ui, sans-serif;
     font-weight: 600;
     font-size: 0.92rem;
     letter-spacing: 0.01em;
@@ -158,7 +159,7 @@ body {
     gap: 0.6rem;
     padding: 0.85rem 1.4rem;
     border-radius: 9999px;
-    font-family: 'Sora', system-ui, sans-serif;
+    font-family: 'Montserrat', system-ui, sans-serif;
     font-weight: 500;
     font-size: 0.92rem;
     letter-spacing: 0.01em;
