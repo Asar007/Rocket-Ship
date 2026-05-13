@@ -1,30 +1,74 @@
+import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowUpRight, Mail, Phone, MapPin } from 'lucide-react'
 
+// Heavy r3f/rapier physics scene — only loaded when the section enters view
+// AND the user hasn't opted out of motion / isn't on a tiny screen.
+const ConnectorsBackground = lazy(() => import('../components/ConnectorsBackground.jsx'))
+
+function useShouldRenderConnectors(ref) {
+  const [render, setRender] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const motionMq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const sizeMq = window.matchMedia('(max-width: 640px)')
+    if (motionMq.matches || sizeMq.matches) return
+
+    const node = ref.current
+    if (!node || !('IntersectionObserver' in window)) {
+      setRender(true)
+      return
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setRender(true)
+          io.disconnect()
+        }
+      },
+      { rootMargin: '200px' }
+    )
+    io.observe(node)
+    return () => io.disconnect()
+  }, [ref])
+
+  return render
+}
+
 export default function ContactCTA() {
+  const sceneRef = useRef(null)
+  const shouldRender = useShouldRenderConnectors(sceneRef)
+
   return (
     <section id="contact" className="section-pad relative">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <motion.div
+          ref={sceneRef}
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.8, ease: [0.2, 0.7, 0.2, 1] }}
           className="glass-strong relative overflow-hidden rounded-[32px] px-6 py-14 text-center sm:px-12 sm:py-20"
         >
-          {/* Background ambient */}
-          <div className="absolute -left-20 -top-20 h-60 w-60 rounded-full bg-electric-500/30 blur-3xl" />
-          <div className="absolute -right-20 -bottom-20 h-60 w-60 rounded-full bg-gold-500/30 blur-3xl" />
-          <div className="absolute inset-0 bg-grid opacity-30" />
+          {/* Connectors scene fills the panel. Pointer-events confined to itself
+              via a wrapper so the CTA buttons stay clickable; clicking empty
+              area still drops through to the canvas to cycle accent colour. */}
+          {shouldRender && (
+            <div className="pointer-events-none absolute inset-0 z-0">
+              <Suspense fallback={null}>
+                <ConnectorsBackground />
+              </Suspense>
+            </div>
+          )}
 
-          {/* Concentric rings */}
-          <div className="pointer-events-none absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 sm:block">
-            <div className="absolute h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.06]" />
-            <div className="absolute h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.04]" />
-            <div className="absolute h-[720px] w-[720px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.03]" />
-          </div>
+          {/* Static decorative wash — always visible as a fallback / on mobile */}
+          <div className="pointer-events-none absolute -left-20 -top-20 h-60 w-60 rounded-full bg-electric-500/20 blur-3xl" />
+          <div className="pointer-events-none absolute -right-20 -bottom-20 h-60 w-60 rounded-full bg-gold-500/20 blur-3xl" />
+          <div className="pointer-events-none absolute inset-0 bg-grid opacity-20" />
 
-          <div className="relative">
+          <div className="relative z-10">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 backdrop-blur">
               <span className="h-1.5 w-1.5 rounded-full bg-gold-400" />
               <span className="eyebrow">Open for 2026 projects</span>
@@ -53,24 +97,11 @@ export default function ContactCTA() {
               </a>
             </div>
 
-            {/* Contact strip */}
             <div className="mt-12 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] sm:grid-cols-3">
               {[
-                {
-                  icon: Mail,
-                  label: 'Email us',
-                  value: 'projects@madrasswastic.com',
-                },
-                {
-                  icon: Phone,
-                  label: 'Call directly',
-                  value: '+91 44 0000 0000',
-                },
-                {
-                  icon: MapPin,
-                  label: 'Head office',
-                  value: 'Sriperumbudur, Chennai',
-                },
+                { icon: Mail, label: 'Email us', value: 'projects@madrasswastic.com' },
+                { icon: Phone, label: 'Call directly', value: '+91 44 0000 0000' },
+                { icon: MapPin, label: 'Head office', value: 'Sriperumbudur, Chennai' },
               ].map((c) => (
                 <div
                   key={c.label}
