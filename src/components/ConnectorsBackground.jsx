@@ -1,161 +1,71 @@
+// Verbatim port of the pmndrs Lusion Connectors example:
+// https://github.com/pmndrs/examples/blob/main/demos/lusion-connectors/src/App.jsx
+// Original concept: https://twitter.com/lusionltd/status/1701534187545636964 · https://lusion.co
+//
+// Only changes from upstream:
+//   - GLB loaded from /c-transformed.glb (Vite public dir) instead of a `?url` import.
+//   - The outer .container/.nav DOM chrome is dropped — only the Canvas is needed
+//     for our background-fill use case; the section provides its own framing.
+//   - Default export is the Scene component.
+
 import * as THREE from 'three'
-import { useMemo, useReducer, useRef } from 'react'
+import { useRef, useReducer, useMemo } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Environment, Lightformer } from '@react-three/drei'
-import { BallCollider, CuboidCollider, Physics, RigidBody } from '@react-three/rapier'
+import { useGLTF, MeshTransmissionMaterial, Environment, Lightformer } from '@react-three/drei'
+import { CuboidCollider, BallCollider, Physics, RigidBody } from '@react-three/rapier'
+import { EffectComposer, N8AO } from '@react-three/postprocessing'
+import { easing } from 'maath'
 
-/**
- * pmndrs "Lusion Connectors" example — re-implemented procedurally so we
- * don't have to host the original c-transformed.glb. Each connector is
- * three perpendicular hollow pipe arms with a central hub, matching the
- * silhouette of the reference image.
- *
- * https://pmndrs.github.io/examples/lusion-connectors/
- */
+const C_MODEL = '/c-transformed.glb'
+useGLTF.preload(C_MODEL)
 
-// Palette tuned to the brand + the reference image (deep navy + bold blue + gold).
-const ACCENTS = ['#2540a8', '#f0c674', '#5aa6ff', '#d4a24c']
-
-const palette = (accentIdx = 0) => [
-  { color: '#03061a', roughness: 0.35, metalness: 0.6 },
-  { color: '#0a1133', roughness: 0.4, metalness: 0.55 },
-  { color: '#06091f', roughness: 0.4, metalness: 0.6 },
-  { color: '#2540a8', roughness: 0.35, metalness: 0.5, accent: true },
-  { color: '#1e40af', roughness: 0.4, metalness: 0.5 },
-  { color: '#0a1133', roughness: 0.35, metalness: 0.6 },
-  { color: ACCENTS[accentIdx], roughness: 0.3, metalness: 0.55, accent: true },
-  { color: '#2540a8', roughness: 0.35, metalness: 0.5, accent: true },
-  { color: '#06091f', roughness: 0.4, metalness: 0.6 },
+const accents = ['#4060ff', '#20ffa0', '#ff4060', '#ffcc00']
+const shuffle = (accent = 0) => [
+  { color: '#444', roughness: 0.1 },
+  { color: '#444', roughness: 0.75 },
+  { color: '#444', roughness: 0.75 },
+  { color: 'white', roughness: 0.1 },
+  { color: 'white', roughness: 0.75 },
+  { color: 'white', roughness: 0.1 },
+  { color: accents[accent], roughness: 0.1, accent: true },
+  { color: accents[accent], roughness: 0.75, accent: true },
+  { color: accents[accent], roughness: 0.1, accent: true },
 ]
 
-// One arm of the connector: a hollow pipe with proper inside walls and end
-// rings. LatheGeometry revolves the profile so caps + outer + inner are one mesh.
-function PipeArm({ length = 2.4, outerR = 0.55, innerR = 0.22, color, roughness, metalness }) {
-  const geometry = useMemo(() => {
-    const half = length / 2
-    const profile = [
-      new THREE.Vector2(innerR, -half),
-      new THREE.Vector2(outerR, -half),
-      new THREE.Vector2(outerR, half),
-      new THREE.Vector2(innerR, half),
-    ]
-    const g = new THREE.LatheGeometry(profile, 32)
-    g.computeVertexNormals()
-    return g
-  }, [length, outerR, innerR])
-
-  return (
-    <mesh castShadow receiveShadow geometry={geometry}>
-      <meshStandardMaterial
-        color={color}
-        roughness={roughness}
-        metalness={metalness}
-        side={THREE.DoubleSide}
-      />
-    </mesh>
-  )
-}
-
-// Three perpendicular arms + a central hub sphere = one connector piece.
-function ConnectorMesh({ color, roughness, metalness }) {
-  return (
-    <group>
-      {/* Vertical arm (Y) */}
-      <PipeArm color={color} roughness={roughness} metalness={metalness} />
-      {/* Horizontal arm (X) */}
-      <group rotation={[0, 0, Math.PI / 2]}>
-        <PipeArm color={color} roughness={roughness} metalness={metalness} />
-      </group>
-      {/* Depth arm (Z) */}
-      <group rotation={[Math.PI / 2, 0, 0]}>
-        <PipeArm color={color} roughness={roughness} metalness={metalness} />
-      </group>
-      {/* Central hub — hides the seams where pipes meet */}
-      <mesh castShadow receiveShadow>
-        <sphereGeometry args={[0.62, 24, 24]} />
-        <meshStandardMaterial color={color} roughness={roughness} metalness={metalness} />
-      </mesh>
-    </group>
-  )
-}
-
-function Connector({ position, accent, color, roughness, metalness }) {
-  const api = useRef(null)
-  const vec = useMemo(() => new THREE.Vector3(), [])
-  const r = THREE.MathUtils.randFloatSpread
-  const startPos = useMemo(() => position || [r(10), r(10), r(10)], [position, r])
-
-  useFrame((_, delta) => {
-    const dt = Math.min(0.1, delta)
-    if (api.current) {
-      api.current.applyImpulse(
-        vec.copy(api.current.translation()).negate().multiplyScalar(0.2 * dt * 60)
-      )
-    }
-  })
-
-  return (
-    <RigidBody
-      ref={api}
-      position={startPos}
-      linearDamping={4}
-      angularDamping={1}
-      friction={0.1}
-      colliders={false}
-    >
-      {/* Three slab colliders approximating the connector volume */}
-      <CuboidCollider args={[0.55, 1.2, 0.55]} />
-      <CuboidCollider args={[1.2, 0.55, 0.55]} />
-      <CuboidCollider args={[0.55, 0.55, 1.2]} />
-      <ConnectorMesh color={color} roughness={roughness} metalness={metalness} />
-      {accent && <pointLight intensity={3} distance={3} color={color} />}
-    </RigidBody>
-  )
-}
-
-function Pointer() {
-  const ref = useRef(null)
-  const vec = useMemo(() => new THREE.Vector3(), [])
-  useFrame(({ pointer, viewport }) => {
-    if (!ref.current) return
-    ref.current.setNextKinematicTranslation(
-      vec.set((pointer.x * viewport.width) / 2, (pointer.y * viewport.height) / 2, 0)
-    )
-  })
-  return (
-    <RigidBody type="kinematicPosition" colliders={false} ref={ref}>
-      <BallCollider args={[1]} />
-    </RigidBody>
-  )
-}
-
-export default function ConnectorsBackground() {
-  const [accentIdx, cycle] = useReducer((s) => (s + 1) % ACCENTS.length, 0)
-  const connectors = useMemo(() => palette(accentIdx), [accentIdx])
-
+export default function Scene(props) {
+  const [accent, click] = useReducer((state) => ++state % accents.length, 0)
+  const connectors = useMemo(() => shuffle(accent), [accent])
   return (
     <Canvas
-      onClick={cycle}
+      onClick={click}
       shadows
       dpr={[1, 1.5]}
-      gl={{ antialias: true, alpha: true }}
+      gl={{ antialias: false }}
       camera={{ position: [0, 0, 15], fov: 17.5, near: 1, far: 20 }}
-      style={{ width: '100%', height: '100%' }}
+      {...props}
     >
-      <ambientLight intensity={0.35} />
-      <spotLight
-        position={[10, 10, 10]}
-        angle={0.18}
-        penumbra={1}
-        intensity={1.2}
-        castShadow
-      />
-      <Physics gravity={[0, 0, 0]} timeStep="vary">
+      <color attach="background" args={['#141622']} />
+      <ambientLight intensity={0.4} />
+      <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />
+      <Physics /*debug*/ gravity={[0, 0, 0]}>
         <Pointer />
-        {connectors.map((props, i) => (
-          <Connector key={i} {...props} />
-        ))}
+        {connectors.map((props, i) => <Connector key={i} {...props} />) /* prettier-ignore */}
+        <Connector position={[10, 10, 5]}>
+          <Model>
+            <MeshTransmissionMaterial
+              clearcoat={1}
+              thickness={0.1}
+              anisotropicBlur={0.1}
+              chromaticAberration={0.1}
+              samples={8}
+              resolution={512}
+            />
+          </Model>
+        </Connector>
       </Physics>
+      <EffectComposer disableNormalPass multisampling={8}>
+        <N8AO distanceFalloff={1} aoRadius={1} intensity={4} />
+      </EffectComposer>
       <Environment resolution={256}>
         <group rotation={[-Math.PI / 3, 0, 1]}>
           <Lightformer
@@ -189,5 +99,59 @@ export default function ConnectorsBackground() {
         </group>
       </Environment>
     </Canvas>
+  )
+}
+
+function Connector({
+  position,
+  children,
+  vec = new THREE.Vector3(),
+  scale,
+  r = THREE.MathUtils.randFloatSpread,
+  accent,
+  ...props
+}) {
+  const api = useRef()
+  const pos = useMemo(() => position || [r(10), r(10), r(10)], [])
+  useFrame((state, delta) => {
+    delta = Math.min(0.1, delta)
+    api.current?.applyImpulse(vec.copy(api.current.translation()).negate().multiplyScalar(0.2))
+  })
+  return (
+    <RigidBody linearDamping={4} angularDamping={1} friction={0.1} position={pos} ref={api} colliders={false}>
+      <CuboidCollider args={[0.38, 1.27, 0.38]} />
+      <CuboidCollider args={[1.27, 0.38, 0.38]} />
+      <CuboidCollider args={[0.38, 0.38, 1.27]} />
+      {children ? children : <Model {...props} />}
+      {accent && <pointLight intensity={4} distance={2.5} color={props.color} />}
+    </RigidBody>
+  )
+}
+
+function Pointer({ vec = new THREE.Vector3() }) {
+  const ref = useRef()
+  useFrame(({ mouse, viewport }) => {
+    ref.current?.setNextKinematicTranslation(
+      vec.set((mouse.x * viewport.width) / 2, (mouse.y * viewport.height) / 2, 0)
+    )
+  })
+  return (
+    <RigidBody position={[0, 0, 0]} type="kinematicPosition" colliders={false} ref={ref}>
+      <BallCollider args={[1]} />
+    </RigidBody>
+  )
+}
+
+function Model({ children, color = 'white', roughness = 0, ...props }) {
+  const ref = useRef()
+  const { nodes, materials } = useGLTF(C_MODEL)
+  useFrame((state, delta) => {
+    easing.dampC(ref.current.material.color, color, 0.2, delta)
+  })
+  return (
+    <mesh ref={ref} castShadow receiveShadow scale={10} geometry={nodes.connector.geometry}>
+      <meshStandardMaterial metalness={0.2} roughness={roughness} map={materials.base.map} />
+      {children}
+    </mesh>
   )
 }
