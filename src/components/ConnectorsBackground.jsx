@@ -5,48 +5,81 @@ import { Environment, Lightformer } from '@react-three/drei'
 import { BallCollider, CuboidCollider, Physics, RigidBody } from '@react-three/rapier'
 
 /**
- * Adapted from the pmndrs "Lusion Connectors" example:
- * https://pmndrs.github.io/examples/lusion-connectors/
+ * pmndrs "Lusion Connectors" example — re-implemented procedurally so we
+ * don't have to host the original c-transformed.glb. Each connector is
+ * three perpendicular hollow pipe arms with a central hub, matching the
+ * silhouette of the reference image.
  *
- * Differences vs. the original:
- *  - "+" connector shape built from two crossed boxes (no GLB asset needed).
- *  - Brand palette: navy + gold + electric blue, no pastels.
- *  - Postprocessing dropped (saves ~150 KB and a heavy AO pass).
- *  - Renders transparent so the section's glass surface shows through.
+ * https://pmndrs.github.io/examples/lusion-connectors/
  */
 
-const ACCENTS = ['#f0c674', '#5aa6ff', '#d4a24c', '#ffffff']
+// Palette tuned to the brand + the reference image (deep navy + bold blue + gold).
+const ACCENTS = ['#2540a8', '#f0c674', '#5aa6ff', '#d4a24c']
 
 const palette = (accentIdx = 0) => [
-  { color: '#03061a', roughness: 0.1 },
-  { color: '#06091f', roughness: 0.4 },
-  { color: '#0a1133', roughness: 0.1 },
-  { color: '#ffffff', roughness: 0.15, accent: true },
-  { color: '#ffffff', roughness: 0.75 },
-  { color: '#ffffff', roughness: 0.75 },
-  { color: ACCENTS[accentIdx], roughness: 0.15, accent: true },
-  { color: ACCENTS[accentIdx], roughness: 0.75, accent: true },
-  { color: ACCENTS[accentIdx], roughness: 0.15, accent: true },
+  { color: '#03061a', roughness: 0.35, metalness: 0.6 },
+  { color: '#0a1133', roughness: 0.4, metalness: 0.55 },
+  { color: '#06091f', roughness: 0.4, metalness: 0.6 },
+  { color: '#2540a8', roughness: 0.35, metalness: 0.5, accent: true },
+  { color: '#1e40af', roughness: 0.4, metalness: 0.5 },
+  { color: '#0a1133', roughness: 0.35, metalness: 0.6 },
+  { color: ACCENTS[accentIdx], roughness: 0.3, metalness: 0.55, accent: true },
+  { color: '#2540a8', roughness: 0.35, metalness: 0.5, accent: true },
+  { color: '#06091f', roughness: 0.4, metalness: 0.6 },
 ]
 
-function PlusModel({ color = 'white', roughness = 0 }) {
-  const material = useMemo(
-    () => new THREE.MeshStandardMaterial({ color, roughness, metalness: 0.25 }),
-    [color, roughness]
-  )
+// One arm of the connector: a hollow pipe with proper inside walls and end
+// rings. LatheGeometry revolves the profile so caps + outer + inner are one mesh.
+function PipeArm({ length = 2.4, outerR = 0.55, innerR = 0.22, color, roughness, metalness }) {
+  const geometry = useMemo(() => {
+    const half = length / 2
+    const profile = [
+      new THREE.Vector2(innerR, -half),
+      new THREE.Vector2(outerR, -half),
+      new THREE.Vector2(outerR, half),
+      new THREE.Vector2(innerR, half),
+    ]
+    const g = new THREE.LatheGeometry(profile, 32)
+    g.computeVertexNormals()
+    return g
+  }, [length, outerR, innerR])
+
   return (
-    <group dispose={null}>
-      <mesh castShadow receiveShadow material={material}>
-        <boxGeometry args={[0.76, 2.54, 0.76]} />
-      </mesh>
-      <mesh castShadow receiveShadow rotation={[0, 0, Math.PI / 2]} material={material}>
-        <boxGeometry args={[0.76, 2.54, 0.76]} />
+    <mesh castShadow receiveShadow geometry={geometry}>
+      <meshStandardMaterial
+        color={color}
+        roughness={roughness}
+        metalness={metalness}
+        side={THREE.DoubleSide}
+      />
+    </mesh>
+  )
+}
+
+// Three perpendicular arms + a central hub sphere = one connector piece.
+function ConnectorMesh({ color, roughness, metalness }) {
+  return (
+    <group>
+      {/* Vertical arm (Y) */}
+      <PipeArm color={color} roughness={roughness} metalness={metalness} />
+      {/* Horizontal arm (X) */}
+      <group rotation={[0, 0, Math.PI / 2]}>
+        <PipeArm color={color} roughness={roughness} metalness={metalness} />
+      </group>
+      {/* Depth arm (Z) */}
+      <group rotation={[Math.PI / 2, 0, 0]}>
+        <PipeArm color={color} roughness={roughness} metalness={metalness} />
+      </group>
+      {/* Central hub — hides the seams where pipes meet */}
+      <mesh castShadow receiveShadow>
+        <sphereGeometry args={[0.62, 24, 24]} />
+        <meshStandardMaterial color={color} roughness={roughness} metalness={metalness} />
       </mesh>
     </group>
   )
 }
 
-function Connector({ position, accent, color, roughness }) {
+function Connector({ position, accent, color, roughness, metalness }) {
   const api = useRef(null)
   const vec = useMemo(() => new THREE.Vector3(), [])
   const r = THREE.MathUtils.randFloatSpread
@@ -55,7 +88,6 @@ function Connector({ position, accent, color, roughness }) {
   useFrame((_, delta) => {
     const dt = Math.min(0.1, delta)
     if (api.current) {
-      // Gentle pull toward the centre — keeps connectors clustered around the camera.
       api.current.applyImpulse(
         vec.copy(api.current.translation()).negate().multiplyScalar(0.2 * dt * 60)
       )
@@ -71,10 +103,11 @@ function Connector({ position, accent, color, roughness }) {
       friction={0.1}
       colliders={false}
     >
-      <CuboidCollider args={[0.38, 1.27, 0.38]} />
-      <CuboidCollider args={[1.27, 0.38, 0.38]} />
-      <CuboidCollider args={[0.38, 0.38, 1.27]} />
-      <PlusModel color={color} roughness={roughness} />
+      {/* Three slab colliders approximating the connector volume */}
+      <CuboidCollider args={[0.55, 1.2, 0.55]} />
+      <CuboidCollider args={[1.2, 0.55, 0.55]} />
+      <CuboidCollider args={[0.55, 0.55, 1.2]} />
+      <ConnectorMesh color={color} roughness={roughness} metalness={metalness} />
       {accent && <pointLight intensity={3} distance={3} color={color} />}
     </RigidBody>
   )
@@ -105,16 +138,16 @@ export default function ConnectorsBackground() {
       onClick={cycle}
       shadows
       dpr={[1, 1.5]}
-      gl={{ antialias: false, alpha: true }}
+      gl={{ antialias: true, alpha: true }}
       camera={{ position: [0, 0, 15], fov: 17.5, near: 1, far: 20 }}
       style={{ width: '100%', height: '100%' }}
     >
-      <ambientLight intensity={0.4} />
+      <ambientLight intensity={0.35} />
       <spotLight
         position={[10, 10, 10]}
-        angle={0.15}
+        angle={0.18}
         penumbra={1}
-        intensity={1}
+        intensity={1.2}
         castShadow
       />
       <Physics gravity={[0, 0, 0]} timeStep="vary">
