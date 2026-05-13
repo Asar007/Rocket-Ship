@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Landing Page — Whiteboard Skeleton</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Kalam:wght@400;700&family=Architects+Daughter&display=swap" rel="stylesheet">
+
+<style>
+  /* ============ WHITEBOARD THEME VARIABLES ============ */
+  :root {
+    --paper: #fafaf6;
+    --paper-line: #d8e6f0;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a4a;
+    --ink-faint: #8a8a8a;
+    --accent: #2563eb;     /* sketch blue */
+    --accent-2: #dc2626;   /* sketch red, for arrows/notes */
+    --highlight: #fef08a;  /* highlighter yellow */
+    --box-shadow-sketch: 3px 3px 0 rgba(0,0,0,0.08);
+    --font-hand: 'Kalam', cursive;
+    --font-hand-bold: 'Caveat', cursive;
+    --font-note: 'Architects Daughter', cursive;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-hand);
+    line-height: 1.5;
+    /* faint ruled-paper background */
+    background-image:
+      linear-gradient(var(--paper-line) 1px, transparent 1px);
+    background-size: 100% 32px;
+  }
+
+  /* ============ NAV / HEADER ============ */
+  .top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 48px;
+    border-bottom: 2px dashed var(--ink);
+    background: var(--paper);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    font-family: var(--font-hand-bold);
+    font-size: 22px;
+    flex-wrap: wrap;
+  }
+
+  .nav-links a {
+    color: var(--ink);
+    text-decoration: none;
+    padding: 4px 10px;
+    border-radius: 6px;
+    transition: background 0.2s, transform 0.2s;
+    position: relative;
+  }
+  .nav-links a:hover {
+    background: var(--highlight);
+    transform: rotate(-1deg);
+  }
+  .nav-links a.contact {
+    border: 2px solid var(--ink);
+    border-radius: 20px;
+    background: var(--paper);
+  }
+  .nav-links a.contact:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .nav-divider {
+    color: var(--ink-faint);
+    font-size: 22px;
+    align-self: center;
+  }
+
+  /* ============ HERO SECTION ============ */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    padding: 64px 48px;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .hero-left {
+    padding-right: 24px;
+  }
+
+  .logo-box {
+    display: inline-block;
+    border: 2px solid var(--ink);
+    padding: 18px 28px;
+    margin-bottom: 32px;
+    box-shadow: var(--box-shadow-sketch);
+    transform: rotate(-1deg);
+    background: var(--paper);
+  }
+  .logo-box .logo-title {
+    font-family: var(--font-hand-bold);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .logo-box .logo-sub {
+    font-family: var(--font-note);
+    font-size: 13px;
+    color: var(--ink-soft);
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  .catchy-phrase {
+    font-family: var(--font-hand-bold);
+    font-size: 52px;
+    line-height: 1.1;
+    font-weight: 700;
+    margin-bottom: 28px;
+    color: var(--ink);
+  }
+  .catchy-phrase .underline {
+    position: relative;
+    display: inline-block;
+  }
+  .catchy-phrase .underline::after {
+    content: "";
+    position: absolute;
+    left: -4px; right: -4px; bottom: 4px;
+    height: 14px;
+    background: var(--highlight);
+    z-index: -1;
+    transform: rotate(-0.5deg);
+  }
+
+  .about-para {
+    font-family: var(--font-hand);
+    font-size: 19px;
+    color: var(--ink-soft);
+    max-width: 520px;
+    margin-bottom: 32px;
+  }
+
+  .cta-row {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-sketch {
+    font-family: var(--font-hand-bold);
+    font-size: 22px;
+    padding: 12px 28px;
+    border: 2px solid var(--ink);
+    border-radius: 30px;
+    background: var(--ink);
+    color: var(--paper);
+    cursor: pointer;
+    box-shadow: var(--box-shadow-sketch);
+    transition: transform 0.15s;
+  }
+  .btn-sketch:hover { transform: translate(-2px, -2px); }
+  .btn-sketch.secondary {
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  /* Right side: interactive sketch placeholder */
+  .hero-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 420px;
+  }
+
+  .visual-frame {
+    width: 100%;
+    max-width: 460px;
+    aspect-ratio: 1 / 1;
+    border: 3px dashed var(--ink);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: var(--paper);
+    position: relative;
+    transform: rotate(1deg);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  .visual-frame:hover { transform: rotate(0deg) scale(1.02); }
+
+  .visual-frame svg { width: 60%; height: 60%; }
+
+  .visual-frame .label {
+    position: absolute;
+    bottom: -36px;
+    font-family: var(--font-note);
+    color: var(--accent-2);
+    font-size: 16px;
+  }
+  .visual-frame .label::before {
+    content: "← ";
+  }
+
+  /* ============ SECTION HEADERS ============ */
+  .section {
+    padding: 80px 48px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-family: var(--font-hand-bold);
+    font-size: 44px;
+    margin-bottom: 12px;
+    display: inline-block;
+    position: relative;
+  }
+  .section-title::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 3px;
+    background: var(--ink);
+    margin-top: 4px;
+    border-radius: 2px;
+  }
+
+  .section-sub {
+    font-family: var(--font-hand);
+    color: var(--ink-soft);
+    font-size: 18px;
+    margin-bottom: 40px;
+  }
+
+  /* ============ WHY CHOOSE US (3 boxes) ============ */
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+
+  .why-card {
+    border: 2px solid var(--ink);
+    border-radius: 10px;
+    padding: 32px 24px;
+    background: var(--paper);
+    box-shadow: var(--box-shadow-sketch);
+    transition: transform 0.2s;
+  }
+  .why-card:nth-child(1) { transform: rotate(-1deg); }
+  .why-card:nth-child(2) { transform: rotate(0.5deg); }
+  .why-card:nth-child(3) { transform: rotate(-0.5deg); }
+  .why-card:hover { transform: rotate(0deg) translateY(-4px); }
+
+  .why-card .icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+  }
+  .why-card h3 {
+    font-family: var(--font-hand-bold);
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .why-card p {
+    font-family: var(--font-hand);
+    font-size: 16px;
+    color: var(--ink-soft);
+  }
+
+  /* ============ VIDEO CLIP PLACEHOLDER ============ */
+  .video-clip {
+    margin: 40px auto 0;
+    max-width: 800px;
+    aspect-ratio: 16 / 9;
+    border: 3px dashed var(--ink);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--paper);
+    cursor: pointer;
+    position: relative;
+  }
+  .video-clip::before {
+    content: "▶";
+    font-size: 64px;
+    color: var(--ink);
+  }
+  .video-clip .video-label {
+    position: absolute;
+    bottom: 16px;
+    font-family: var(--font-note);
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+
+  /* ============ OUR CLIENTS ============ */
+  .clients-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+  .client-card {
+    border: 2px solid var(--ink);
+    border-radius: 8px;
+    padding: 24px;
+    text-align: center;
+    font-family: var(--font-hand-bold);
+    font-size: 22px;
+    background: var(--paper);
+    box-shadow: var(--box-shadow-sketch);
+  }
+  .client-card:nth-child(odd) { transform: rotate(-0.7deg); }
+  .client-card:nth-child(even) { transform: rotate(0.7deg); }
+
+  /* ============ STATS (sketchy chart) ============ */
+  .stats-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+    margin-top: 40px;
+  }
+
+  .stat-numbers {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .stat-item {
+    border-left: 4px solid var(--ink);
+    padding-left: 16px;
+  }
+  .stat-item .number {
+    font-family: var(--font-hand-bold);
+    font-size: 48px;
+    line-height: 1;
+  }
+  .stat-item .label {
+    font-family: var(--font-hand);
+    color: var(--ink-soft);
+    font-size: 18px;
+  }
+
+  .chart-box {
+    border: 2px solid var(--ink);
+    border-radius: 10px;
+    padding: 24px;
+    background: var(--paper);
+    box-shadow: var(--box-shadow-sketch);
+  }
+
+  /* ============ PROJECTS ============ */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .project-card {
+    border: 2px solid var(--ink);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--paper);
+    box-shadow: var(--box-shadow-sketch);
+    transition: transform 0.2s;
+  }
+  .project-card:hover { transform: translateY(-4px); }
+  .project-thumb {
+    aspect-ratio: 16 / 10;
+    border-bottom: 2px dashed var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-note);
+    color: var(--ink-faint);
+    font-size: 14px;
+  }
+  .project-body {
+    padding: 18px 20px;
+  }
+  .project-body h4 {
+    font-family: var(--font-hand-bold);
+    font-size: 24px;
+    margin-bottom: 4px;
+  }
+  .project-body p {
+    font-family: var(--font-hand);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+
+  /* ============ CUSTOMIZATION CTA ============ */
+  .customize-cta {
+    border: 3px solid var(--ink);
+    border-radius: 14px;
+    padding: 48px;
+    text-align: center;
+    background: var(--paper);
+    box-shadow: var(--box-shadow-sketch);
+    position: relative;
+  }
+  .customize-cta::before {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border: 1px dashed var(--ink-faint);
+    border-radius: 10px;
+    pointer-events: none;
+  }
+  .customize-cta h2 {
+    font-family: var(--font-hand-bold);
+    font-size: 40px;
+    margin-bottom: 12px;
+  }
+  .customize-cta p {
+    font-family: var(--font-hand);
+    color: var(--ink-soft);
+    font-size: 18px;
+    margin-bottom: 24px;
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    border-top: 2px dashed var(--ink);
+    padding: 32px 48px;
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-hand);
+    color: var(--ink-soft);
+    font-size: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* ============ ARROW / DOODLE ACCENT ============ */
+  .doodle-arrow {
+    display: block;
+    margin: 12px 0;
+    color: var(--accent-2);
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; padding: 40px 24px; }
+    .top-nav { padding: 16px 24px; }
+    .nav-links { font-size: 18px; gap: 14px; }
+    .section { padding: 56px 24px; }
+    .catchy-phrase { font-size: 38px; }
+    .section-title { font-size: 32px; }
+    .why-grid, .projects-grid { grid-template-columns: 1fr; }
+    .clients-row { grid-template-columns: repeat(2, 1fr); }
+    .stats-wrap { grid-template-columns: 1fr; }
+    footer { padding: 24px; flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ TOP NAV (Header from sketch) ============ -->
+<nav class="top-nav">
+  <div class="logo-mark" style="font-family: var(--font-hand-bold); font-size: 26px;">
+    [ Logo ]
+  </div>
+  <div class="nav-links">
+    <a href="#home">Home</a>
+    <span class="nav-divider">|</span>
+    <a href="#about">About us</a>
+    <span class="nav-divider">|</span>
+    <a href="#projects">Our projects</a>
+    <span class="nav-divider">|</span>
+    <a href="#customization">Customization</a>
+    <a href="#contact" class="contact">Contact us</a>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="home">
+  <div class="hero-left">
+
+    <!-- Company Logo + Name box (top of left column, per your note) -->
+    <div class="logo-box">
+      <div class="logo-title">Company Logo</div>
+      <div class="logo-sub">&amp; NAME</div>
+    </div>
+
+    <!-- Catchy phrase -->
+    <h1 class="catchy-phrase">
+      Innovative <span class="underline">Engineering</span><br>
+      for Modern Specialization.
+    </h1>
+
+    <!-- About paragraph (small para about the company) -->
+    <p class="about-para">
+      A short paragraph about who we are — the history of the company
+      and what we do best. Replace this with your real story when ready.
+      Keep it warm, keep it short, keep it human.
+    </p>
+
+  </div>
+
+  <!-- Right side: interactive sketch placeholder -->
+  <div class="hero-right">
+    <div class="visual-frame" onclick="this.style.transform='rotate(-2deg) scale(1.05)'">
+      <!-- Hand-drawn SVG illustration placeholder -->
+      <svg viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="100" cy="100" r="70" stroke-dasharray="4 4"/>
+        <path d="M60 110 L85 130 L140 75" stroke="#2563eb" stroke-width="3"/>
+        <path d="M30 30 L50 50" />
+        <path d="M170 30 L150 50" />
+        <path d="M30 170 L50 150" />
+        <path d="M170 170 L150 150" />
+      </svg>
+      <span class="label">interactive image / animation goes here</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT (history & what we do) ============ -->
+<section class="section" id="about">
+  <h2 class="section-title">About the Company</h2>
+  <p class="section-sub">The history and what we do.</p>
+
+  <div style="max-width: 800px; font-size: 19px; color: var(--ink-soft); line-height: 1.7;">
+    Founded in [year], we started with one idea — [insert founding story].
+    Today, we help businesses with [core service]. Every project we take on
+    is treated like our own, from first sketch to final delivery.
+  </div>
+</section>
+
+<!-- ============ WHY CHOOSE US (3 boxes from sketch) ============ -->
+<section class="section">
+  <h2 class="section-title">Why Choose Us?</h2>
+  <p class="section-sub">Three reasons clients keep coming back.</p>
+
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="icon">★</div>
+      <h3>Quality</h3>
+      <p>Built to last. Nothing leaves our desk until it meets the standard.</p>
+    </div>
+    <div class="why-card">
+      <div class="icon">⏱</div>
+      <h3>Time Effective</h3>
+      <p>Promised timelines, hit consistently. No surprises, no excuses.</p>
+    </div>
+    <div class="why-card">
+      <div class="icon">$</div>
+      <h3>Pricing</h3>
+      <p>Honest pricing, no hidden charges. Pay for outcomes, not overhead.</p>
+    </div>
+  </div>
+
+  <!-- Small video clip placeholder, per your note -->
+  <div class="video-clip">
+    <span class="video-label">small intro video clip</span>
+  </div>
+</section>
+
+<!-- ============ OUR CLIENTS + STATS (from page 1 of sketch) ============ -->
+<section class="section">
+  <h2 class="section-title">Our Clients</h2>
+  <p class="section-sub">Projects done for companies we're proud of.</p>
+
+  <div class="clients-row">
+    <div class="client-card">Client One</div>
+    <div class="client-card">Client Two</div>
+    <div class="client-card">Client Three</div>
+    <div class="client-card">Client Four</div>
+  </div>
+
+  <h2 class="section-title" style="margin-top: 40px;">By the Numbers</h2>
+  <p class="section-sub">Stats (bar or pie chart goes here).</p>
+
+  <div class="stats-wrap">
+    <div class="stat-numbers">
+      <div class="stat-item">
+        <div class="number">120+</div>
+        <div class="label">Projects delivered</div>
+      </div>
+      <div class="stat-item">
+        <div class="number">45</div>
+        <div class="label">Happy clients</div>
+      </div>
+      <div class="stat-item">
+        <div class="number">8 yrs</div>
+        <div class="label">In the business</div>
+      </div>
+    </div>
+
+    <div class="chart-box">
+      <!-- Sketch-style bar chart -->
+      <svg viewBox="0 0 300 200" style="width: 100%; height: auto;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <!-- axes -->
+        <path d="M30 20 L30 170 L280 170" />
+        <!-- bars -->
+        <rect x="55"  y="100" width="35" height="70"  fill="#fef08a" stroke="#1a1a1a"/>
+        <rect x="110" y="70"  width="35" height="100" fill="#bfdbfe" stroke="#1a1a1a"/>
+        <rect x="165" y="40"  width="35" height="130" fill="#fecaca" stroke="#1a1a1a"/>
+        <rect x="220" y="85"  width="35" height="85"  fill="#bbf7d0" stroke="#1a1a1a"/>
+        <!-- labels -->
+        <text x="155" y="195" text-anchor="middle" font-family="Architects Daughter" font-size="13" stroke="none" fill="#4a4a4a">
+          replace with real chart
+        </text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============ OUR PROJECTS ============ -->
+<section class="section" id="projects">
+  <h2 class="section-title">Our Projects</h2>
+  <p class="section-sub">Selected work.</p>
+
+  <div class="projects-grid">
+    <div class="project-card">
+      <div class="project-thumb">[ project image ]</div>
+      <div class="project-body">
+        <h4>Project One</h4>
+        <p>A short line describing what we built.</p>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-thumb">[ project image ]</div>
+      <div class="project-body">
+        <h4>Project Two</h4>
+        <p>A short line describing what we built.</p>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-thumb">[ project image ]</div>
+      <div class="project-body">
+        <h4>Project Three</h4>
+        <p>A short line describing what we built.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CUSTOMIZATION CTA ============ -->
+<section class="section" id="customization">
+  <div class="customize-cta">
+    <h2>Need something custom?</h2>
+    <p>Tell us what you have in mind. We'll sketch the rest.</p>
+    <button class="btn-sketch">Start a project</button>
+  </div>
+</section>
+
+<!-- ============ CONTACT / FOOTER ============ -->
+<footer id="contact">
+  <div>© 2025 Company Name — built with care.</div>
+  <div>
+    <a href="#" style="color: var(--ink); margin-right: 16px;">Contact us</a>
+    <a href="#" style="color: var(--ink); margin-right: 16px;">Email</a>
+    <a href="#" style="color: var(--ink);">LinkedIn</a>
+  </div>
+</footer>
+
+<script>
+  // smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+</body>
+</html>
