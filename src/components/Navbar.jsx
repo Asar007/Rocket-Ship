@@ -64,11 +64,11 @@ export default function Navbar() {
           onClick={(e) => onNavClick(e, '#home')}
           className="group flex items-center gap-3 rounded-full pl-1 pr-3 py-1"
         >
-          <span className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-full border border-white/15 bg-navy-950/60 ring-1 ring-inset ring-white/5">
+          <span className="relative grid h-12 w-12 place-items-center overflow-hidden rounded-full border border-white/15 bg-navy-950/60 ring-1 ring-inset ring-white/5 sm:h-14 sm:w-14">
             <img
               src={logo}
               alt="Madras Swastic Engineers"
-              className="h-7 w-7 object-contain drop-shadow-[0_0_8px_rgba(240,198,116,0.35)]"
+              className="h-9 w-9 object-contain drop-shadow-[0_0_10px_rgba(240,198,116,0.4)] sm:h-11 sm:w-11"
             />
             <span className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(240,198,116,0.35),transparent_60%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </span>
