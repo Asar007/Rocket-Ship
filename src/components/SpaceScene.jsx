@@ -266,7 +266,7 @@ function makeHeatShieldDiffuse() {
  *  - Solar panels: two thin boxes extending sideways
  *  Positioned at [2.2, 1.4, 0.5] with heat shield angled toward Earth.
  *  No plasma / decals / hover yet — those come in later steps. */
-function Capsule() {
+function Capsule({ active, setHovered, toggleClick }) {
   // Procedural canvas textures — memoised so they're created once.
   const bodyMap = useMemo(() => {
     const t = new THREE.CanvasTexture(makeBodyDiffuse())
@@ -484,10 +484,8 @@ function Capsule() {
     [],
   )
 
-  // Hover state — debounced so we don't flicker when the cursor
-  // crosses between sub-meshes of the capsule (the brief out→over
-  // sequence is swallowed by a small leave-delay).
-  const [hovered, setHovered] = useState(false)
+  // Debounce timer for pointer events — swallows the brief out→over
+  // sequence when the cursor crosses between sub-meshes.
   const leaveTimer = useRef(null)
   const handleOver = (e) => {
     e.stopPropagation()
@@ -505,12 +503,6 @@ function Capsule() {
       leaveTimer.current = null
     }, 80)
   }
-  useEffect(() => {
-    document.body.style.cursor = hovered ? 'pointer' : 'auto'
-    return () => {
-      document.body.style.cursor = 'auto'
-    }
-  }, [hovered])
   useEffect(
     () => () => {
       if (leaveTimer.current) clearTimeout(leaveTimer.current)
@@ -568,6 +560,10 @@ function Capsule() {
       ]}
       onPointerOver={handleOver}
       onPointerOut={handleOut}
+      onClick={(e) => {
+        e.stopPropagation()
+        toggleClick()
+      }}
     >
       {/* Crew module — truncated cone, wide end down in local frame.
           Slightly higher segment count for smoother specular highlights. */}
@@ -641,9 +637,9 @@ function Capsule() {
         <planeGeometry args={[0.08, 0.053]} />
       </mesh>
 
-      {/* Hover highlight — wireframe halo around the capsule + leader
-          line up to the tooltip card.  Only rendered while hovered. */}
-      {hovered && (
+      {/* Hover/tap highlight — wireframe halo around the capsule + leader
+          line up to the tooltip card.  Only rendered while active. */}
+      {active && (
         <>
           {/* Glowing wireframe halo (sized to clearly enclose the capsule).
               raycast disabled so it can't fire its own pointer events. */}
@@ -745,7 +741,73 @@ function EarthFallback() {
   )
 }
 
+/* ──────────────────────────────────────────────────────────────────────────
+ *  CameraDolly — smoothly lerps the camera in/out toward the capsule
+ *  whenever `hovered` is true.  Saves the pre-hover pose so unhover
+ *  returns the camera to wherever the user had it.  Lives inside the
+ *  Canvas so it can read camera/controls via useThree.
+ * ────────────────────────────────────────────────────────────────────────── */
+function CameraDolly({ hovered }) {
+  const { camera, controls } = useThree()
+  const savedCamPos = useRef(null)
+  const savedTarget = useRef(null)
+  // World-space center of the capsule group (must match the position
+  // prop on the Capsule's root <group>).
+  const capsuleCenter = useMemo(() => new THREE.Vector3(0.58, 0.23, 3.78), [])
+  // Desired distance from the capsule center on hover-zoom.
+  const ZOOM_DIST = 1.8
+
+  useFrame((_, delta) => {
+    if (!controls) return
+    const lerpAmt = Math.min(delta * 2.6, 1)
+
+    if (hovered) {
+      if (!savedCamPos.current) {
+        savedCamPos.current = camera.position.clone()
+        savedTarget.current = controls.target.clone()
+      }
+      // Keep the user's current viewing direction; only pull the camera
+      // closer along the camera→capsule axis.
+      const dir = new THREE.Vector3()
+        .subVectors(camera.position, capsuleCenter)
+        .normalize()
+      const desiredCam = capsuleCenter
+        .clone()
+        .add(dir.multiplyScalar(ZOOM_DIST))
+      camera.position.lerp(desiredCam, lerpAmt)
+      controls.target.lerp(capsuleCenter, lerpAmt)
+      controls.update()
+    } else if (savedCamPos.current) {
+      camera.position.lerp(savedCamPos.current, lerpAmt)
+      controls.target.lerp(savedTarget.current, lerpAmt)
+      controls.update()
+      if (camera.position.distanceTo(savedCamPos.current) < 0.02) {
+        savedCamPos.current = null
+        savedTarget.current = null
+      }
+    }
+  })
+  return null
+}
+
 export default function SpaceScene() {
+  // Two-track activation:
+  //   - hovered:  desktop pointer over the capsule (mouse hover)
+  //   - clicked:  user-toggled flag — required for touch devices that
+  //               have no hover, and useful on desktop for "pinning"
+  // The visible UI + camera zoom react to the OR of the two.
+  const [hovered, setHovered] = useState(false)
+  const [clicked, setClicked] = useState(false)
+  const active = hovered || clicked
+  const toggleClick = () => setClicked((c) => !c)
+
+  useEffect(() => {
+    document.body.style.cursor = active ? 'pointer' : 'auto'
+    return () => {
+      document.body.style.cursor = 'auto'
+    }
+  }, [active])
+
   return (
     <>
       <style>{tooltipCss}</style>
@@ -759,6 +821,8 @@ export default function SpaceScene() {
         }}
         camera={{ position: [0, 0, 8], fov: 45 }}
         style={{ width: '100%', height: '100%', background: 'transparent' }}
+        // Tap on empty canvas space dismisses the pinned/click state
+        onPointerMissed={() => setClicked(false)}
       >
         <ambientLight intensity={0.12} />
         <directionalLight position={[10, 5, 5]} intensity={2.5} color="#fff5e6" />
@@ -771,9 +835,16 @@ export default function SpaceScene() {
           <Earth />
         </Suspense>
 
-        <Capsule />
+        <Capsule
+          active={active}
+          setHovered={setHovered}
+          toggleClick={toggleClick}
+        />
+
+        <CameraDolly hovered={active} />
 
         <OrbitControls
+          makeDefault
           enablePan={false}
           enableZoom
           zoomSpeed={0.6}
