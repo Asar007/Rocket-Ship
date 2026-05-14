@@ -57,9 +57,10 @@ export default function AboutVideo() {
           {/* Video — full width, natural aspect */}
           <video
             ref={videoRef}
-            src="/inside-mse.mp4"
+            src="https://duzsdzur0y9ok0qx.public.blob.vercel-storage.com/inside-mse.mp4"
             preload="metadata"
             playsInline
+            crossOrigin="anonymous"
             controls={started}
             className="block h-auto w-full bg-black"
             onEnded={() => setStarted(false)}
