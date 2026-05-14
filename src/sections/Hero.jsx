@@ -26,19 +26,21 @@ export default function Hero() {
             animate="show"
             variants={fadeUp}
             custom={0}
-            className="inline-flex w-fit items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] py-1.5 pl-1.5 pr-4 backdrop-blur"
+            className="flex flex-col items-start gap-3"
           >
-            <span className="grid h-7 w-7 place-items-center rounded-full border border-white/15 bg-navy-950/60">
-              <img
-                src={logo}
-                alt="Madras Swastic Engineers"
-                className="h-5 w-5 object-contain drop-shadow-[0_0_6px_rgba(240,198,116,0.35)]"
-              />
-            </span>
-            <span className="font-display text-[12px] font-semibold uppercase leading-none tracking-[0.18em]">
-              <span className="text-white/90">Madras Swastic</span>{' '}
-              <span className="text-gold-400">Engineers</span>
-            </span>
+            <img
+              src={logo}
+              alt="Madras Swastic Engineers"
+              className="h-24 w-24 object-contain drop-shadow-[0_0_28px_rgba(240,198,116,0.35)] sm:h-32 sm:w-32"
+            />
+            <div className="leading-tight">
+              <div className="font-display text-base font-semibold uppercase tracking-[0.22em] text-white sm:text-lg">
+                Madras Swastic
+              </div>
+              <div className="mt-0.5 font-mono text-[11px] uppercase tracking-[0.38em] text-gold-400">
+                Engineers
+              </div>
+            </div>
           </motion.div>
 
           <motion.h1
