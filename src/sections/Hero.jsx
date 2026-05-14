@@ -26,21 +26,13 @@ export default function Hero() {
             animate="show"
             variants={fadeUp}
             custom={0}
-            className="flex flex-col items-start gap-3"
+            className="w-fit"
           >
             <img
               src={logo}
               alt="Madras Swastic Engineers"
-              className="h-24 w-24 object-contain drop-shadow-[0_0_28px_rgba(240,198,116,0.35)] sm:h-32 sm:w-32"
+              className="h-28 w-28 object-contain drop-shadow-[0_0_32px_rgba(240,198,116,0.4)] sm:h-36 sm:w-36"
             />
-            <div className="leading-tight">
-              <div className="font-display text-base font-semibold uppercase tracking-[0.22em] text-white sm:text-lg">
-                Madras Swastic
-              </div>
-              <div className="mt-0.5 font-mono text-[11px] uppercase tracking-[0.38em] text-gold-400">
-                Engineers
-              </div>
-            </div>
           </motion.div>
 
           <motion.h1
