@@ -775,7 +775,8 @@ export default function SpaceScene() {
 
         <OrbitControls
           enablePan={false}
-          enableZoom={false}
+          enableZoom
+          zoomSpeed={0.6}
           enableDamping
           dampingFactor={0.08}
           minDistance={5}

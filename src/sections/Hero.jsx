@@ -137,14 +137,25 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* ===== RIGHT — Gaganyaan capsule 3D scene (frame-less) ===== */}
+        {/* ===== RIGHT — Gaganyaan capsule 3D scene (frame-less) =====
+            Larger square container + radial mask fades the rectangular
+            canvas edges to transparent so the scene reads as a floating
+            sphere of content rather than a boxed visual. */}
         <motion.div
           initial={{ opacity: 0, scale: 0.96, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 1, ease: [0.2, 0.7, 0.2, 1], delay: 0.2 }}
           className="relative flex items-center justify-center lg:col-span-5"
         >
-          <div className="relative aspect-[4/5] w-full max-w-[480px]">
+          <div
+            className="relative aspect-square w-full max-w-[560px]"
+            style={{
+              maskImage:
+                'radial-gradient(ellipse at center, black 58%, transparent 92%)',
+              WebkitMaskImage:
+                'radial-gradient(ellipse at center, black 58%, transparent 92%)',
+            }}
+          >
             <SpaceScene />
           </div>
         </motion.div>
