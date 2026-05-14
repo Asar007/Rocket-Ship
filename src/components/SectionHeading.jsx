@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion'
 
 export default function SectionHeading({ eyebrow, title, accentWord, subtitle, align = 'left' }) {
-  const alignCls = align === 'center' ? 'items-center text-center' : 'items-start text-left'
+  const alignCls =
+    align === 'center' ? 'items-center text-center mx-auto' : 'items-start text-left'
 
   // Highlight the accent word inside the title
   const renderedTitle = accentWord
