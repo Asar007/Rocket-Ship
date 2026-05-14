@@ -52,10 +52,10 @@ export default function Navbar() {
       className="fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-3 sm:px-6 sm:pt-5"
     >
       <nav
-        className={`liquid-glass liquid-glass-pill flex w-full max-w-7xl items-center justify-between px-3 py-2 transition-all duration-500 sm:px-4 ${
+        className={`flex w-full max-w-7xl items-center justify-between rounded-full border px-3 py-2 transition-all duration-500 sm:px-4 ${
           scrolled
-            ? 'shadow-[0_20px_60px_-20px_rgba(0,0,0,0.7)]'
-            : ''
+            ? 'border-white/10 bg-navy-950/70 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.7)] backdrop-blur-xl'
+            : 'border-white/5 bg-white/[0.04] backdrop-blur-md'
         }`}
       >
         {/* Logo */}
@@ -103,7 +103,7 @@ export default function Navbar() {
           <a
             href="#contact"
             onClick={onContactClick}
-            className="group relative hidden overflow-hidden rounded-full pl-4 pr-3 py-2 font-display text-[13px] font-semibold text-navy-950 sm:inline-flex items-center gap-2 bg-gradient-to-br from-gold-400 via-gold-500 to-gold-600 shadow-glow-gold liquid-glass liquid-glass-pill"
+            className="group relative hidden overflow-hidden rounded-full pl-4 pr-3 py-2 font-display text-[13px] font-semibold text-navy-950 sm:inline-flex items-center gap-2 bg-gradient-to-br from-gold-400 via-gold-500 to-gold-600 shadow-glow-gold"
           >
             <span>Get Consultation</span>
             <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />

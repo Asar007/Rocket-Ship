@@ -271,7 +271,7 @@ export default function CallbackDialog() {
                         </p>
                         <button
                           type="submit"
-                          className="btn-primary liquid-glass liquid-glass-pill shrink-0"
+                          className="btn-primary shrink-0"
                         >
                           Request callback
                           <Send className="h-4 w-4" />

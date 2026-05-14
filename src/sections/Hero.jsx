@@ -90,14 +90,14 @@ export default function Hero() {
             custom={3}
             className="mt-9 flex flex-wrap items-center gap-3"
           >
-            <a href="#projects" className="btn-primary liquid-glass liquid-glass-pill">
+            <a href="#projects" className="btn-primary">
               Explore Projects
               <ArrowUpRight className="h-4 w-4" />
             </a>
             <button
               type="button"
               onClick={openCallback}
-              className="btn-ghost liquid-glass liquid-glass-pill"
+              className="btn-ghost"
             >
               <PlayCircle className="h-4 w-4 text-gold-400" />
               Contact Us

@@ -20,35 +20,6 @@
     <title>Madras Swastic Engineers — Engineering Precision for Modern Infrastructure</title>
   </head>
   <body>
-    <!-- Liquid-glass SVG filter, defined once so any .lg-distort layer can reference it. -->
-    <svg
-      width="0"
-      height="0"
-      style="position: absolute; width: 0; height: 0; overflow: hidden"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <defs>
-        <filter id="lg-distort" x="-10%" y="-10%" width="120%" height="120%">
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="0.012 0.018"
-            numOctaves="2"
-            seed="9"
-            result="noise"
-          />
-          <feGaussianBlur in="noise" stdDeviation="1.2" result="softNoise" />
-          <feDisplacementMap
-            in="SourceGraphic"
-            in2="softNoise"
-            scale="22"
-            xChannelSelector="R"
-            yChannelSelector="G"
-          />
-        </filter>
-      </defs>
-    </svg>
-
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

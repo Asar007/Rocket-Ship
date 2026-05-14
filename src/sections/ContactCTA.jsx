@@ -91,12 +91,12 @@ export default function ContactCTA() {
               <button
                 type="button"
                 onClick={openCallback}
-                className="btn-primary liquid-glass liquid-glass-pill group"
+                className="btn-primary group"
               >
                 Start a Conversation
                 <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </button>
-              <a href="tel:+919884148474" className="btn-ghost liquid-glass liquid-glass-pill">
+              <a href="tel:+919884148474" className="btn-ghost">
                 <Phone className="h-4 w-4 text-gold-400" />
                 +91 98841 48474
               </a>
