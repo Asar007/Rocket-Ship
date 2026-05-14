@@ -498,13 +498,10 @@ function Capsule({ active, setHovered, toggleClick }) {
   const handleOut = (e) => {
     e.stopPropagation()
     if (leaveTimer.current) clearTimeout(leaveTimer.current)
-    // Generous leave-delay — camera dolly-in can briefly slide the capsule
-    // out from under a stationary cursor; we don't want to drop hover in
-    // those frames or the zoom will pop back out.
     leaveTimer.current = setTimeout(() => {
       setHovered(false)
       leaveTimer.current = null
-    }, 320)
+    }, 100)
   }
   useEffect(
     () => () => {
@@ -755,55 +752,6 @@ function EarthFallback() {
   )
 }
 
-/* ──────────────────────────────────────────────────────────────────────────
- *  CameraDolly — smoothly lerps the camera in/out toward the capsule
- *  whenever `hovered` is true.  Saves the pre-hover pose so unhover
- *  returns the camera to wherever the user had it.  Lives inside the
- *  Canvas so it can read camera/controls via useThree.
- * ────────────────────────────────────────────────────────────────────────── */
-function CameraDolly({ hovered }) {
-  const { camera, controls } = useThree()
-  const savedCamPos = useRef(null)
-  const savedTarget = useRef(null)
-  // World-space center of the capsule group (must match the position
-  // prop on the Capsule's root <group>).
-  const capsuleCenter = useMemo(() => new THREE.Vector3(0.58, 0.23, 3.78), [])
-  // Desired distance from the capsule center on hover-zoom.
-  const ZOOM_DIST = 1.8
-
-  useFrame((_, delta) => {
-    if (!controls) return
-    const lerpAmt = Math.min(delta * 2.6, 1)
-
-    if (hovered) {
-      if (!savedCamPos.current) {
-        savedCamPos.current = camera.position.clone()
-        savedTarget.current = controls.target.clone()
-      }
-      // Keep the user's current viewing direction; only pull the camera
-      // closer along the camera→capsule axis.
-      const dir = new THREE.Vector3()
-        .subVectors(camera.position, capsuleCenter)
-        .normalize()
-      const desiredCam = capsuleCenter
-        .clone()
-        .add(dir.multiplyScalar(ZOOM_DIST))
-      camera.position.lerp(desiredCam, lerpAmt)
-      controls.target.lerp(capsuleCenter, lerpAmt)
-      controls.update()
-    } else if (savedCamPos.current) {
-      camera.position.lerp(savedCamPos.current, lerpAmt)
-      controls.target.lerp(savedTarget.current, lerpAmt)
-      controls.update()
-      if (camera.position.distanceTo(savedCamPos.current) < 0.02) {
-        savedCamPos.current = null
-        savedTarget.current = null
-      }
-    }
-  })
-  return null
-}
-
 export default function SpaceScene() {
   // Two-track activation:
   //   - hovered:  desktop pointer over the capsule (mouse hover)
@@ -854,8 +802,6 @@ export default function SpaceScene() {
           setHovered={setHovered}
           toggleClick={toggleClick}
         />
-
-        <CameraDolly hovered={active} />
 
         <OrbitControls
           makeDefault
