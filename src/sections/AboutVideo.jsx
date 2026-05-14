@@ -57,7 +57,7 @@ export default function AboutVideo() {
           {/* Video — full width, natural aspect */}
           <video
             ref={videoRef}
-            src="https://duzsdzur0y9ok0qx.public.blob.vercel-storage.com/inside-mse.mp4?v=2"
+            src="https://duzsdzur0y9ok0qx.public.blob.vercel-storage.com/gaganyaan.mp4"
             preload="metadata"
             playsInline
             crossOrigin="anonymous"
