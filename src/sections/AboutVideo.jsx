@@ -40,10 +40,10 @@ export default function AboutVideo() {
 
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHeading
-          eyebrow="Inside the works"
-          title="A minute on the shop floor."
-          accentWord="shop floor"
-          subtitle="A short look at the people, plant and precision behind every project we deliver."
+          eyebrow="Gaganyaan · ISRO"
+          title="Engineered to carry India to space."
+          accentWord="space"
+          subtitle="Madras Swastic Engineers is a fabrication partner on the Gaganyaan programme — India's first crewed spaceflight, taking our astronauts to low Earth orbit."
           align="center"
         />
 
@@ -57,7 +57,7 @@ export default function AboutVideo() {
           {/* Video — full width, natural aspect */}
           <video
             ref={videoRef}
-            src="https://duzsdzur0y9ok0qx.public.blob.vercel-storage.com/inside-mse.mp4"
+            src="https://duzsdzur0y9ok0qx.public.blob.vercel-storage.com/inside-mse.mp4?v=2"
             preload="metadata"
             playsInline
             crossOrigin="anonymous"
@@ -71,14 +71,14 @@ export default function AboutVideo() {
             <button
               type="button"
               onClick={handlePlay}
-              aria-label="Play the Madras Swastic Engineers shop-floor video"
+              aria-label="Play the Madras Swastic Engineers Gaganyaan video"
               className="group absolute inset-0 flex flex-col items-center justify-center gap-6 bg-gradient-to-b from-navy-950/30 via-navy-950/35 to-navy-950/65 transition-colors hover:from-navy-950/25 hover:via-navy-950/30 hover:to-navy-950/55"
             >
               <span className="grid h-20 w-20 place-items-center rounded-full border border-white/30 bg-gradient-to-br from-gold-400 via-gold-500 to-gold-600 text-navy-950 shadow-glow-gold transition-transform duration-300 group-hover:scale-110 sm:h-24 sm:w-24">
                 <Play className="h-8 w-8 translate-x-[2px] sm:h-10 sm:w-10" strokeWidth={1.8} fill="currentColor" />
               </span>
               <span className="font-mono text-[10.5px] uppercase tracking-[0.32em] text-white/85">
-                Watch · 1 min inside MSE
+                Watch · Gaganyaan
               </span>
             </button>
           )}
@@ -98,8 +98,8 @@ export default function AboutVideo() {
 
         {/* Caption strip below the player */}
         <p className="mx-auto mt-5 max-w-2xl text-center text-[12.5px] leading-relaxed text-white/45">
-          Shot at our Guindy Industrial Estate works. Fabrication, weld and inspection are all
-          handled in-house — every project flows through this same floor.
+          Fabricated at our Guindy works for the Gaganyaan crew module programme — proud to play a
+          part in taking India's first astronauts to space.
         </p>
       </div>
     </section>
