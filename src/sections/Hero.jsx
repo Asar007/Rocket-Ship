@@ -136,10 +136,28 @@ export default function Hero() {
         >
           <div className="relative w-full max-w-[480px]">
             {/* Floating glass primary */}
-            <div className="glass-strong relative aspect-[4/5] overflow-hidden rounded-[28px] p-6">
+            <div
+              className="glass-strong relative aspect-[4/5] overflow-hidden rounded-[28px] p-6 ring-1 ring-white/15 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6),0_18px_40px_-10px_rgba(90,166,255,0.22),0_8px_24px_-8px_rgba(240,198,116,0.18),inset_0_1px_0_rgba(255,255,255,0.3),inset_0_-1px_0_rgba(0,0,0,0.55),inset_1px_0_8px_-6px_rgba(255,255,255,0.2),inset_-1px_0_8px_-6px_rgba(0,0,0,0.45)]"
+            >
               {/* Inner grid */}
               <div className="absolute inset-0 bg-grid opacity-40" />
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(90,166,255,0.35),transparent_50%),radial-gradient(circle_at_20%_80%,rgba(240,198,116,0.25),transparent_55%)]" />
+
+              {/* Specular top-left sheen — sells the glass thickness */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(255,255,255,0.18),transparent_45%)]"
+              />
+              {/* Bright top-edge hairline */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-white/55 to-transparent"
+              />
+              {/* Subtle bottom-edge shadow */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-x-6 bottom-0 h-px bg-gradient-to-r from-transparent via-black/60 to-transparent"
+              />
 
               {/* Rotating gear stack */}
               <div className="absolute inset-0 grid place-items-center">
