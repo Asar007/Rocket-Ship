@@ -12,7 +12,6 @@ import {
   Html,
   Line,
   OrbitControls,
-  Stars,
   useTexture,
 } from '@react-three/drei'
 
@@ -751,41 +750,38 @@ export default function SpaceScene() {
     <>
       <style>{tooltipCss}</style>
       <Canvas
-      dpr={[1, 2]}
-      gl={{
-        antialias: true,
-        toneMapping: THREE.ACESFilmicToneMapping,
-        outputColorSpace: THREE.SRGBColorSpace,
-      }}
-      camera={{ position: [0, 0, 8], fov: 45 }}
-      style={{ width: '100%', height: '100%', background: '#000' }}
-    >
-      <ambientLight intensity={0.12} />
-      <directionalLight position={[10, 5, 5]} intensity={2.5} color="#fff5e6" />
+        dpr={[1, 2]}
+        gl={{
+          antialias: true,
+          alpha: true,
+          toneMapping: THREE.ACESFilmicToneMapping,
+          outputColorSpace: THREE.SRGBColorSpace,
+        }}
+        camera={{ position: [0, 0, 8], fov: 45 }}
+        style={{ width: '100%', height: '100%', background: 'transparent' }}
+      >
+        <ambientLight intensity={0.12} />
+        <directionalLight position={[10, 5, 5]} intensity={2.5} color="#fff5e6" />
 
-      {/* IBL — drives PBR reflections on metallic surfaces.  Loaded at low
-          resolution and used for reflections only (no scene background). */}
-      <Environment preset="city" background={false} resolution={64} />
+        {/* IBL — drives PBR reflections on metallic surfaces.  Loaded at low
+            resolution and used for reflections only (no scene background). */}
+        <Environment preset="city" background={false} resolution={64} />
 
-      {/* STEP 5 — Starfield.  Lives outside Suspense so it appears
-          instantly while textures download. */}
-      <Stars radius={300} depth={60} count={8000} factor={5} fade speed={0.5} />
+        <Suspense fallback={<EarthFallback />}>
+          <Earth />
+        </Suspense>
 
-      <Suspense fallback={<EarthFallback />}>
-        <Earth />
-      </Suspense>
+        <Capsule />
 
-      <Capsule />
-
-      <OrbitControls
-        enablePan={false}
-        enableZoom={false}
-        enableDamping
-        dampingFactor={0.08}
-        minDistance={5}
-        maxDistance={20}
-      />
-    </Canvas>
+        <OrbitControls
+          enablePan={false}
+          enableZoom={false}
+          enableDamping
+          dampingFactor={0.08}
+          minDistance={5}
+          maxDistance={20}
+        />
+      </Canvas>
     </>
   )
 }

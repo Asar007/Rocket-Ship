@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ArrowUpRight, PlayCircle, Rocket } from 'lucide-react'
+import { ArrowUpRight, PlayCircle } from 'lucide-react'
 import { openCallback } from '../components/CallbackDialog.jsx'
 import logo from '../assets/logo.png'
 import SpaceScene from '../components/SpaceScene.jsx'
@@ -137,56 +137,15 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* ===== RIGHT — Gaganyaan capsule 3D scene ===== */}
+        {/* ===== RIGHT — Gaganyaan capsule 3D scene (frame-less) ===== */}
         <motion.div
           initial={{ opacity: 0, scale: 0.96, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 1, ease: [0.2, 0.7, 0.2, 1], delay: 0.2 }}
           className="relative flex items-center justify-center lg:col-span-5"
         >
-          <div className="relative w-full max-w-[480px]">
-            {/* Glass frame holding the interactive 3D scene */}
-            <div
-              className="glass-strong relative aspect-[4/5] overflow-hidden rounded-[28px] ring-1 ring-white/15 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6),0_18px_40px_-10px_rgba(90,166,255,0.22),0_8px_24px_-8px_rgba(240,198,116,0.18),inset_0_1px_0_rgba(255,255,255,0.3),inset_0_-1px_0_rgba(0,0,0,0.55),inset_1px_0_8px_-6px_rgba(255,255,255,0.2),inset_-1px_0_8px_-6px_rgba(0,0,0,0.45)]"
-            >
-              {/* The R3F canvas fills the entire glass frame */}
-              <div className="absolute inset-0">
-                <SpaceScene />
-              </div>
-
-              {/* Specular top-left sheen — sells the glass thickness.
-                  pointer-events-none so it doesn't block 3D scene interaction. */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(255,255,255,0.18),transparent_45%)]"
-              />
-              {/* Bright top-edge hairline */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-white/55 to-transparent"
-              />
-              {/* Subtle bottom-edge shadow */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-x-6 bottom-0 h-px bg-gradient-to-r from-transparent via-black/60 to-transparent"
-              />
-
-              {/* Mission label — top-left chip, kept pointer-events-none */}
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8, duration: 0.6 }}
-                className="pointer-events-none absolute left-5 top-5 flex items-center gap-2 rounded-full border border-white/10 bg-navy-950/60 px-3 py-1.5 backdrop-blur"
-              >
-                <Rocket className="h-3.5 w-3.5 text-electric-400" />
-                <span className="font-mono text-[10px] tracking-[0.2em] text-white/80">
-                  MISSION · GAGANYAAN
-                </span>
-              </motion.div>
-            </div>
-
-            {/* Soft glow under card */}
-            <div className="pointer-events-none absolute -bottom-10 left-1/2 h-24 w-3/4 -translate-x-1/2 rounded-full bg-electric-500/30 blur-3xl" />
+          <div className="relative aspect-[4/5] w-full max-w-[480px]">
+            <SpaceScene />
           </div>
         </motion.div>
       </div>
