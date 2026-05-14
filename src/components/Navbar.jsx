@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, ArrowUpRight } from 'lucide-react'
 import logo from '../assets/logo.png'
+import LiquidGlass from './LiquidGlass.jsx'
 
 const NAV_ITEMS = [
   { label: 'Home', href: '#home' },
@@ -87,15 +88,17 @@ export default function Navbar() {
 
         {/* CTA + mobile toggle */}
         <div className="flex items-center gap-2">
-          <a
-            href="#contact"
-            onClick={(e) => onNavClick(e, '#contact')}
-            className="group relative hidden overflow-hidden rounded-full pl-4 pr-3 py-2 font-display text-[13px] font-semibold text-navy-950 sm:inline-flex items-center gap-2 bg-gradient-to-br from-gold-400 via-gold-500 to-gold-600 shadow-glow-gold"
-          >
-            <span>Get Consultation</span>
-            <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-          </a>
+          <LiquidGlass type="pill" tintOpacity={0.25} className="hidden sm:inline-flex">
+            <a
+              href="#contact"
+              onClick={(e) => onNavClick(e, '#contact')}
+              className="group relative overflow-hidden rounded-full pl-4 pr-3 py-2 font-display text-[13px] font-semibold text-navy-950 inline-flex items-center gap-2 bg-gradient-to-br from-gold-400 via-gold-500 to-gold-600 shadow-glow-gold"
+            >
+              <span>Get Consultation</span>
+              <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+            </a>
+          </LiquidGlass>
 
           <button
             onClick={() => setOpen((v) => !v)}

@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowUpRight, Mail, Phone, MapPin } from 'lucide-react'
+import LiquidGlass from '../components/LiquidGlass.jsx'
 
 // Heavy r3f/rapier physics scene — only loaded when the section enters view
 // AND the user hasn't opted out of motion / isn't on a tiny screen.
@@ -87,14 +88,18 @@ export default function ContactCTA() {
             </p>
 
             <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-              <a href="mailto:projects@madrasswastic.com" className="btn-primary group">
-                Start a Conversation
-                <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </a>
-              <a href="tel:+914400000000" className="btn-ghost">
-                <Phone className="h-4 w-4 text-gold-400" />
-                +91 44 0000 0000
-              </a>
+              <LiquidGlass type="pill" tintOpacity={0.22}>
+                <a href="mailto:projects@madrasswastic.com" className="btn-primary group">
+                  Start a Conversation
+                  <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </a>
+              </LiquidGlass>
+              <LiquidGlass type="pill" tintOpacity={0.16}>
+                <a href="tel:+914400000000" className="btn-ghost">
+                  <Phone className="h-4 w-4 text-gold-400" />
+                  +91 44 0000 0000
+                </a>
+              </LiquidGlass>
             </div>
 
             <div className="mt-12 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] sm:grid-cols-3">

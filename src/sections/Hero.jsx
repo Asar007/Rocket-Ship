@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { ArrowUpRight, PlayCircle, Compass, Cog, Wrench, Activity } from 'lucide-react'
+import LiquidGlass from '../components/LiquidGlass.jsx'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -89,14 +90,18 @@ export default function Hero() {
             custom={3}
             className="mt-9 flex flex-wrap items-center gap-3"
           >
-            <a href="#projects" className="btn-primary">
-              Explore Projects
-              <ArrowUpRight className="h-4 w-4" />
-            </a>
-            <a href="#contact" className="btn-ghost">
-              <PlayCircle className="h-4 w-4 text-gold-400" />
-              Contact Us
-            </a>
+            <LiquidGlass type="pill" tintOpacity={0.22}>
+              <a href="#projects" className="btn-primary">
+                Explore Projects
+                <ArrowUpRight className="h-4 w-4" />
+              </a>
+            </LiquidGlass>
+            <LiquidGlass type="pill" tintOpacity={0.16}>
+              <a href="#contact" className="btn-ghost">
+                <PlayCircle className="h-4 w-4 text-gold-400" />
+                Contact Us
+              </a>
+            </LiquidGlass>
           </motion.div>
 
           {/* Trust strip */}
