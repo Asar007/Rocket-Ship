@@ -5,11 +5,10 @@ import logo from '../assets/logo.png'
 
 const NAV_ITEMS = [
   { label: 'Home', href: '#home' },
-  { label: 'About', href: '#about' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Services', href: '#services' },
-  { label: 'Clients', href: '#clients' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'About us', href: '#about' },
+  { label: 'Our Projects', href: '#projects' },
+  { label: 'Customization', href: '#services' },
+  { label: 'Contact us', href: '#contact' },
 ]
 
 export default function Navbar() {
