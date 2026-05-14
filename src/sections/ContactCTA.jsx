@@ -96,17 +96,22 @@ export default function ContactCTA() {
                 Start a Conversation
                 <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </button>
-              <a href="tel:+914400000000" className="btn-ghost liquid-glass liquid-glass-pill">
+              <a href="tel:+919884148474" className="btn-ghost liquid-glass liquid-glass-pill">
                 <Phone className="h-4 w-4 text-gold-400" />
-                +91 44 0000 0000
+                +91 98841 48474
               </a>
             </div>
 
             <div className="mt-12 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] sm:grid-cols-3">
               {[
-                { icon: Mail, label: 'Email us', value: 'projects@madrasswastic.com' },
-                { icon: Phone, label: 'Call directly', value: '+91 44 0000 0000' },
-                { icon: MapPin, label: 'Head office', value: 'Sriperumbudur, Chennai' },
+                { icon: Mail, label: 'Email us', value: 'md@madrasswastic.com' },
+                { icon: Phone, label: 'Call directly', value: '+91 98841 48474' },
+                {
+                  icon: MapPin,
+                  label: 'Head office',
+                  value:
+                    '21-C, 5th Cross St, Guindy Industrial Estate, Chennai 600032',
+                },
               ].map((c) => (
                 <div
                   key={c.label}

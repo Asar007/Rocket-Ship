@@ -67,7 +67,7 @@ export default function CallbackDialog() {
       'Brief:',
       form.brief?.trim() || '(no brief provided)',
     ].join('\n')
-    window.location.href = `mailto:projects@madrasswastic.com?subject=${encodeURIComponent(
+    window.location.href = `mailto:md@madrasswastic.com?subject=${encodeURIComponent(
       subject,
     )}&body=${encodeURIComponent(body)}`
     setSubmitted(true)
@@ -168,7 +168,7 @@ export default function CallbackDialog() {
                       <p className="mt-2 max-w-sm text-[13px] leading-relaxed text-white/65">
                         We've opened your mail client with the brief filled in. If nothing
                         happened, write to{' '}
-                        <span className="text-gold-300">projects@madrasswastic.com</span>{' '}
+                        <span className="text-gold-300">md@madrasswastic.com</span>{' '}
                         directly.
                       </p>
                       <button

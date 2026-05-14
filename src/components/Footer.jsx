@@ -23,9 +23,9 @@ const LINKS = [
   {
     title: 'Reach us',
     items: [
-      { label: 'projects@madrasswastic.com', href: 'mailto:projects@madrasswastic.com' },
-      { label: '+91 44 0000 0000', href: 'tel:+914400000000' },
-      { label: 'Sriperumbudur, Chennai', href: '#contact' },
+      { label: 'md@madrasswastic.com', href: 'mailto:md@madrasswastic.com' },
+      { label: '+91 98841 48474', href: 'tel:+919884148474' },
+      { label: 'Guindy Industrial Estate, Chennai 600032', href: '#contact' },
     ],
   },
 ]
