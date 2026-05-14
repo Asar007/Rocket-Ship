@@ -498,10 +498,13 @@ function Capsule({ active, setHovered, toggleClick }) {
   const handleOut = (e) => {
     e.stopPropagation()
     if (leaveTimer.current) clearTimeout(leaveTimer.current)
+    // Generous leave-delay — camera dolly-in can briefly slide the capsule
+    // out from under a stationary cursor; we don't want to drop hover in
+    // those frames or the zoom will pop back out.
     leaveTimer.current = setTimeout(() => {
       setHovered(false)
       leaveTimer.current = null
-    }, 80)
+    }, 320)
   }
   useEffect(
     () => () => {
@@ -565,6 +568,17 @@ function Capsule({ active, setHovered, toggleClick }) {
         toggleClick()
       }}
     >
+      {/* Invisible hover/click proxy — a large bounding sphere around the
+          whole capsule.  Because it's substantially bigger than any visible
+          mesh, the cursor stays inside it while the auto-zoom camera dolly
+          shifts the capsule on screen.  Without it the cursor would briefly
+          leave the actual meshes during the zoom-in, the debounce would
+          fire, the zoom would reverse, and the whole thing would oscillate.
+          visible={false} keeps it invisible but still raycastable. */}
+      <mesh visible={false}>
+        <sphereGeometry args={[0.7, 16, 12]} />
+      </mesh>
+
       {/* Crew module — truncated cone, wide end down in local frame.
           Slightly higher segment count for smoother specular highlights. */}
       <mesh material={blanket}>
