@@ -180,6 +180,67 @@ body {
     padding-top: clamp(4rem, 8vw, 7rem);
     padding-bottom: clamp(4rem, 8vw, 7rem);
   }
+
+  /* =====================================================
+     Liquid glass — backdrop blur + SVG displacement.
+     The ::before layer carries the heavy filter so the
+     element's own children stay sharp and undistorted.
+     ===================================================== */
+  .liquid-glass {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.22),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.28),
+      0 12px 36px -12px rgba(0, 0, 0, 0.55);
+  }
+  .liquid-glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.12) 0%,
+      rgba(255, 255, 255, 0.04) 60%,
+      rgba(240, 198, 116, 0.06) 100%
+    );
+    backdrop-filter: blur(16px) saturate(170%) brightness(1.04);
+    -webkit-backdrop-filter: blur(16px) saturate(170%) brightness(1.04);
+    filter: url(#lg-distort);
+    pointer-events: none;
+    transition: backdrop-filter 250ms ease;
+  }
+  .liquid-glass > * {
+    position: relative;
+    z-index: 1;
+  }
+  .liquid-glass:hover::before {
+    backdrop-filter: blur(18px) saturate(190%) brightness(1.08);
+    -webkit-backdrop-filter: blur(18px) saturate(190%) brightness(1.08);
+  }
+
+  /* Pill variant — for navbar / CTA pills */
+  .liquid-glass-pill {
+    border-radius: 9999px;
+  }
+
+  /* Distortion is decorative — skip it for users who prefer reduced motion
+     and for browsers that don't reliably composite filter+backdrop-filter. */
+  @media (prefers-reduced-motion: reduce) {
+    .liquid-glass::before {
+      filter: none;
+    }
+  }
+  @supports not (backdrop-filter: blur(1px)) {
+    .liquid-glass::before {
+      background: rgba(255, 255, 255, 0.08);
+      filter: none;
+    }
+  }
 }
 
 /* Grid pattern for accent backgrounds */
