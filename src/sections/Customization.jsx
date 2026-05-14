@@ -1,38 +1,85 @@
-import { useMemo, useState } from 'react'
-import { motion } from 'framer-motion'
+import { useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import {
   Activity,
-  AlertCircle,
+  Anchor,
   ArrowUpRight,
   Boxes,
   Building2,
-  CheckCircle2,
   Cog,
   Construction,
   FileBox,
   Hammer,
   Layers,
+  Settings2,
   ShieldCheck,
   Wand2,
+  Wrench,
 } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading.jsx'
 
 /* =========================================================
-   Static configuration data
+   Anatomy hotspots — six places where real customisation lives
    ========================================================= */
 
-const STRUCTURE_TYPES = [
-  { id: 'gantry', label: 'Gantry frame' },
-  { id: 'truss', label: 'Truss bridge' },
-  { id: 'conveyor', label: 'Conveyor line' },
-  { id: 'rack', label: 'Pipe rack' },
+const HOTSPOTS = [
+  {
+    id: 1,
+    title: 'Base & anchorage',
+    body: 'Foundations surveyed at your site. Chemical anchors, levelling shims and grout pads specified to soil class and dynamic load profile.',
+    icon: Anchor,
+    point: { x: 195, y: 374 },
+    target: { x: 168, y: 363, w: 56, h: 22 },
+  },
+  {
+    id: 2,
+    title: 'Primary members',
+    body: 'Section sizes derived from FEA. Hot-rolled, fabricated I-beams or built-up plate girders — picked for load case, fatigue cycle and erection method.',
+    icon: Building2,
+    point: { x: 300, y: 88 },
+    target: { x: 88, y: 88, w: 424, h: 18 },
+  },
+  {
+    id: 3,
+    title: 'Welds & joints',
+    body: 'Qualified 6G procedures, certified welders. NDT (UT / RT / MT / PT) and dimensional checks per project class. Bolted joints to IS 4000.',
+    icon: Hammer,
+    point: { x: 105, y: 122 },
+    target: { x: 92, y: 100, w: 28, h: 28 },
+  },
+  {
+    id: 4,
+    title: 'Surface protection',
+    body: 'Blast-clean to SA 2½, primer plus epoxy or PU topcoat. Galvanising, Inconel cladding and intumescent fireproofing available for harsher cycles.',
+    icon: Layers,
+    point: { x: 480, y: 220 },
+    target: { x: 462, y: 108, w: 36, h: 250 },
+  },
+  {
+    id: 5,
+    title: 'Lifting & access',
+    body: 'Padeyes, ladders, walkways and chequer-plate landings designed in, fitted in the shop. Site never weld-fits an access item.',
+    icon: Wrench,
+    point: { x: 388, y: 240 },
+    target: { x: 374, y: 132, w: 22, h: 232 },
+  },
+  {
+    id: 6,
+    title: 'Instrumentation pads',
+    body: 'Pre-tapped boss pads, cable trays and conduit routes for downstream IoT, SCADA and process instrumentation — no retrofit cutting at site.',
+    icon: Settings2,
+    point: { x: 280, y: 224 },
+    target: { x: 254, y: 218, w: 60, h: 22 },
+  },
 ]
 
-const MATERIALS = [
-  { id: 'carbon', label: 'Carbon steel', color: '#9aa6b6' },
-  { id: 'stainless', label: 'Stainless 316', color: '#d2dae3' },
-  { id: 'duplex', label: 'Duplex 2205', color: '#7d8a9c' },
-  { id: 'inconel', label: 'Inconel 625', color: '#cda37a' },
+const STRUCTURE_TYPES = [
+  'Pressure vessels & tanks',
+  'Gantries & supports',
+  'Conveyors & material handling',
+  'Process skids & piping',
+  'Industrial buildings & sheds',
+  'Pipe racks & cable bridges',
 ]
 
 const PROCESS = [
@@ -78,7 +125,7 @@ const CAPABILITIES = [
   {
     id: 'alloy',
     title: 'Custom alloys & coatings',
-    body: 'Carbon, stainless, duplex, Inconel — chosen for the corrosive cycle in your plant.',
+    body: 'Carbon, stainless, duplex, Inconel — picked for the corrosive cycle in your plant.',
     icon: Layers,
     span: 'lg:col-span-2',
   },
@@ -113,283 +160,198 @@ const CAPABILITIES = [
 ]
 
 /* =========================================================
-   Derived engineering math (plausible, not load-bearing 🙂)
+   Annotated anatomy diagram — generic structural frame
    ========================================================= */
 
-function useDerivedSpec({ span, height, load }) {
-  return useMemo(() => {
-    const selfWeight = (span * 0.18 + height * 0.32 + load * 0.08).toFixed(1)
-    const deflectLimit = Math.round((span * 1000) / 250) // L/250 in mm
-    const deflectActual = Math.round((span * 1000) / 320) // engineered to L/320
-    const bucklingMargin = Math.max(
-      12,
-      Math.round(((25 - height) / 25) * 55 + 32 - (load / 120) * 18),
-    )
-    const steelVolume = (span * height * 0.045 + load * 0.12).toFixed(2)
-    return { selfWeight, deflectLimit, deflectActual, bucklingMargin, steelVolume }
-  }, [span, height, load])
-}
-
-/* =========================================================
-   Parametric structural schematic — pure SVG
-   ========================================================= */
-
-function ParametricSchematic({ type, span, height, blueprint, materialColor }) {
-  const W = 600
-  const H = 360
-  const padX = 60
-  const padY = 56
-  const drawW = W - padX * 2
-  const drawH = H - padY * 2
-
-  const spanRatio = (span - 5) / 35
-  const heightRatio = (height - 3) / 22
-
-  const structWidth = drawW * (0.32 + spanRatio * 0.62)
-  const structHeight = drawH * (0.32 + heightRatio * 0.62)
-
-  const x0 = (W - structWidth) / 2
-  const y0 = H - padY - structHeight
-  const x1 = x0 + structWidth
-  const y1 = H - padY
-
-  const stroke = blueprint ? '#e6edff' : materialColor
-  const fillTone = blueprint ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.06)'
-  const dim = blueprint ? 'rgba(230,237,255,0.65)' : 'rgba(240,198,116,0.7)'
-  const grid = blueprint ? 'rgba(230,237,255,0.09)' : 'rgba(255,255,255,0.04)'
-
-  const renderStructure = () => {
-    if (type === 'gantry') {
-      return (
-        <g>
-          <line x1={x0} y1={y0} x2={x0} y2={y1} stroke={stroke} strokeWidth={3.5} strokeLinecap="round" />
-          <line x1={x1} y1={y0} x2={x1} y2={y1} stroke={stroke} strokeWidth={3.5} strokeLinecap="round" />
-          <rect
-            x={x0 - 8}
-            y={y0 - 14}
-            width={structWidth + 16}
-            height={16}
-            fill={fillTone}
-            stroke={stroke}
-            strokeWidth={2.5}
-          />
-          <line x1={x0} y1={y0} x2={x1} y2={y1} stroke={stroke} strokeWidth={1.4} opacity={0.55} />
-          <line x1={x1} y1={y0} x2={x0} y2={y1} stroke={stroke} strokeWidth={1.4} opacity={0.55} />
-          <rect x={x0 - 16} y={y1 - 4} width={32} height={5} fill={stroke} />
-          <rect x={x1 - 16} y={y1 - 4} width={32} height={5} fill={stroke} />
-        </g>
-      )
-    }
-
-    if (type === 'truss') {
-      const N = Math.max(4, Math.round(structWidth / 50))
-      const dx = structWidth / N
-      const top = y0
-      const bottom = y0 + Math.max(28, structHeight * 0.18)
-      return (
-        <g>
-          <line x1={x0} y1={top} x2={x1} y2={top} stroke={stroke} strokeWidth={3.2} />
-          <line x1={x0} y1={bottom} x2={x1} y2={bottom} stroke={stroke} strokeWidth={3.2} />
-          {Array.from({ length: N }).map((_, i) => {
-            const ax = x0 + i * dx
-            const bx = x0 + (i + 1) * dx
-            const mx = (ax + bx) / 2
-            return (
-              <g key={i}>
-                <line x1={ax} y1={top} x2={mx} y2={bottom} stroke={stroke} strokeWidth={1.5} />
-                <line x1={mx} y1={bottom} x2={bx} y2={top} stroke={stroke} strokeWidth={1.5} />
-                {i < N - 1 && (
-                  <line x1={bx} y1={top} x2={bx} y2={bottom} stroke={stroke} strokeWidth={1.2} opacity={0.6} />
-                )}
-              </g>
-            )
-          })}
-          <line x1={x0} y1={bottom} x2={x0} y2={y1} stroke={stroke} strokeWidth={2} strokeDasharray="3 5" opacity={0.45} />
-          <line x1={x1} y1={bottom} x2={x1} y2={y1} stroke={stroke} strokeWidth={2} strokeDasharray="3 5" opacity={0.45} />
-          <polygon points={`${x0},${y1} ${x0 - 12},${y1 + 12} ${x0 + 12},${y1 + 12}`} fill={stroke} />
-          <polygon points={`${x1},${y1} ${x1 - 12},${y1 + 12} ${x1 + 12},${y1 + 12}`} fill={stroke} />
-        </g>
-      )
-    }
-
-    if (type === 'conveyor') {
-      const beamY = y0 + structHeight * 0.35
-      const beamH = 16
-      return (
-        <g>
-          <rect x={x0} y={beamY} width={structWidth} height={beamH} fill={fillTone} stroke={stroke} strokeWidth={2.4} />
-          <line
-            x1={x0}
-            y1={beamY - 4}
-            x2={x1}
-            y2={beamY - 4}
-            stroke={stroke}
-            strokeWidth={1.5}
-            opacity={0.6}
-            strokeDasharray="6 6"
-          />
-          <circle cx={x0} cy={beamY + beamH / 2} r={16} fill={fillTone} stroke={stroke} strokeWidth={2.2} />
-          <circle cx={x1} cy={beamY + beamH / 2} r={16} fill={fillTone} stroke={stroke} strokeWidth={2.2} />
-          <circle cx={x0} cy={beamY + beamH / 2} r={4} fill={stroke} />
-          <circle cx={x1} cy={beamY + beamH / 2} r={4} fill={stroke} />
-          {Array.from({ length: 4 }).map((_, i) => {
-            const lx = x0 + ((i + 1) * structWidth) / 5
-            return (
-              <g key={i}>
-                <line x1={lx} y1={beamY + beamH} x2={lx - 14} y2={y1} stroke={stroke} strokeWidth={1.8} />
-                <line x1={lx} y1={beamY + beamH} x2={lx + 14} y2={y1} stroke={stroke} strokeWidth={1.8} />
-                <line x1={lx - 14} y1={y1} x2={lx + 14} y2={y1} stroke={stroke} strokeWidth={1.4} opacity={0.5} />
-              </g>
-            )
-          })}
-        </g>
-      )
-    }
-
-    if (type === 'rack') {
-      const tiers = Math.max(2, Math.min(5, Math.round(structHeight / 50)))
-      return (
-        <g>
-          <line x1={x0} y1={y0} x2={x0} y2={y1} stroke={stroke} strokeWidth={3.4} />
-          <line x1={x1} y1={y0} x2={x1} y2={y1} stroke={stroke} strokeWidth={3.4} />
-          {Array.from({ length: tiers }).map((_, i) => {
-            const ty = y0 + ((i + 1) * structHeight) / (tiers + 1)
-            return (
-              <g key={i}>
-                <line x1={x0} y1={ty} x2={x1} y2={ty} stroke={stroke} strokeWidth={2.4} />
-                {Array.from({ length: Math.max(3, Math.floor(structWidth / 38)) }).map((_, j, arr) => {
-                  const cx = x0 + 24 + j * ((structWidth - 48) / Math.max(1, arr.length - 1))
-                  return (
-                    <circle
-                      key={j}
-                      cx={cx}
-                      cy={ty - 9}
-                      r={6}
-                      fill={fillTone}
-                      stroke={stroke}
-                      strokeWidth={1.4}
-                      opacity={0.85}
-                    />
-                  )
-                })}
-              </g>
-            )
-          })}
-          <rect x={x0 - 16} y={y1 - 4} width={32} height={5} fill={stroke} />
-          <rect x={x1 - 16} y={y1 - 4} width={32} height={5} fill={stroke} />
-        </g>
-      )
-    }
-
-    return null
-  }
+function AnatomyDiagram({ activeId, onHotspot }) {
+  const active = HOTSPOTS.find((h) => h.id === activeId)
+  const stroke = '#cfd7e3'
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="h-full w-full">
+    <svg viewBox="0 0 600 440" className="h-full w-full">
       <defs>
-        <pattern id="custom-grid" width="24" height="24" patternUnits="userSpaceOnUse">
-          <path d="M 24 0 L 0 0 0 24" fill="none" stroke={grid} strokeWidth="0.8" />
+        <pattern id="anat-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+          <path
+            d="M 24 0 L 0 0 0 24"
+            fill="none"
+            stroke="rgba(255,255,255,0.045)"
+            strokeWidth="0.8"
+          />
         </pattern>
+        <linearGradient id="anat-paint" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#5aa6ff" stopOpacity="0.55" />
+          <stop offset="1" stopColor="#5aa6ff" stopOpacity="0.08" />
+        </linearGradient>
       </defs>
 
-      {blueprint && <rect width={W} height={H} fill="#0c244a" />}
-      <rect width={W} height={H} fill="url(#custom-grid)" />
+      <rect width="600" height="440" fill="url(#anat-grid)" />
 
-      {/* Ground line + hatching */}
-      <line x1={padX - 16} y1={y1 + 1} x2={W - padX + 16} y2={y1 + 1} stroke={stroke} strokeWidth={1.4} />
-      {Array.from({ length: 32 }).map((_, i) => (
+      {/* Ground hatch */}
+      <line x1="40" y1="385" x2="560" y2="385" stroke="rgba(240,198,116,0.55)" strokeWidth="1.3" />
+      {Array.from({ length: 30 }).map((_, i) => (
         <line
           key={i}
-          x1={padX - 14 + i * 18}
-          y1={y1 + 1}
-          x2={padX - 14 + i * 18 - 8}
-          y2={y1 + 11}
-          stroke={stroke}
-          strokeWidth={1}
-          opacity={0.45}
+          x1={40 + i * 18}
+          y1="385"
+          x2={32 + i * 18}
+          y2="395"
+          stroke="rgba(240,198,116,0.45)"
+          strokeWidth="1"
         />
       ))}
 
-      <motion.g
-        key={type}
-        initial={{ opacity: 0, scale: 0.97 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.45, ease: [0.2, 0.7, 0.2, 1] }}
-      >
-        {renderStructure()}
-      </motion.g>
+      {/* Active-target highlight (drawn under structure) */}
+      {active && (
+        <motion.rect
+          key={active.id}
+          x={active.target.x}
+          y={active.target.y}
+          width={active.target.w}
+          height={active.target.h}
+          fill="rgba(240,198,116,0.16)"
+          stroke="#f0c674"
+          strokeWidth="2"
+          rx="4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.35 }}
+        />
+      )}
 
-      {/* Horizontal span dimension line (above structure) */}
-      <g>
-        <line x1={x0} y1={y0 - 36} x2={x1} y2={y0 - 36} stroke={dim} strokeWidth={1} />
-        <line x1={x0} y1={y0 - 30} x2={x0} y2={y0 - 42} stroke={dim} strokeWidth={1} />
-        <line x1={x1} y1={y0 - 30} x2={x1} y2={y0 - 42} stroke={dim} strokeWidth={1} />
-        <text
-          x={(x0 + x1) / 2}
-          y={y0 - 46}
-          textAnchor="middle"
-          fill={dim}
-          fontSize="12"
-          fontFamily="Montserrat, sans-serif"
-          letterSpacing="0.22em"
-        >
-          SPAN · {span.toFixed(1)} m
-        </text>
-      </g>
+      {/* Surface-protection paint band on rightmost column (#4 target) */}
+      <rect x="462" y="108" width="36" height="250" fill="url(#anat-paint)" opacity="0.7" />
 
-      {/* Vertical height dimension line (right of structure) */}
-      <g>
-        <line x1={x1 + 36} y1={y0} x2={x1 + 36} y2={y1} stroke={dim} strokeWidth={1} />
-        <line x1={x1 + 30} y1={y0} x2={x1 + 42} y2={y0} stroke={dim} strokeWidth={1} />
-        <line x1={x1 + 30} y1={y1} x2={x1 + 42} y2={y1} stroke={dim} strokeWidth={1} />
-        <text
-          x={x1 + 48}
-          y={(y0 + y1) / 2 + 4}
-          fill={dim}
-          fontSize="12"
-          fontFamily="Montserrat, sans-serif"
-          letterSpacing="0.22em"
-        >
-          {height.toFixed(1)} m
-        </text>
-      </g>
-    </svg>
-  )
-}
+      {/* Base plates */}
+      <rect x="84" y="365" width="46" height="20" fill="rgba(255,255,255,0.06)" stroke={stroke} strokeWidth="2" />
+      <rect x="172" y="365" width="46" height="20" fill="rgba(255,255,255,0.06)" stroke={stroke} strokeWidth="2" />
+      <rect x="378" y="365" width="46" height="20" fill="rgba(255,255,255,0.06)" stroke={stroke} strokeWidth="2" />
+      <rect x="468" y="365" width="46" height="20" fill="rgba(255,255,255,0.06)" stroke={stroke} strokeWidth="2" />
 
-/* =========================================================
-   Small UI helpers
-   ========================================================= */
+      {/* Primary top beam */}
+      <rect x="88" y="88" width="424" height="18" fill="rgba(255,255,255,0.07)" stroke={stroke} strokeWidth="2.5" />
 
-function Slider({ label, value, min, max, step, unit, onChange }) {
-  return (
-    <div>
-      <div className="flex items-baseline justify-between">
-        <span className="text-[12.5px] tracking-wide text-white/65">{label}</span>
-        <span className="font-mono text-[13px] font-medium tabular-nums text-white">
-          {Number.isInteger(step) ? value.toFixed(0) : value.toFixed(1)}{' '}
-          <span className="text-white/45">{unit}</span>
-        </span>
-      </div>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        onChange={(e) => onChange(parseFloat(e.target.value))}
-        className="slider-custom mt-2 w-full"
+      {/* Columns */}
+      <line x1="107" y1="365" x2="107" y2="106" stroke={stroke} strokeWidth="3.2" />
+      <line x1="195" y1="365" x2="195" y2="106" stroke={stroke} strokeWidth="3.2" />
+      <line x1="401" y1="365" x2="401" y2="106" stroke={stroke} strokeWidth="3.2" />
+      <line x1="491" y1="365" x2="491" y2="106" stroke={stroke} strokeWidth="3.2" />
+
+      {/* X-bracing in side bays */}
+      <line x1="107" y1="365" x2="195" y2="106" stroke={stroke} strokeWidth="1.4" opacity="0.5" />
+      <line x1="195" y1="365" x2="107" y2="106" stroke={stroke} strokeWidth="1.4" opacity="0.5" />
+      <line x1="401" y1="365" x2="491" y2="106" stroke={stroke} strokeWidth="1.4" opacity="0.5" />
+      <line x1="491" y1="365" x2="401" y2="106" stroke={stroke} strokeWidth="1.4" opacity="0.5" />
+
+      {/* Mid-span equipment platform */}
+      <rect
+        x="220"
+        y="240"
+        width="160"
+        height="14"
+        fill="rgba(240,198,116,0.06)"
+        stroke="#f0c674"
+        strokeWidth="1.8"
       />
-    </div>
-  )
-}
+      <line x1="245" y1="254" x2="245" y2="365" stroke={stroke} strokeWidth="1.5" opacity="0.55" strokeDasharray="3 4" />
+      <line x1="355" y1="254" x2="355" y2="365" stroke={stroke} strokeWidth="1.5" opacity="0.55" strokeDasharray="3 4" />
 
-function ReadoutPair({ label, value }) {
-  return (
-    <div>
-      <div className="font-mono text-[9px] tracking-[0.22em] text-white/45">{label}</div>
-      <div className="font-display text-sm font-semibold text-white">{value}</div>
-    </div>
+      {/* Instrumentation pad on platform (#6 target lives here) */}
+      <rect
+        x="254"
+        y="218"
+        width="60"
+        height="22"
+        fill="rgba(90,166,255,0.14)"
+        stroke="#5aa6ff"
+        strokeWidth="1.4"
+        rx="2"
+      />
+      {[265, 278, 291, 304].map((cx) => (
+        <circle key={cx} cx={cx} cy="229" r="2" fill="#5aa6ff" />
+      ))}
+
+      {/* Weld marks at primary joints */}
+      {[
+        [107, 106],
+        [195, 106],
+        [401, 106],
+        [491, 106],
+        [220, 247],
+        [380, 247],
+      ].map(([cx, cy], i) => (
+        <circle key={i} cx={cx} cy={cy} r="3.4" fill="#f0c674" />
+      ))}
+
+      {/* Access ladder (between columns 3 and 4-ish) */}
+      <line x1="378" y1="132" x2="378" y2="362" stroke={stroke} strokeWidth="1.8" />
+      <line x1="392" y1="132" x2="392" y2="362" stroke={stroke} strokeWidth="1.8" />
+      {Array.from({ length: 9 }).map((_, i) => (
+        <line
+          key={i}
+          x1="378"
+          y1={155 + i * 24}
+          x2="392"
+          y2={155 + i * 24}
+          stroke={stroke}
+          strokeWidth="1.3"
+        />
+      ))}
+
+      {/* Padeye on top beam */}
+      <path
+        d="M 295 88 q 0 -16 10 -16 q 10 0 10 16 z"
+        fill="rgba(255,255,255,0.06)"
+        stroke={stroke}
+        strokeWidth="1.6"
+      />
+      <circle cx="305" cy="76" r="2.8" fill="#03061a" stroke={stroke} strokeWidth="1.4" />
+
+      {/* Hotspot markers */}
+      {HOTSPOTS.map((h) => {
+        const isActive = h.id === activeId
+        return (
+          <g
+            key={h.id}
+            style={{ cursor: 'pointer' }}
+            onMouseEnter={() => onHotspot(h.id)}
+            onFocus={() => onHotspot(h.id)}
+            onClick={() => onHotspot(h.id)}
+            tabIndex={0}
+          >
+            {isActive && (
+              <motion.circle
+                cx={h.point.x}
+                cy={h.point.y}
+                r="18"
+                fill="rgba(240,198,116,0.22)"
+                initial={{ scale: 0.6, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.3 }}
+              />
+            )}
+            <circle
+              cx={h.point.x}
+              cy={h.point.y}
+              r="13"
+              fill="#03061a"
+              stroke={isActive ? '#f0c674' : 'rgba(240,198,116,0.55)'}
+              strokeWidth="1.6"
+            />
+            <text
+              x={h.point.x}
+              y={h.point.y + 4}
+              textAnchor="middle"
+              fontFamily="Montserrat, sans-serif"
+              fontWeight="600"
+              fontSize="11"
+              fill={isActive ? '#f0c674' : 'rgba(240,198,116,0.85)'}
+            >
+              {h.id}
+            </text>
+          </g>
+        )
+      })}
+    </svg>
   )
 }
 
@@ -398,36 +360,12 @@ function ReadoutPair({ label, value }) {
    ========================================================= */
 
 export default function Customization() {
-  const [type, setType] = useState('gantry')
-  const [material, setMaterial] = useState(MATERIALS[0])
-  const [span, setSpan] = useState(18)
-  const [height, setHeight] = useState(8)
-  const [load, setLoad] = useState(30)
-  const [blueprint, setBlueprint] = useState(false)
-
-  const spec = useDerivedSpec({ span, height, load })
-
-  const checks = [
-    {
-      label: 'Deflection',
-      detail: `${spec.deflectActual} mm vs L/250 limit (${spec.deflectLimit} mm)`,
-      status: spec.deflectActual < spec.deflectLimit ? 'pass' : 'warn',
-    },
-    {
-      label: 'Buckling reserve',
-      detail: `${spec.bucklingMargin}% margin over Euler critical`,
-      status: spec.bucklingMargin > 28 ? 'pass' : 'warn',
-    },
-    {
-      label: 'Self-weight',
-      detail: `${spec.selfWeight} t fabricated · ${spec.steelVolume} m³ steel`,
-      status: 'pass',
-    },
-  ]
+  const [activeHotspot, setActiveHotspot] = useState(1)
+  const active = HOTSPOTS.find((h) => h.id === activeHotspot)
+  const ActiveIcon = active.icon
 
   return (
     <section id="customization" className="section-pad relative overflow-hidden">
-      {/* Background wash */}
       <div className="pointer-events-none absolute inset-0 -z-0">
         <div className="absolute right-[-10%] top-[8%] h-[420px] w-[420px] rounded-full bg-electric-500/12 blur-3xl" />
         <div className="absolute left-[-10%] bottom-[20%] h-[420px] w-[420px] rounded-full bg-gold-500/10 blur-3xl" />
@@ -436,204 +374,122 @@ export default function Customization() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="Customization"
-          title="Engineered to your exact spec, not catalogue cuts."
-          accentWord="exact spec"
-          subtitle="Every structure we ship is dimensioned, alloyed and certified to the brief — built in our Chennai works, then erected on your site. Set the dials below to see how the design responds in real time."
+          title="Custom is what we do — every part of what we ship is engineered around your site."
+          accentWord="Custom"
+          subtitle="From the soil class under the base plate to the conduit waiting for your instrumentation, customisation is built into every stage. The diagram below shows where it actually lives in a real structure."
         />
 
-        {/* ===== Build Studio ===== */}
+        {/* === Structure categories — informative chip strip === */}
+        <div className="mt-12">
+          <div className="text-[11px] tracking-[0.3em] uppercase text-white/45">
+            What we customise
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {STRUCTURE_TYPES.map((label) => (
+              <span
+                key={label}
+                className="rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-[12.5px] font-medium text-white/80 backdrop-blur"
+              >
+                {label}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* === Anatomy of a custom build === */}
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.8, ease: [0.2, 0.7, 0.2, 1] }}
-          className="glass-strong relative mt-14 overflow-hidden rounded-[28px]"
+          className="glass-strong relative mt-10 overflow-hidden rounded-[28px]"
         >
           <div className="grid grid-cols-1 lg:grid-cols-12">
-            {/* LEFT — Configurator */}
-            <div className="border-b border-white/10 p-6 sm:p-8 lg:col-span-5 lg:border-b-0 lg:border-r">
-              <div className="flex items-center gap-2">
+            {/* Diagram */}
+            <div className="border-b border-white/10 p-6 sm:p-8 lg:col-span-7 lg:border-b-0 lg:border-r">
+              <div className="mb-3 flex items-center gap-2">
                 <Wand2 className="h-4 w-4 text-gold-400" />
-                <span className="eyebrow text-white/65">Build studio</span>
+                <span className="eyebrow text-white/65">Anatomy of a custom build</span>
               </div>
 
-              {/* Structure type */}
-              <div className="mt-6">
-                <div className="text-[12.5px] tracking-wide text-white/65">Structure type</div>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {STRUCTURE_TYPES.map((s) => (
-                    <button
-                      key={s.id}
-                      type="button"
-                      onClick={() => setType(s.id)}
-                      className={`rounded-full border px-3.5 py-1.5 text-[12.5px] font-medium transition-all duration-300 ${
-                        type === s.id
-                          ? 'border-gold-400/60 bg-gold-400/10 text-gold-200 shadow-[0_0_24px_-6px_rgba(240,198,116,0.45)]'
-                          : 'border-white/10 bg-white/[0.03] text-white/70 hover:border-white/25 hover:text-white'
-                      }`}
-                    >
-                      {s.label}
-                    </button>
-                  ))}
-                </div>
+              <div className="relative aspect-[5/3.5] w-full overflow-hidden rounded-2xl border border-white/10 bg-navy-950/40">
+                <AnatomyDiagram activeId={activeHotspot} onHotspot={setActiveHotspot} />
               </div>
 
-              {/* Sliders */}
-              <div className="mt-7 space-y-5">
-                <Slider label="Span" value={span} min={5} max={40} step={0.5} unit="m" onChange={setSpan} />
-                <Slider
-                  label="Height / depth"
-                  value={height}
-                  min={3}
-                  max={25}
-                  step={0.5}
-                  unit="m"
-                  onChange={setHeight}
-                />
-                <Slider
-                  label="Load capacity"
-                  value={load}
-                  min={1}
-                  max={120}
-                  step={1}
-                  unit="t"
-                  onChange={setLoad}
-                />
+              <p className="mt-4 text-[12px] leading-relaxed text-white/45">
+                Hover a numbered marker — or pick from the list — to see what's tailored in each part of a real build. The drawing is generic; the customisation is real.
+              </p>
+            </div>
+
+            {/* Active hotspot detail + picker */}
+            <div className="p-6 sm:p-8 lg:col-span-5">
+              <div className="text-[11px] tracking-[0.3em] uppercase text-white/45">
+                What we tailor
               </div>
 
-              {/* Material */}
-              <div className="mt-7">
-                <div className="text-[12.5px] tracking-wide text-white/65">Material grade</div>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {MATERIALS.map((m) => (
-                    <button
-                      key={m.id}
-                      type="button"
-                      onClick={() => setMaterial(m)}
-                      className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-[12px] font-medium transition-all duration-300 ${
-                        material.id === m.id
-                          ? 'border-white/30 bg-white/[0.07] text-white'
-                          : 'border-white/10 bg-white/[0.02] text-white/65 hover:text-white/90'
-                      }`}
-                    >
-                      <span
-                        className="h-2.5 w-2.5 rounded-full border border-white/20"
-                        style={{ background: m.color }}
-                      />
-                      {m.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Engineering checks */}
-              <div className="mt-7 rounded-2xl border border-white/10 bg-navy-950/45 p-4">
-                <div className="flex items-center gap-2">
-                  <Activity className="h-4 w-4 text-electric-400" />
-                  <span className="eyebrow text-white/65">Live engineering checks</span>
-                </div>
-                <ul className="mt-3 space-y-2.5">
-                  {checks.map((c) => (
-                    <li key={c.label} className="flex items-start gap-2.5 text-[12.5px]">
-                      {c.status === 'pass' ? (
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400/90" />
-                      ) : (
-                        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-400/90" />
-                      )}
-                      <div>
-                        <div className="font-medium text-white/90">{c.label}</div>
-                        <div className="text-white/55">{c.detail}</div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={active.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.3 }}
+                  className="mt-4"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="grid h-10 w-10 place-items-center rounded-full border border-gold-400/40 bg-gold-400/10">
+                      <ActiveIcon className="h-4 w-4 text-gold-300" />
+                    </span>
+                    <div>
+                      <div className="font-mono text-[10px] tracking-[0.3em] text-gold-400">
+                        {String(active.id).padStart(2, '0')} / 06
                       </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                      <h4 className="font-display text-xl font-semibold text-white">
+                        {active.title}
+                      </h4>
+                    </div>
+                  </div>
+                  <p className="mt-5 text-[13.5px] leading-relaxed text-white/72">
+                    {active.body}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
 
-              {/* CTA */}
+              <ul className="mt-6 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {HOTSPOTS.map((h) => (
+                  <li key={h.id}>
+                    <button
+                      type="button"
+                      onClick={() => setActiveHotspot(h.id)}
+                      onMouseEnter={() => setActiveHotspot(h.id)}
+                      onFocus={() => setActiveHotspot(h.id)}
+                      className={`flex w-full items-center gap-2 rounded-xl border px-3 py-2 text-left text-[12px] font-medium transition-all duration-200 ${
+                        h.id === activeHotspot
+                          ? 'border-gold-400/50 bg-gold-400/[0.08] text-white'
+                          : 'border-white/10 bg-white/[0.02] text-white/65 hover:border-white/25 hover:text-white/90'
+                      }`}
+                    >
+                      <span className="font-mono text-[10px] text-gold-400">
+                        {String(h.id).padStart(2, '0')}
+                      </span>
+                      <span>{h.title}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+
               <a
                 href="#contact"
                 className="btn-primary liquid-glass liquid-glass-pill mt-7 w-full justify-center"
               >
-                Request detailed quote
+                Talk to an engineer
                 <ArrowUpRight className="h-4 w-4" />
               </a>
-            </div>
-
-            {/* RIGHT — Schematic */}
-            <div className="relative p-6 sm:p-8 lg:col-span-7">
-              <div className="mb-3 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <Layers className="h-4 w-4 text-gold-400" />
-                  <span className="eyebrow text-white/65">Live schematic</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setBlueprint((v) => !v)}
-                  className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.2em] transition-all ${
-                    blueprint
-                      ? 'border-electric-400/60 bg-electric-500/15 text-electric-300'
-                      : 'border-white/10 bg-white/[0.03] text-white/65 hover:text-white'
-                  }`}
-                >
-                  <span
-                    className={`h-1.5 w-1.5 rounded-full ${
-                      blueprint ? 'bg-electric-400' : 'bg-white/40'
-                    }`}
-                  />
-                  Blueprint view
-                </button>
-              </div>
-
-              <div
-                className={`relative aspect-[5/3] w-full overflow-hidden rounded-2xl border transition-colors duration-500 ${
-                  blueprint
-                    ? 'border-electric-400/30 bg-[#0c244a]'
-                    : 'border-white/10 bg-navy-950/45'
-                }`}
-              >
-                <ParametricSchematic
-                  type={type}
-                  span={span}
-                  height={height}
-                  blueprint={blueprint}
-                  materialColor={material.color}
-                />
-
-                {/* Corner chips */}
-                <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full border border-white/15 bg-navy-950/65 px-3 py-1 backdrop-blur">
-                  <span className="relative grid h-2 w-2 place-items-center">
-                    <span className="absolute h-2 w-2 animate-ping rounded-full bg-emerald-400/70" />
-                    <span className="relative h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                  </span>
-                  <span className="font-mono text-[10px] tracking-[0.22em] text-white/80">
-                    LIVE PREVIEW
-                  </span>
-                </div>
-
-                <div className="absolute right-4 top-4 rounded-full border border-white/15 bg-navy-950/65 px-3 py-1 backdrop-blur">
-                  <span className="font-mono text-[10px] tracking-[0.22em] text-white/80">
-                    {material.label.toUpperCase()}
-                  </span>
-                </div>
-
-                {/* Bottom readout strip */}
-                <div className="absolute bottom-4 left-4 right-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-navy-950/65 px-4 py-2.5 backdrop-blur-md">
-                  <ReadoutPair label="SPAN" value={`${span.toFixed(1)} m`} />
-                  <ReadoutPair label="HEIGHT" value={`${height.toFixed(1)} m`} />
-                  <ReadoutPair label="LOAD" value={`${load} t`} />
-                  <ReadoutPair label="WEIGHT" value={`${spec.selfWeight} t`} />
-                </div>
-              </div>
-
-              <p className="mt-4 text-[12px] leading-relaxed text-white/45">
-                Schematic is a generative reference — final drawings are issued from a full FEA
-                package signed by a chartered engineer.
-              </p>
             </div>
           </div>
         </motion.div>
 
-        {/* ===== Process Timeline ===== */}
+        {/* === Process Timeline === */}
         <div className="mt-24">
           <SectionHeading
             eyebrow="Build journey"
@@ -667,7 +523,7 @@ export default function Customization() {
           </div>
         </div>
 
-        {/* ===== Capabilities mosaic ===== */}
+        {/* === Capabilities mosaic === */}
         <div className="mt-20">
           <SectionHeading
             eyebrow="Capabilities"
@@ -688,7 +544,9 @@ export default function Customization() {
                 className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-md transition-all duration-500 hover:-translate-y-1 hover:border-white/25 ${cap.span}`}
               >
                 <cap.icon className="h-6 w-6 text-gold-400 transition-transform duration-500 group-hover:rotate-6" />
-                <h4 className="mt-4 font-display text-base font-semibold text-white">{cap.title}</h4>
+                <h4 className="mt-4 font-display text-base font-semibold text-white">
+                  {cap.title}
+                </h4>
                 <p className="mt-1.5 text-[12px] leading-relaxed text-white/55">{cap.body}</p>
                 <span className="pointer-events-none absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-gold-500/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
               </motion.div>

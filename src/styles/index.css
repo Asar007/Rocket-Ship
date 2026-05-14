@@ -257,52 +257,6 @@ body {
   mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
 }
 
-/* ===== Custom range slider — Build Studio ===== */
-.slider-custom {
-  -webkit-appearance: none;
-  appearance: none;
-  background: transparent;
-  height: 18px;
-}
-.slider-custom::-webkit-slider-runnable-track {
-  height: 4px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(240, 198, 116, 0.7), rgba(90, 166, 255, 0.5));
-}
-.slider-custom::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  margin-top: -6px;
-  border-radius: 50%;
-  background: #f0c674;
-  border: 2px solid #03061a;
-  box-shadow: 0 0 0 2px rgba(240, 198, 116, 0.35), 0 4px 12px rgba(0, 0, 0, 0.4);
-  cursor: pointer;
-  transition: transform 180ms ease;
-}
-.slider-custom::-webkit-slider-thumb:hover {
-  transform: scale(1.15);
-}
-.slider-custom::-moz-range-track {
-  height: 4px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(240, 198, 116, 0.7), rgba(90, 166, 255, 0.5));
-}
-.slider-custom::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #f0c674;
-  border: 2px solid #03061a;
-  box-shadow: 0 0 0 2px rgba(240, 198, 116, 0.35), 0 4px 12px rgba(0, 0, 0, 0.4);
-  cursor: pointer;
-}
-.slider-custom:focus {
-  outline: none;
-}
-
 /* Reduce motion */
 @media (prefers-reduced-motion: reduce) {
   *,
