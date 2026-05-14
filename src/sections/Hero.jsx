@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { ArrowUpRight, PlayCircle, Compass, Cog, Wrench, Activity } from 'lucide-react'
 import { openCallback } from '../components/CallbackDialog.jsx'
-import BrandMark from '../components/BrandMark.jsx'
+import logo from '../assets/logo.png'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -26,9 +26,21 @@ export default function Hero() {
             animate="show"
             variants={fadeUp}
             custom={0}
-            className="w-fit drop-shadow-[0_0_32px_rgba(240,198,116,0.35)]"
+            className="flex w-fit items-center gap-4 sm:gap-5"
           >
-            <BrandMark className="h-36 w-36 sm:h-44 sm:w-44" />
+            <img
+              src={logo}
+              alt="Madras Swastic Engineers"
+              className="h-20 w-20 shrink-0 object-contain drop-shadow-[0_0_24px_rgba(240,198,116,0.4)] sm:h-24 sm:w-24"
+            />
+            <div className="flex flex-col leading-none">
+              <span className="font-display text-xl font-semibold uppercase tracking-[0.18em] text-white sm:text-2xl">
+                Madras Swastic
+              </span>
+              <span className="mt-2 font-mono text-[11px] uppercase tracking-[0.4em] text-gold-400 sm:text-[12px]">
+                Engineers
+              </span>
+            </div>
           </motion.div>
 
           <motion.h1
