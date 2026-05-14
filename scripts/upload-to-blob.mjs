@@ -47,6 +47,7 @@ const blob = await put(destination, data, {
   token,
   // Keep the destination filename stable so we don't have to keep updating <video src>
   addRandomSuffix: false,
+  allowOverwrite: true,
 })
 
 console.log()
