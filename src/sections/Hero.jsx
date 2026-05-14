@@ -41,12 +41,12 @@ export default function Hero() {
             animate="show"
             variants={fadeUp}
             custom={1}
-            className="mt-6 flex flex-col items-start gap-6 sm:mt-8 lg:flex-row lg:items-center lg:gap-7"
+            className="mt-6 flex flex-col items-start gap-6 sm:mt-8 lg:flex-row lg:items-start lg:gap-10"
           >
             <img
               src={logo}
               alt="Madras Swastic Engineers"
-              className="h-28 w-28 shrink-0 object-contain drop-shadow-[0_0_28px_rgba(240,198,116,0.4)] sm:h-36 sm:w-36 lg:h-40 lg:w-40"
+              className="h-28 w-28 shrink-0 object-contain drop-shadow-[0_0_28px_rgba(240,198,116,0.4)] sm:h-36 sm:w-36 lg:mt-2 lg:h-40 lg:w-40"
             />
             <h1 className="font-display text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-[56px]">
               Engineering{' '}
@@ -311,12 +311,12 @@ export default function Hero() {
                   Live Build Status
                 </span>
               </div>
-              <div className="mt-2 grid grid-cols-3 gap-1">
+              <div className="mt-2 flex h-[52px] items-end gap-1">
                 {[0.9, 0.6, 0.8, 0.4, 0.95, 0.7, 0.55, 0.85, 0.5].map((h, i) => (
                   <div
                     key={i}
                     style={{ height: `${20 + h * 30}px` }}
-                    className="rounded-sm bg-gradient-to-t from-electric-600/40 to-gold-400/80"
+                    className="flex-1 rounded-sm bg-gradient-to-t from-electric-500 to-gold-400"
                   />
                 ))}
               </div>
