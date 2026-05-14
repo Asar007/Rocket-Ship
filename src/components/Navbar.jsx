@@ -7,7 +7,7 @@ const NAV_ITEMS = [
   { label: 'Home', href: '#home' },
   { label: 'About us', href: '#about' },
   { label: 'Our Projects', href: '#projects' },
-  { label: 'Customization', href: '#services' },
+  { label: 'Customization', href: '#customization' },
   { label: 'Contact us', href: '#contact' },
 ]
 
