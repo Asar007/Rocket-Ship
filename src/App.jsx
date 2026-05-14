@@ -1,6 +1,9 @@
+import { useEffect, useState } from 'react'
+
 import Navbar from './components/Navbar.jsx'
 import Footer from './components/Footer.jsx'
 import CallbackDialog from './components/CallbackDialog.jsx'
+import SpaceScene from './components/SpaceScene.jsx'
 
 import Hero from './sections/Hero.jsx'
 import About from './sections/About.jsx'
@@ -12,7 +15,29 @@ import Clients from './sections/Clients.jsx'
 import Stats from './sections/Stats.jsx'
 import ContactCTA from './sections/ContactCTA.jsx'
 
+function useHashRoute() {
+  const [hash, setHash] = useState(() =>
+    typeof window === 'undefined' ? '' : window.location.hash,
+  )
+  useEffect(() => {
+    const onChange = () => setHash(window.location.hash)
+    window.addEventListener('hashchange', onChange)
+    return () => window.removeEventListener('hashchange', onChange)
+  }, [])
+  return hash
+}
+
 export default function App() {
+  const hash = useHashRoute()
+
+  if (hash === '#space') {
+    return (
+      <div style={{ width: '100vw', height: '100vh', background: '#000' }}>
+        <SpaceScene />
+      </div>
+    )
+  }
+
   return (
     <div className="relative min-h-screen w-full bg-navy-950">
       <Navbar />
