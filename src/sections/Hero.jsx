@@ -21,64 +21,64 @@ export default function Hero() {
       <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-12 px-4 pb-20 sm:px-6 lg:grid-cols-12 lg:gap-10 lg:pb-28">
         {/* ===== LEFT ===== */}
         <div className="flex flex-col justify-center lg:col-span-7">
+          {/* Brand eyebrow — small text-only line */}
           <motion.div
             initial="hidden"
             animate="show"
             variants={fadeUp}
             custom={0}
-            className="flex w-fit items-center gap-4 sm:gap-5"
+            className="flex w-fit items-center gap-3"
           >
-            <img
-              src={logo}
-              alt="Madras Swastic Engineers"
-              className="h-20 w-20 shrink-0 object-contain drop-shadow-[0_0_24px_rgba(240,198,116,0.4)] sm:h-24 sm:w-24"
-            />
-            <div className="flex flex-col leading-none">
-              <span className="font-display text-xl font-semibold uppercase tracking-[0.18em] text-white sm:text-2xl">
-                Madras Swastic
-              </span>
-              <span className="mt-2 font-mono text-[11px] uppercase tracking-[0.4em] text-gold-400 sm:text-[12px]">
-                Engineers
-              </span>
-            </div>
+            <span className="h-px w-8 bg-gold-400/60" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-gold-400 sm:text-[11px]">
+              Madras Swastic Engineers
+            </span>
           </motion.div>
 
-          <motion.h1
+          {/* Star logo + headline as a single side-by-side block */}
+          <motion.div
             initial="hidden"
             animate="show"
             variants={fadeUp}
             custom={1}
-            className="mt-6 font-display text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-[68px]"
+            className="mt-6 flex flex-col items-start gap-6 sm:mt-8 lg:flex-row lg:items-center lg:gap-7"
           >
-            Engineering{' '}
-            <span className="relative inline-block">
-              <span className="bg-gradient-to-br from-gold-400 via-gold-500 to-gold-600 bg-clip-text text-transparent">
-                Precision
-              </span>
-              <svg
-                className="absolute -bottom-2 left-0 w-full"
-                viewBox="0 0 300 12"
-                fill="none"
-                aria-hidden
-              >
-                <path
-                  d="M2 8 C 90 2, 200 2, 298 8"
-                  stroke="url(#under)"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-                <defs>
-                  <linearGradient id="under" x1="0" x2="1">
-                    <stop offset="0" stopColor="#5aa6ff" stopOpacity="0" />
-                    <stop offset="0.5" stopColor="#f0c674" />
-                    <stop offset="1" stopColor="#5aa6ff" stopOpacity="0" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </span>{' '}
-            for Modern <br className="hidden sm:block" />
-            <span className="text-white/90">Infrastructure.</span>
-          </motion.h1>
+            <img
+              src={logo}
+              alt="Madras Swastic Engineers"
+              className="h-28 w-28 shrink-0 object-contain drop-shadow-[0_0_28px_rgba(240,198,116,0.4)] sm:h-36 sm:w-36 lg:h-40 lg:w-40"
+            />
+            <h1 className="font-display text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-[56px]">
+              Engineering{' '}
+              <span className="relative inline-block">
+                <span className="bg-gradient-to-br from-gold-400 via-gold-500 to-gold-600 bg-clip-text text-transparent">
+                  Precision
+                </span>
+                <svg
+                  className="absolute -bottom-2 left-0 w-full"
+                  viewBox="0 0 300 12"
+                  fill="none"
+                  aria-hidden
+                >
+                  <path
+                    d="M2 8 C 90 2, 200 2, 298 8"
+                    stroke="url(#under)"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                  <defs>
+                    <linearGradient id="under" x1="0" x2="1">
+                      <stop offset="0" stopColor="#5aa6ff" stopOpacity="0" />
+                      <stop offset="0.5" stopColor="#f0c674" />
+                      <stop offset="1" stopColor="#5aa6ff" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </span>{' '}
+              for Modern <br className="hidden sm:block" />
+              <span className="text-white/90">Infrastructure.</span>
+            </h1>
+          </motion.div>
 
           <motion.p
             initial="hidden"
