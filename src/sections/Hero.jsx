@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { ArrowUpRight, PlayCircle, Compass, Cog, Wrench, Activity } from 'lucide-react'
+import { openCallback } from '../components/CallbackDialog.jsx'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -93,10 +94,14 @@ export default function Hero() {
               Explore Projects
               <ArrowUpRight className="h-4 w-4" />
             </a>
-            <a href="#contact" className="btn-ghost liquid-glass liquid-glass-pill">
+            <button
+              type="button"
+              onClick={openCallback}
+              className="btn-ghost liquid-glass liquid-glass-pill"
+            >
               <PlayCircle className="h-4 w-4 text-gold-400" />
               Contact Us
-            </a>
+            </button>
           </motion.div>
 
           {/* Trust strip */}

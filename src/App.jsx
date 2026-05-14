@@ -1,5 +1,6 @@
 import Navbar from './components/Navbar.jsx'
 import Footer from './components/Footer.jsx'
+import CallbackDialog from './components/CallbackDialog.jsx'
 
 import Hero from './sections/Hero.jsx'
 import About from './sections/About.jsx'
@@ -27,6 +28,7 @@ export default function App() {
       </main>
 
       <Footer />
+      <CallbackDialog />
     </div>
   )
 }

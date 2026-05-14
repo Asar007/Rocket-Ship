@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, ArrowUpRight } from 'lucide-react'
 import logo from '../assets/logo.png'
+import { openCallback } from './CallbackDialog.jsx'
 
 const NAV_ITEMS = [
   { label: 'Home', href: '#home' },
@@ -23,12 +24,24 @@ export default function Navbar() {
   }, [])
 
   const onNavClick = (e, href) => {
+    if (href === '#contact') {
+      e.preventDefault()
+      setOpen(false)
+      openCallback()
+      return
+    }
     const target = document.querySelector(href)
     if (target) {
       e.preventDefault()
       target.scrollIntoView({ behavior: 'smooth', block: 'start' })
       setOpen(false)
     }
+  }
+
+  const onContactClick = (e) => {
+    e.preventDefault()
+    setOpen(false)
+    openCallback()
   }
 
   return (
@@ -89,7 +102,7 @@ export default function Navbar() {
         <div className="flex items-center gap-2">
           <a
             href="#contact"
-            onClick={(e) => onNavClick(e, '#contact')}
+            onClick={onContactClick}
             className="group relative hidden overflow-hidden rounded-full pl-4 pr-3 py-2 font-display text-[13px] font-semibold text-navy-950 sm:inline-flex items-center gap-2 bg-gradient-to-br from-gold-400 via-gold-500 to-gold-600 shadow-glow-gold liquid-glass liquid-glass-pill"
           >
             <span>Get Consultation</span>
@@ -133,7 +146,7 @@ export default function Navbar() {
             </ul>
             <a
               href="#contact"
-              onClick={(e) => onNavClick(e, '#contact')}
+              onClick={onContactClick}
               className="btn-primary mt-3 w-full justify-center"
             >
               Get Consultation

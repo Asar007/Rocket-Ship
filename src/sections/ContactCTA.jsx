@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowUpRight, Mail, Phone, MapPin } from 'lucide-react'
+import { openCallback } from '../components/CallbackDialog.jsx'
 
 // Heavy r3f/rapier physics scene — only loaded when the section enters view
 // AND the user hasn't opted out of motion / isn't on a tiny screen.
@@ -87,10 +88,14 @@ export default function ContactCTA() {
             </p>
 
             <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-              <a href="mailto:projects@madrasswastic.com" className="btn-primary liquid-glass liquid-glass-pill group">
+              <button
+                type="button"
+                onClick={openCallback}
+                className="btn-primary liquid-glass liquid-glass-pill group"
+              >
                 Start a Conversation
                 <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </a>
+              </button>
               <a href="tel:+914400000000" className="btn-ghost liquid-glass liquid-glass-pill">
                 <Phone className="h-4 w-4 text-gold-400" />
                 +91 44 0000 0000

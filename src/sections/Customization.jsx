@@ -13,10 +13,12 @@ import {
   Layers,
   Settings2,
   ShieldCheck,
+  Sparkles,
   Wand2,
   Wrench,
 } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading.jsx'
+import { openCallback } from '../components/CallbackDialog.jsx'
 
 /* =========================================================
    Anatomy hotspots — six places where real customisation lives
@@ -73,13 +75,15 @@ const HOTSPOTS = [
   },
 ]
 
-const STRUCTURE_TYPES = [
-  'Pressure vessels & tanks',
-  'Gantries & supports',
-  'Conveyors & material handling',
-  'Process skids & piping',
-  'Industrial buildings & sheds',
-  'Pipe racks & cable bridges',
+const SECTORS = [
+  'Energy',
+  'Refinery',
+  'Process',
+  'Aerospace',
+  'Defence',
+  'Marine',
+  'Power',
+  'Heavy industry',
 ]
 
 const PROCESS = [
@@ -374,27 +378,42 @@ export default function Customization() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="Customization"
-          title="Custom is what we do — every part of what we ship is engineered around your site."
-          accentWord="Custom"
-          subtitle="From the soil class under the base plate to the conduit waiting for your instrumentation, customisation is built into every stage. The diagram below shows where it actually lives in a real structure."
+          title="We custom-fabricate anything you can specify."
+          accentWord="anything"
+          subtitle="A refinery stair tower one week, a space-grade structural module the next. Every project starts from a blank page and a senior engineer — there's no catalogue we're picking from. The diagram below shows where customisation actually lives inside a real build."
         />
 
-        {/* === Structure categories — informative chip strip === */}
-        <div className="mt-12">
-          <div className="text-[11px] tracking-[0.3em] uppercase text-white/45">
-            What we customise
+        {/* === Range + sectors callout === */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.7, ease: [0.2, 0.7, 0.2, 1] }}
+          className="mt-12 flex flex-col gap-6 rounded-2xl border border-white/10 bg-white/[0.02] px-5 py-5 backdrop-blur md:flex-row md:items-center md:justify-between md:gap-10 md:px-7"
+        >
+          <div className="flex items-start gap-3">
+            <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-gold-400" />
+            <p className="max-w-2xl text-[14px] leading-relaxed text-white/80">
+              <span className="font-display text-[17px] font-semibold text-gold-300">
+                If it can be engineered, we will build it.
+              </span>
+              <br />
+              From a stair handrail to flight-class structural hardware — every brief is bespoke, every drawing reviewed by a chartered engineer.
+            </p>
           </div>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {STRUCTURE_TYPES.map((label) => (
-              <span
-                key={label}
-                className="rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-[12.5px] font-medium text-white/80 backdrop-blur"
-              >
-                {label}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10.5px] uppercase tracking-[0.28em] text-white/55">
+            {SECTORS.map((s, i) => (
+              <span key={s} className="flex items-center gap-4">
+                <span>{s}</span>
+                {i < SECTORS.length - 1 && (
+                  <span className="text-white/20" aria-hidden>
+                    ·
+                  </span>
+                )}
               </span>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* === Anatomy of a custom build === */}
         <motion.div
@@ -478,13 +497,14 @@ export default function Customization() {
                 ))}
               </ul>
 
-              <a
-                href="#contact"
+              <button
+                type="button"
+                onClick={openCallback}
                 className="btn-primary liquid-glass liquid-glass-pill mt-7 w-full justify-center"
               >
-                Talk to an engineer
+                Contact us
                 <ArrowUpRight className="h-4 w-4" />
-              </a>
+              </button>
             </div>
           </div>
         </motion.div>
