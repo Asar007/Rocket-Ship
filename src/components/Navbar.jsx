@@ -24,12 +24,6 @@ export default function Navbar() {
   }, [])
 
   const onNavClick = (e, href) => {
-    if (href === '#contact') {
-      e.preventDefault()
-      setOpen(false)
-      openCallback()
-      return
-    }
     const target = document.querySelector(href)
     if (target) {
       e.preventDefault()
