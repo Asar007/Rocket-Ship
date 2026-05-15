@@ -269,7 +269,7 @@ function makeHeatShieldDiffuse() {
  *  - Solar panels: two thin boxes extending sideways
  *  Positioned at [2.2, 1.4, 0.5] with heat shield angled toward Earth.
  *  No plasma / decals / hover yet — those come in later steps. */
-function Capsule({ active, compactTooltip, setHovered, toggleClick }) {
+function Capsule({ active, setHovered, toggleClick }) {
   // Procedural canvas textures — memoised so they're created once.
   const bodyMap = useMemo(() => {
     const t = new THREE.CanvasTexture(makeBodyDiffuse())
@@ -697,21 +697,20 @@ function Capsule({ active, compactTooltip, setHovered, toggleClick }) {
             <sphereGeometry args={[0.012, 16, 16]} />
             <meshBasicMaterial color="#a8e3ff" transparent opacity={0.95} />
           </mesh>
-          {/* Tooltip card — sits well clear of the capsule.  During the
-              intro auto-reveal the camera is pushed in close, so a smaller
-              distanceFactor keeps the card from scaling off the page;
-              real hover/tap keeps the larger, more readable size. */}
+          {/* Tooltip card — sits well clear of the capsule. */}
           <Html
             position={[0, 1.02, 0]}
             center
-            distanceFactor={compactTooltip ? 0.95 : 1.9}
+            distanceFactor={1.9}
             zIndexRange={[100, 0]}
             pointerEvents="none"
           >
             <div className="mse-capsule-tooltip">
-              <span className="mse-tooltip-label">Fabricated by</span>
+              <span className="mse-tooltip-tri" aria-hidden />
+              <span className="mse-tooltip-label">◆ Fabricated by</span>
               <strong className="mse-tooltip-name">Madras Swastic Engineers</strong>
-              <span className="mse-tooltip-mission">for Gaganyaan mission</span>
+              <span className="mse-tooltip-divider" aria-hidden />
+              <span className="mse-tooltip-mission">Gaganyaan Crew Module · ISRO</span>
             </div>
           </Html>
         </>
@@ -861,18 +860,16 @@ export default function SpaceScene() {
   // Gates OrbitControls until the opening fly-in finishes so the manual
   // camera animation isn't fought by the controls.
   const [introDone, setIntroDone] = useState(false)
-  // Auto-reveal the tooltip during the zoom-in beat: shows itself for ~2s
-  // around the moment the camera pushes in on the capsule (~2.0s in), then
-  // hides until the user actually hovers/taps.
+  // Auto-reveal the tooltip once the intro fly-in has finished and the
+  // camera has settled back to the default framing — stays up for ~15s,
+  // then hides until the user actually hovers/taps.
   const [autoShow, setAutoShow] = useState(false)
   useEffect(() => {
-    const on = setTimeout(() => setAutoShow(true), 1600)
-    const off = setTimeout(() => setAutoShow(false), 3600)
-    return () => {
-      clearTimeout(on)
-      clearTimeout(off)
-    }
-  }, [])
+    if (!introDone) return
+    setAutoShow(true)
+    const off = setTimeout(() => setAutoShow(false), 15000)
+    return () => clearTimeout(off)
+  }, [introDone])
   const active = hovered || clicked || autoShow
   const toggleClick = () => setClicked((c) => !c)
 
@@ -912,7 +909,6 @@ export default function SpaceScene() {
 
         <Capsule
           active={active}
-          compactTooltip={autoShow && !hovered && !clicked}
           setHovered={setHovered}
           toggleClick={toggleClick}
         />
@@ -936,57 +932,93 @@ export default function SpaceScene() {
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
- *  Tooltip styles — glassmorphic card with a tricolor accent border.
+ *  Tooltip styles — centered "mission plate": tricolor cap bar, gold glow,
+ *  uppercase eyebrow, prominent name, hairline divider, mission subline.
  * ────────────────────────────────────────────────────────────────────────── */
 const tooltipCss = `
 .mse-capsule-tooltip {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  padding: 16px 22px;
-  background: rgba(8, 12, 22, 0.82);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  align-items: center;
+  text-align: center;
+  gap: 7px;
+  padding: 20px 30px 18px;
+  background: linear-gradient(
+    180deg,
+    rgba(14, 19, 32, 0.92) 0%,
+    rgba(7, 10, 18, 0.92) 100%
+  );
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   color: #f4f7fb;
   font-family: Inter, system-ui, -apple-system, sans-serif;
-  font-size: 15px;
-  line-height: 1.35;
-  letter-spacing: 0.01em;
-  border-radius: 10px;
-  border-left: 3px solid;
-  border-image: linear-gradient(
-    to bottom,
+  line-height: 1.3;
+  border-radius: 14px;
+  border: 1px solid rgba(240, 198, 116, 0.28);
+  box-shadow:
+    0 14px 40px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 0 26px rgba(240, 198, 116, 0.14);
+  white-space: nowrap;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(8px) scale(0.96);
+  animation: mseTooltipIn 260ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  user-select: none;
+}
+.mse-tooltip-tri {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
     #ff9933 0 33%,
     #ffffff 33% 66%,
     #138808 66% 100%
-  ) 1;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(6px);
-  animation: mseTooltipIn 200ms ease-out forwards;
-  user-select: none;
+  );
+  opacity: 0.95;
 }
 .mse-tooltip-label {
-  font-size: 12px;
+  font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  opacity: 0.7;
+  letter-spacing: 0.22em;
+  color: #f0c674;
+  opacity: 0.9;
 }
 .mse-tooltip-name {
-  font-weight: 600;
-  font-size: 19px;
-  letter-spacing: 0.005em;
+  font-weight: 700;
+  font-size: 21px;
+  letter-spacing: 0.01em;
+  background: linear-gradient(180deg, #ffffff 0%, #d8dee8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.mse-tooltip-divider {
+  width: 56px;
+  height: 1px;
+  margin: 1px 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(240, 198, 116, 0.6),
+    transparent
+  );
 }
 .mse-tooltip-mission {
-  font-size: 14px;
-  opacity: 0.85;
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(244, 247, 251, 0.62);
 }
 @keyframes mseTooltipIn {
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 `
