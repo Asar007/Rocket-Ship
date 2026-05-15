@@ -658,18 +658,18 @@ function Capsule({ active, setHovered, toggleClick }) {
           {/* Glowing wireframe halo (sized to clearly enclose the capsule).
               raycast disabled so it can't fire its own pointer events. */}
           <mesh raycast={() => null}>
-            <sphereGeometry args={[0.35, 36, 24]} />
+            <sphereGeometry args={[0.26, 28, 20]} />
             <meshBasicMaterial
               color="#7ad6ff"
               wireframe
               transparent
-              opacity={0.28}
+              opacity={0.32}
               depthWrite={false}
             />
           </mesh>
           {/* Soft additive sphere just inside the wireframe for a glow */}
           <mesh raycast={() => null}>
-            <sphereGeometry args={[0.34, 32, 24]} />
+            <sphereGeometry args={[0.25, 28, 20]} />
             <meshBasicMaterial
               color="#7ad6ff"
               transparent
@@ -684,7 +684,7 @@ function Capsule({ active, setHovered, toggleClick }) {
               of the capsule with a visible connector. */}
           <Line
             points={[
-              [0, 0.36, 0],
+              [0, 0.28, 0],
               [0, 0.68, 0],
             ]}
             color="#a8e3ff"
@@ -701,7 +701,7 @@ function Capsule({ active, setHovered, toggleClick }) {
           <Html
             position={[0, 0.75, 0]}
             center
-            distanceFactor={1.2}
+            distanceFactor={1.9}
             zIndexRange={[100, 0]}
             pointerEvents="none"
           >
@@ -858,7 +858,19 @@ export default function SpaceScene() {
   // Gates OrbitControls until the opening fly-in finishes so the manual
   // camera animation isn't fought by the controls.
   const [introDone, setIntroDone] = useState(false)
-  const active = hovered || clicked
+  // Auto-reveal the tooltip during the zoom-in beat: shows itself for ~2s
+  // around the moment the camera pushes in on the capsule (~2.0s in), then
+  // hides until the user actually hovers/taps.
+  const [autoShow, setAutoShow] = useState(false)
+  useEffect(() => {
+    const on = setTimeout(() => setAutoShow(true), 1600)
+    const off = setTimeout(() => setAutoShow(false), 3600)
+    return () => {
+      clearTimeout(on)
+      clearTimeout(off)
+    }
+  }, [])
+  const active = hovered || clicked || autoShow
   const toggleClick = () => setClicked((c) => !c)
 
   useEffect(() => {
@@ -926,14 +938,14 @@ const tooltipCss = `
 .mse-capsule-tooltip {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 14px 18px;
+  gap: 5px;
+  padding: 16px 22px;
   background: rgba(8, 12, 22, 0.82);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   color: #f4f7fb;
   font-family: Inter, system-ui, -apple-system, sans-serif;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.35;
   letter-spacing: 0.01em;
   border-radius: 10px;
@@ -953,18 +965,18 @@ const tooltipCss = `
   user-select: none;
 }
 .mse-tooltip-label {
-  font-size: 11px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   opacity: 0.7;
 }
 .mse-tooltip-name {
   font-weight: 600;
-  font-size: 15px;
+  font-size: 19px;
   letter-spacing: 0.005em;
 }
 .mse-tooltip-mission {
-  font-size: 12px;
+  font-size: 14px;
   opacity: 0.85;
 }
 @keyframes mseTooltipIn {
