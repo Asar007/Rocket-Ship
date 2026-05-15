@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowUpRight, Mail, Phone, MapPin } from 'lucide-react'
 import { openCallback } from '../components/CallbackDialog.jsx'
+import ErrorBoundary from '../components/ErrorBoundary.jsx'
 
 // Heavy r3f/rapier physics scene — only loaded when the section enters view
 // AND the user hasn't opted out of motion / isn't on a tiny screen.
@@ -57,10 +58,15 @@ export default function ContactCTA() {
               via a wrapper so the CTA buttons stay clickable; clicking empty
               area still drops through to the canvas to cycle accent colour. */}
           {shouldRender && (
-            <div className="pointer-events-none absolute inset-0 z-0">
-              <Suspense fallback={null}>
-                <ConnectorsBackground />
-              </Suspense>
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 z-0"
+            >
+              <ErrorBoundary fallback={null}>
+                <Suspense fallback={null}>
+                  <ConnectorsBackground />
+                </Suspense>
+              </ErrorBoundary>
             </div>
           )}
 

@@ -1,0 +1,17 @@
+{
+  "name": "Madras Swastic Engineers",
+  "short_name": "MSE",
+  "description": "Engineering precision for modern infrastructure — structural fabrication, plant erection, and turnkey project delivery.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#03061a",
+  "theme_color": "#03061a",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

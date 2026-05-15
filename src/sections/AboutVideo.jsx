@@ -52,9 +52,10 @@ export default function AboutVideo() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.8, ease: [0.2, 0.7, 0.2, 1] }}
-          className="glass-strong relative mx-auto mt-12 max-w-4xl overflow-hidden rounded-3xl border border-white/10"
+          className="glass-strong relative mx-auto mt-12 aspect-video max-w-4xl overflow-hidden rounded-3xl border border-white/10"
         >
-          {/* Video — full width, natural aspect */}
+          {/* Video fills a reserved 16:9 box so there's no layout shift
+              before metadata loads. */}
           <video
             ref={videoRef}
             src="https://duzsdzur0y9ok0qx.public.blob.vercel-storage.com/gaganyaan-hq.mp4"
@@ -62,7 +63,7 @@ export default function AboutVideo() {
             playsInline
             crossOrigin="anonymous"
             controls={started}
-            className="block h-auto w-full bg-black"
+            className="absolute inset-0 h-full w-full bg-black object-cover"
             onEnded={() => setStarted(false)}
           />
 

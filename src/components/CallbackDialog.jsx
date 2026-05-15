@@ -25,6 +25,7 @@ export default function CallbackDialog() {
     window: 'Anytime',
   })
   const firstInputRef = useRef(null)
+  const cardRef = useRef(null)
 
   useEffect(() => {
     openHandler = () => {
@@ -39,7 +40,28 @@ export default function CallbackDialog() {
   useEffect(() => {
     if (!open) return
     const onKey = (e) => {
-      if (e.key === 'Escape') setOpen(false)
+      if (e.key === 'Escape') {
+        setOpen(false)
+        return
+      }
+      if (e.key !== 'Tab') return
+      // Focus trap — keep Tab/Shift+Tab cycling inside the dialog card.
+      const card = cardRef.current
+      if (!card) return
+      const focusable = card.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      )
+      if (focusable.length === 0) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      const active = document.activeElement
+      if (e.shiftKey && (active === first || !card.contains(active))) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault()
+        first.focus()
+      }
     }
     window.addEventListener('keydown', onKey)
     const previousOverflow = document.body.style.overflow
@@ -97,6 +119,7 @@ export default function CallbackDialog() {
         >
           <motion.div
             key="card"
+            ref={cardRef}
             initial={{ opacity: 0, y: 40, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.97 }}

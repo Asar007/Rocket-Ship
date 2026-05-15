@@ -3,6 +3,7 @@ import { Suspense, lazy, useEffect, useState } from 'react'
 import Navbar from './components/Navbar.jsx'
 import Footer from './components/Footer.jsx'
 import CallbackDialog from './components/CallbackDialog.jsx'
+import ErrorBoundary from './components/ErrorBoundary.jsx'
 
 // Heavy three.js scene — split into its own async chunk so it never
 // blocks the initial bundle / first paint.
@@ -36,9 +37,11 @@ export default function App() {
   if (hash === '#space') {
     return (
       <div style={{ width: '100vw', height: '100vh', background: '#000' }}>
-        <Suspense fallback={null}>
-          <SpaceScene />
-        </Suspense>
+        <ErrorBoundary fallback={null}>
+          <Suspense fallback={null}>
+            <SpaceScene />
+          </Suspense>
+        </ErrorBoundary>
       </div>
     )
   }

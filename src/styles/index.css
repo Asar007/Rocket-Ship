@@ -10,6 +10,11 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Anchor-jump offset so section headings clear the fixed navbar. */
+section[id] {
+  scroll-margin-top: 6rem;
+}
+
 html,
 body,
 #root {
