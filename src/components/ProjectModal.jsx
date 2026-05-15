@@ -5,6 +5,7 @@ import {
   AnimatePresence,
   useScroll,
   useTransform,
+  useInView,
   useReducedMotion,
 } from 'framer-motion'
 import { X, MapPin, ChevronDown } from 'lucide-react'
@@ -88,6 +89,26 @@ function StaticStory({ project, story }) {
 }
 
 /* ── 2. Sticky visual + revealing text ────────────────────────── */
+function StickyBeat({ index, text, scrollRef }) {
+  const ref = useRef(null)
+  const inView = useInView(ref, { root: scrollRef, amount: 0.5 })
+  return (
+    <motion.div
+      ref={ref}
+      animate={{ opacity: inView ? 1 : 0.25, y: inView ? 0 : 24 }}
+      transition={{ duration: 0.5, ease: [0.2, 0.7, 0.2, 1] }}
+      className="flex min-h-[60vh] flex-col justify-center"
+    >
+      <span className="font-mono text-sm tracking-[0.3em] text-gold-400">
+        {String(index + 1).padStart(2, '0')}
+      </span>
+      <p className="mt-4 text-xl leading-relaxed text-white/80 sm:text-2xl">
+        {text}
+      </p>
+    </motion.div>
+  )
+}
+
 function StickyStory({ project, story, scrollRef }) {
   return (
     <>
@@ -95,31 +116,22 @@ function StickyStory({ project, story, scrollRef }) {
       <div className="mx-auto max-w-6xl px-5 pb-[15vh] sm:px-8">
         <div className="mt-10 grid gap-10 lg:grid-cols-2">
           <div className="lg:sticky lg:top-24 lg:h-fit lg:self-start">
-            <div className="overflow-hidden rounded-3xl border border-white/10">
+            <div className="flex items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-navy-900 p-3">
               <img
                 src={project.images[0]}
                 alt={project.title}
-                className="aspect-[4/5] w-full object-cover"
+                className="max-h-[70vh] w-auto object-contain"
               />
             </div>
           </div>
           <div>
             {story.map((p, i) => (
-              <motion.div
+              <StickyBeat
                 key={i}
-                initial={{ opacity: 0, y: 60 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ root: scrollRef, amount: 0.55 }}
-                transition={{ duration: 0.6, ease: [0.2, 0.7, 0.2, 1] }}
-                className="flex min-h-[68vh] flex-col justify-center"
-              >
-                <span className="font-mono text-sm tracking-[0.3em] text-gold-400">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <p className="mt-4 text-xl leading-relaxed text-white/80 sm:text-2xl">
-                  {p}
-                </p>
-              </motion.div>
+                index={i}
+                text={p}
+                scrollRef={scrollRef}
+              />
             ))}
           </div>
         </div>
@@ -130,21 +142,9 @@ function StickyStory({ project, story, scrollRef }) {
 
 /* ── 3. Full-screen cinematic steps ───────────────────────────── */
 function CinematicSlide({ image, text, index, scrollRef }) {
+  const reduce = useReducedMotion()
   const ref = useRef(null)
-  const { scrollYProgress } = useScroll({
-    container: scrollRef,
-    target: ref,
-    offset: ['start end', 'end start'],
-  })
-  // object-contain: the whole photo shows, no crop / stretch; only a
-  // subtle drift.
-  const scale = useTransform(scrollYProgress, [0, 1], [1.0, 1.06])
-  const textY = useTransform(scrollYProgress, [0, 1], ['6%', '-6%'])
-  const textOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.28, 0.72, 1],
-    [0, 1, 1, 0],
-  )
+  const inView = useInView(ref, { root: scrollRef, amount: 0.5 })
   return (
     <section
       ref={ref}
@@ -153,11 +153,14 @@ function CinematicSlide({ image, text, index, scrollRef }) {
       <motion.img
         src={image}
         alt=""
-        style={{ scale }}
+        initial={false}
+        animate={reduce ? {} : { scale: inView ? 1 : 1.06 }}
+        transition={{ duration: 1.1, ease: [0.2, 0.7, 0.2, 1] }}
         className="max-h-[82vh] max-w-[92vw] object-contain"
       />
       <motion.div
-        style={{ opacity: textOpacity, y: textY }}
+        animate={{ opacity: inView ? 1 : 0, y: inView ? 0 : 28 }}
+        transition={{ duration: 0.5, ease: [0.2, 0.7, 0.2, 1] }}
         className="absolute inset-x-0 bottom-0 flex justify-center p-6 sm:p-10"
       >
         <div className="max-w-2xl rounded-2xl bg-navy-950/75 px-7 py-5 text-center ring-1 ring-white/10 backdrop-blur-md">
@@ -215,24 +218,15 @@ function CinematicStory({ project, story, scrollRef }) {
 /* ── 4. Ken Burns — whole image (no crop) + per-screen captions ── */
 function KenBurnsCaption({ index, text, scrollRef }) {
   const ref = useRef(null)
-  const { scrollYProgress } = useScroll({
-    container: scrollRef,
-    target: ref,
-    offset: ['start end', 'end start'],
-  })
-  const opacity = useTransform(
-    scrollYProgress,
-    [0, 0.32, 0.68, 1],
-    [0, 1, 1, 0],
-  )
-  const y = useTransform(scrollYProgress, [0, 0.5, 1], [40, 0, -40])
+  const inView = useInView(ref, { root: scrollRef, amount: 0.5 })
   return (
     <section
       ref={ref}
       className="relative z-10 flex h-screen items-center justify-center px-6"
     >
       <motion.div
-        style={{ opacity, y }}
+        animate={{ opacity: inView ? 1 : 0, y: inView ? 0 : 30 }}
+        transition={{ duration: 0.5, ease: [0.2, 0.7, 0.2, 1] }}
         className="max-w-2xl rounded-2xl bg-navy-950/75 px-7 py-6 text-center ring-1 ring-white/10 backdrop-blur-md"
       >
         <span className="font-mono text-sm tracking-[0.3em] text-gold-400">
@@ -247,20 +241,12 @@ function KenBurnsCaption({ index, text, scrollRef }) {
 }
 
 function KenBurnsStory({ project, story, scrollRef }) {
-  const wrapRef = useRef(null)
-  const { scrollYProgress } = useScroll({
-    container: scrollRef,
-    target: wrapRef,
-    offset: ['start start', 'end end'],
-  })
-  // object-contain shows the whole photo (no crop / stretch); only a
-  // very subtle drift so it still feels alive.
-  const scale = useTransform(scrollYProgress, [0, 1], [1.0, 1.07])
-
+  const reduce = useReducedMotion()
   return (
-    <div ref={wrapRef} className="relative bg-navy-950">
+    <div className="relative bg-navy-950">
       {/* Sticky image underlay — full image, letterboxed, pulled up so
-          the caption screens overlay it */}
+          the caption screens overlay it. Self-contained Ken Burns loop
+          (not scroll-linked, so it never gets stuck). */}
       <div
         className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden"
         style={{ marginBottom: '-100vh' }}
@@ -268,7 +254,10 @@ function KenBurnsStory({ project, story, scrollRef }) {
         <motion.img
           src={project.images[0]}
           alt={project.title}
-          style={{ scale }}
+          animate={
+            reduce ? {} : { scale: [1, 1.08, 1], x: ['0%', '-2.5%', '0%'] }
+          }
+          transition={{ duration: 26, repeat: Infinity, ease: 'easeInOut' }}
           className="max-h-[88vh] max-w-[92vw] object-contain"
         />
       </div>
