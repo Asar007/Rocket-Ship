@@ -292,13 +292,19 @@ export default function Projects() {
             accentWord="proud"
             subtitle="A snapshot of recent turnkey, fabrication and field-erection work across South India."
           />
-          <a
+          <motion.a
             href="#contact"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.6, delay: 0.35, ease: [0.2, 0.7, 0.2, 1] }}
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.97 }}
             className="group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-display text-sm text-white/85 backdrop-blur hover:border-gold-400/40 hover:text-white"
           >
             View capability deck
             <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-          </a>
+          </motion.a>
         </div>
 
         <motion.div
