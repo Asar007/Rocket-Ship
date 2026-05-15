@@ -47,48 +47,24 @@ import coolingTower from '../assets/projects/cooling-tower.png'
 
 // NOTE: stories/locations/years are mock placeholders grouped by what the
 // photographs show — to be replaced with the client's real project copy.
-// Shared CTS content — temporarily duplicated across every scroll style
-// so the styles can be compared. Keep the winner, delete the rest.
-const CTS = {
-  storyTitle: 'Crew Training Simulator (CTS)',
-  location: 'VSSC, Trivandrum · Chennai Works',
-  year: '2024',
-  tags: ['Aerospace', 'ISRO', 'Gaganyaan'],
-  blurb:
-    'An exact replica of the Gaganyaan crew capsule — built and handed over to ISRO/HSFC within 90 days.',
-  images: [crewModule],
-  story: [
-    "Gaganyaan is the Indian Space Research Organisation's (ISRO) ambitious mission to send three humans per flight to Low Earth Orbit (LEO) for a three-day mission and back to Earth. The Crew Training Simulator (CTS) is an exact replica of the actual capsule in which the crew will be on board the GSLV rocket and return to Earth.",
-    'The CTS houses crew seats, life-support equipment, mission-control computers and interfaces, sleeping pods, food, and life-support medicines.',
-    'A CTS was manufactured within a 90-day period and successfully handed over to ISRO/HSFC Director, Shri M. Mohan — the handover video shows immense satisfaction and happiness from the customer.',
-    'The CTS was officially inaugurated by Shri Narendra Modi, Prime Minister of India, at the space summit held at VSSC, Trivandrum.',
-  ],
-}
-
 const PROJECTS = [
   {
-    ...CTS,
-    id: 'p1-timeline',
-    title: 'CTS — Timeline style',
+    id: 'p1',
+    title: 'Crew Training Simulator (CTS)',
+    storyTitle: 'Crew Training Simulator (CTS)',
+    location: 'VSSC, Trivandrum · Chennai Works',
+    year: '2024',
+    tags: ['Aerospace', 'ISRO', 'Gaganyaan'],
     storyStyle: 'timeline',
-  },
-  {
-    ...CTS,
-    id: 'p1-sticky',
-    title: 'CTS — Sticky style',
-    storyStyle: 'sticky',
-  },
-  {
-    ...CTS,
-    id: 'p1-cinematic',
-    title: 'CTS — Cinematic style',
-    storyStyle: 'cinematic',
-  },
-  {
-    ...CTS,
-    id: 'p1-kenburns',
-    title: 'CTS — Ken Burns style',
-    storyStyle: 'kenburns',
+    blurb:
+      'An exact replica of the Gaganyaan crew capsule — built and handed over to ISRO/HSFC within 90 days.',
+    images: [crewModule],
+    story: [
+      "Gaganyaan is the Indian Space Research Organisation's (ISRO) ambitious mission to send three humans per flight to Low Earth Orbit (LEO) for a three-day mission and back to Earth. The Crew Training Simulator (CTS) is an exact replica of the actual capsule in which the crew will be on board the GSLV rocket and return to Earth.",
+      'The CTS houses crew seats, life-support equipment, mission-control computers and interfaces, sleeping pods, food, and life-support medicines.',
+      'A CTS was manufactured within a 90-day period and successfully handed over to ISRO/HSFC Director, Shri M. Mohan — the handover video shows immense satisfaction and happiness from the customer.',
+      'The CTS was officially inaugurated by Shri Narendra Modi, Prime Minister of India, at the space summit held at VSSC, Trivandrum.',
+    ],
   },
   {
     id: 'p1b',

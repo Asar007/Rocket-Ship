@@ -214,7 +214,7 @@ function TimelineStory({ project, story, scrollRef }) {
           </div>
           <div className="relative">
             {/* Spine */}
-            <span className="absolute bottom-[8%] left-0 top-[8%] w-px bg-gradient-to-b from-gold-400/10 via-gold-400/40 to-gold-400/10" />
+            <span className="absolute bottom-[6%] left-0 top-[6%] w-[6px] -translate-x-1/2 rounded-full bg-gradient-to-b from-gold-400/25 via-gold-400/70 to-gold-400/25" />
             {story.map((p, i) => (
               <TimelineStep
                 key={i}
