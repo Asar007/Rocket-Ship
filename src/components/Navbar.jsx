@@ -3,7 +3,6 @@ import { Link, NavLink } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, ArrowUpRight } from 'lucide-react'
 import logo from '../assets/logo.png'
-import { openCallback } from './CallbackDialog.jsx'
 
 const NAV_ITEMS = [
   { label: 'Home', to: '/' },
@@ -73,7 +72,7 @@ export default function Navbar() {
                 end={item.to === '/'}
                 onClick={closeMenu}
                 className={({ isActive }) =>
-                  `group relative inline-flex items-center rounded-full px-4 py-2 font-display text-[13px] font-medium tracking-wide transition-colors ${
+                  `group relative inline-flex items-center rounded-full px-4 py-2 font-display text-[16px] font-medium tracking-wide transition-colors ${
                     isActive ? 'text-white' : 'text-white/75 hover:text-white'
                   }`
                 }
@@ -97,16 +96,6 @@ export default function Navbar() {
 
         {/* CTA + mobile toggle */}
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={openCallback}
-            className="group relative hidden overflow-hidden rounded-full pl-4 pr-3 py-2 font-display text-[13px] font-semibold text-navy-950 sm:inline-flex items-center gap-2 bg-gradient-to-br from-gold-400 via-gold-500 to-gold-600 shadow-glow-gold"
-          >
-            <span>Get Consultation</span>
-            <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-          </button>
-
           <button
             onClick={() => setOpen((v) => !v)}
             aria-label="Toggle menu"
@@ -142,17 +131,6 @@ export default function Navbar() {
                 </li>
               ))}
             </ul>
-            <button
-              type="button"
-              onClick={() => {
-                closeMenu()
-                openCallback()
-              }}
-              className="btn-primary mt-3 w-full justify-center"
-            >
-              Get Consultation
-              <ArrowUpRight className="h-4 w-4" />
-            </button>
           </motion.div>
         )}
       </AnimatePresence>
