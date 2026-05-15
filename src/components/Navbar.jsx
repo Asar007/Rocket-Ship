@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react'
+import { Link, NavLink } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, ArrowUpRight } from 'lucide-react'
 import logo from '../assets/logo.png'
 import { openCallback } from './CallbackDialog.jsx'
 
 const NAV_ITEMS = [
-  { label: 'Home', href: '#home' },
-  { label: 'About us', href: '#about' },
-  { label: 'Our Projects', href: '#projects' },
-  { label: 'Customization', href: '#customization' },
-  { label: 'Contact us', href: '#contact' },
+  { label: 'Home', to: '/' },
+  { label: 'About us', to: '/about' },
+  { label: 'Our Projects', to: '/projects' },
+  { label: 'Customization', to: '/customization' },
+  { label: 'Contact us', to: '/contact' },
 ]
 
 export default function Navbar() {
@@ -23,20 +24,7 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const onNavClick = (e, href) => {
-    const target = document.querySelector(href)
-    if (target) {
-      e.preventDefault()
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      setOpen(false)
-    }
-  }
-
-  const onContactClick = (e) => {
-    e.preventDefault()
-    setOpen(false)
-    openCallback()
-  }
+  const closeMenu = () => setOpen(false)
 
   return (
     <motion.header
@@ -53,9 +41,9 @@ export default function Navbar() {
         }`}
       >
         {/* Logo */}
-        <a
-          href="#home"
-          onClick={(e) => onNavClick(e, '#home')}
+        <Link
+          to="/"
+          onClick={closeMenu}
           className="group flex items-center gap-3 rounded-full pl-1 pr-3 py-1"
         >
           <span className="relative grid h-12 w-12 place-items-center overflow-hidden rounded-full border border-white/15 bg-navy-950/60 ring-1 ring-inset ring-white/5 sm:h-14 sm:w-14">
@@ -74,35 +62,50 @@ export default function Navbar() {
               ENGINEERS
             </span>
           </span>
-        </a>
+        </Link>
 
         {/* Center links */}
         <ul className="hidden items-center gap-1 lg:flex">
           {NAV_ITEMS.map((item) => (
-            <li key={item.href}>
-              <a
-                href={item.href}
-                onClick={(e) => onNavClick(e, item.href)}
-                className="group relative inline-flex items-center rounded-full px-4 py-2 font-display text-[13px] font-medium tracking-wide text-white/75 transition-colors hover:text-white"
+            <li key={item.to}>
+              <NavLink
+                to={item.to}
+                end={item.to === '/'}
+                onClick={closeMenu}
+                className={({ isActive }) =>
+                  `group relative inline-flex items-center rounded-full px-4 py-2 font-display text-[13px] font-medium tracking-wide transition-colors ${
+                    isActive ? 'text-white' : 'text-white/75 hover:text-white'
+                  }`
+                }
               >
-                <span>{item.label}</span>
-                <span className="pointer-events-none absolute inset-x-4 -bottom-px h-px scale-x-0 bg-gradient-to-r from-transparent via-gold-400 to-transparent transition-transform duration-500 group-hover:scale-x-100" />
-              </a>
+                {({ isActive }) => (
+                  <>
+                    <span>{item.label}</span>
+                    <span
+                      className={`pointer-events-none absolute inset-x-4 -bottom-px h-px bg-gradient-to-r from-transparent via-gold-400 to-transparent transition-transform duration-500 ${
+                        isActive
+                          ? 'scale-x-100'
+                          : 'scale-x-0 group-hover:scale-x-100'
+                      }`}
+                    />
+                  </>
+                )}
+              </NavLink>
             </li>
           ))}
         </ul>
 
         {/* CTA + mobile toggle */}
         <div className="flex items-center gap-2">
-          <a
-            href="#contact"
-            onClick={onContactClick}
+          <button
+            type="button"
+            onClick={openCallback}
             className="group relative hidden overflow-hidden rounded-full pl-4 pr-3 py-2 font-display text-[13px] font-semibold text-navy-950 sm:inline-flex items-center gap-2 bg-gradient-to-br from-gold-400 via-gold-500 to-gold-600 shadow-glow-gold"
           >
             <span>Get Consultation</span>
             <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-          </a>
+          </button>
 
           <button
             onClick={() => setOpen((v) => !v)}
@@ -126,26 +129,30 @@ export default function Navbar() {
           >
             <ul className="flex flex-col gap-1">
               {NAV_ITEMS.map((item) => (
-                <li key={item.href}>
-                  <a
-                    href={item.href}
-                    onClick={(e) => onNavClick(e, item.href)}
+                <li key={item.to}>
+                  <NavLink
+                    to={item.to}
+                    end={item.to === '/'}
+                    onClick={closeMenu}
                     className="flex items-center justify-between rounded-2xl border border-transparent px-4 py-3 font-display text-base text-white/85 hover:border-white/10 hover:bg-white/[0.04]"
                   >
                     <span>{item.label}</span>
                     <ArrowUpRight className="h-4 w-4 text-gold-400" />
-                  </a>
+                  </NavLink>
                 </li>
               ))}
             </ul>
-            <a
-              href="#contact"
-              onClick={onContactClick}
+            <button
+              type="button"
+              onClick={() => {
+                closeMenu()
+                openCallback()
+              }}
               className="btn-primary mt-3 w-full justify-center"
             >
               Get Consultation
               <ArrowUpRight className="h-4 w-4" />
-            </a>
+            </button>
           </motion.div>
         )}
       </AnimatePresence>

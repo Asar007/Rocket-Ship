@@ -4,9 +4,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview --port 4173",
+    "dev": "vite-react-ssg dev",
+    "build": "vite-react-ssg build",
+    "preview": "vite preview --port 4173 --outDir dist",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 9999",
     "format": "prettier --write \"src/**/*.{js,jsx,css}\" \"*.{js,html,json}\""
   },
@@ -20,7 +20,9 @@
     "maath": "^0.10.8",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "three": "^0.170.0"
+    "react-router-dom": "^6.28.0",
+    "three": "^0.170.0",
+    "vite-react-ssg": "^0.9.0"
   },
   "devDependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
@@ -36,6 +38,7 @@
     "postcss": "^8.4.49",
     "sharp": "^0.34.5",
     "tailwindcss": "^3.4.15",
-    "vite": "^5.4.11"
+    "vite": "^5.4.11",
+    "vite-plugin-pwa": "^1.0.0"
   }
 }

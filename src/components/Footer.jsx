@@ -1,23 +1,24 @@
 import { Linkedin, Mail, Phone, Instagram, Youtube, ArrowUp } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import logo from '../assets/logo.png'
 
 const LINKS = [
   {
     title: 'Company',
     items: [
-      { label: 'About us', href: '#about' },
-      { label: 'Projects', href: '#projects' },
-      { label: 'Services', href: '#services' },
-      { label: 'Clients', href: '#clients' },
+      { label: 'About us', to: '/about' },
+      { label: 'Projects', to: '/projects' },
+      { label: 'Customization', to: '/customization' },
+      { label: 'Contact', to: '/contact' },
     ],
   },
   {
     title: 'Capabilities',
     items: [
-      { label: 'Structural fabrication', href: '#services' },
-      { label: 'Mechanical erection', href: '#services' },
-      { label: 'Piping & skid', href: '#services' },
-      { label: 'Turnkey delivery', href: '#services' },
+      { label: 'Structural fabrication', to: '/projects' },
+      { label: 'Mechanical erection', to: '/projects' },
+      { label: 'Piping & skid', to: '/customization' },
+      { label: 'Turnkey delivery', to: '/about' },
     ],
   },
   {
@@ -25,7 +26,7 @@ const LINKS = [
     items: [
       { label: 'md@madrasswastic.com', href: 'mailto:md@madrasswastic.com' },
       { label: '+91 98841 48474', href: 'tel:+919884148474' },
-      { label: 'Guindy Industrial Estate, Chennai 600032', href: '#contact' },
+      { label: 'Guindy Industrial Estate, Chennai 600032', to: '/contact' },
     ],
   },
 ]
@@ -61,13 +62,13 @@ export default function Footer() {
 
             <div className="mt-6 flex items-center gap-2">
               {[Linkedin, Instagram, Youtube, Mail, Phone].map((Icon, i) => (
-                <a
+                <Link
                   key={i}
-                  href="#contact"
+                  to="/contact"
                   className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-white/70 transition-all duration-300 hover:border-gold-400/40 hover:text-gold-400"
                 >
                   <Icon className="h-4 w-4" />
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -80,16 +81,27 @@ export default function Footer() {
                   {col.title}
                 </div>
                 <ul className="mt-4 space-y-3">
-                  {col.items.map((it) => (
-                    <li key={it.label}>
-                      <a
-                        href={it.href}
-                        className="text-sm text-white/70 transition-colors duration-300 hover:text-white"
-                      >
-                        {it.label}
-                      </a>
-                    </li>
-                  ))}
+                  {col.items.map((it) =>
+                    it.to ? (
+                      <li key={it.label}>
+                        <Link
+                          to={it.to}
+                          className="text-sm text-white/70 transition-colors duration-300 hover:text-white"
+                        >
+                          {it.label}
+                        </Link>
+                      </li>
+                    ) : (
+                      <li key={it.label}>
+                        <a
+                          href={it.href}
+                          className="text-sm text-white/70 transition-colors duration-300 hover:text-white"
+                        >
+                          {it.label}
+                        </a>
+                      </li>
+                    ),
+                  )}
                 </ul>
               </div>
             ))}

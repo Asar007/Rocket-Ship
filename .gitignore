@@ -1,6 +1,8 @@
 node_modules
 dist
 dist-ssr
+dev-dist
+.vite-react-ssg-temp
 .vite
 .env
 .env.local
