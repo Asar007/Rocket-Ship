@@ -222,7 +222,40 @@ function CinematicStory({ project, story, scrollRef }) {
   )
 }
 
-/* ── 4. Ken Burns zoom — sticky underlay + per-screen captions ── */
+/* ── 4. Ken Burns — whole image (no crop) + per-screen captions ── */
+function KenBurnsCaption({ index, text, scrollRef }) {
+  const ref = useRef(null)
+  const { scrollYProgress } = useScroll({
+    container: scrollRef,
+    target: ref,
+    offset: ['start end', 'end start'],
+  })
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, 0.32, 0.68, 1],
+    [0, 1, 1, 0],
+  )
+  const y = useTransform(scrollYProgress, [0, 0.5, 1], [40, 0, -40])
+  return (
+    <section
+      ref={ref}
+      className="relative z-10 flex h-screen items-center justify-center px-6"
+    >
+      <motion.div
+        style={{ opacity, y }}
+        className="max-w-2xl rounded-2xl bg-navy-950/75 px-7 py-6 text-center ring-1 ring-white/10 backdrop-blur-md"
+      >
+        <span className="font-mono text-sm tracking-[0.3em] text-gold-400">
+          {String(index + 1).padStart(2, '0')}
+        </span>
+        <p className="mt-3 font-display text-2xl font-semibold leading-snug text-white sm:text-4xl">
+          {text}
+        </p>
+      </motion.div>
+    </section>
+  )
+}
+
 function KenBurnsStory({ project, story, scrollRef }) {
   const wrapRef = useRef(null)
   const { scrollYProgress } = useScroll({
@@ -230,47 +263,33 @@ function KenBurnsStory({ project, story, scrollRef }) {
     target: wrapRef,
     offset: ['start start', 'end end'],
   })
-  // Gentle zoom/pan only — no longer over-zoomed.
-  const scale = useTransform(scrollYProgress, [0, 1], [1.0, 1.16])
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '-4%'])
+  // object-contain shows the whole photo (no crop / stretch); only a
+  // very subtle drift so it still feels alive.
+  const scale = useTransform(scrollYProgress, [0, 1], [1.0, 1.07])
 
   return (
-    <div ref={wrapRef} className="relative">
-      {/* Sticky image underlay (pulled up so caption screens overlay it) */}
+    <div ref={wrapRef} className="relative bg-navy-950">
+      {/* Sticky image underlay — full image, letterboxed, pulled up so
+          the caption screens overlay it */}
       <div
-        className="sticky top-0 h-screen w-full overflow-hidden"
+        className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden"
         style={{ marginBottom: '-100vh' }}
       >
         <motion.img
           src={project.images[0]}
           alt={project.title}
-          style={{ scale, y }}
-          className="absolute inset-0 h-full w-full object-cover"
+          style={{ scale }}
+          className="max-h-[88vh] max-w-[92vw] object-contain"
         />
-        <div className="absolute inset-0 bg-navy-950/60" />
       </div>
 
-      {/* One full screen per caption — guarantees the scroll advances */}
       {story.map((c, i) => (
-        <section
+        <KenBurnsCaption
           key={i}
-          className="relative z-10 flex h-screen items-center justify-center px-8 text-center"
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 36 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ root: scrollRef, amount: 0.6 }}
-            transition={{ duration: 0.6, ease: [0.2, 0.7, 0.2, 1] }}
-            className="max-w-2xl"
-          >
-            <span className="font-mono text-sm tracking-[0.3em] text-gold-400">
-              {String(i + 1).padStart(2, '0')}
-            </span>
-            <p className="mt-4 font-display text-2xl font-semibold leading-snug text-white sm:text-4xl">
-              {c}
-            </p>
-          </motion.div>
-        </section>
+          index={i}
+          text={c}
+          scrollRef={scrollRef}
+        />
       ))}
     </div>
   )
