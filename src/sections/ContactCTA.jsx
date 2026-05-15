@@ -131,7 +131,15 @@ export default function ContactCTA() {
                     <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/50">
                       {c.label}
                     </div>
-                    <div className="font-display text-sm font-medium text-white">{c.value}</div>
+                    <div
+                      className={`text-sm font-medium text-white ${
+                        c.label === 'Call directly'
+                          ? 'font-body tabular-nums tracking-wide'
+                          : 'font-display'
+                      }`}
+                    >
+                      {c.value}
+                    </div>
                   </div>
                 </div>
               ))}
