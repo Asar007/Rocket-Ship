@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowUpRight, MapPin } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading.jsx'
+import ProjectModal from '../components/ProjectModal.jsx'
 
 import crewModule from '../assets/projects/crew-module-mockup.png'
 import sslvCore from '../assets/projects/sslv-core-simulator.png'
@@ -20,13 +22,30 @@ import coolingTower from '../assets/projects/cooling-tower.png'
 const PROJECTS = [
   {
     id: 'p1',
-    title: 'Crew Module & Launch-Vehicle Simulators',
-    location: 'Sriharikota / Chennai',
+    title: 'Crew Training Simulator (CTS)',
+    storyTitle: 'Crew Training Simulator (CTS)',
+    location: 'VSSC, Trivandrum · Chennai Works',
+    year: '2024',
+    tags: ['Aerospace', 'ISRO', 'Gaganyaan'],
+    blurb:
+      'An exact replica of the Gaganyaan crew capsule — built and handed over to ISRO/HSFC within 90 days.',
+    images: [crewModule],
+    story: [
+      "Gaganyaan is the Indian Space Research Organisation's (ISRO) ambitious mission to send three humans per flight to Low Earth Orbit (LEO) for a three-day mission and back to Earth. The Crew Training Simulator (CTS) is an exact replica of the actual capsule in which the crew will be on board the GSLV rocket and return to Earth.",
+      'The CTS houses crew seats, life-support equipment, mission-control computers and interfaces, sleeping pods, food, and life-support medicines.',
+      'A CTS was manufactured within a 90-day period and successfully handed over to ISRO/HSFC Director, Shri M. Mohan — the handover video shows immense satisfaction and happiness from the customer.',
+      'The CTS was officially inaugurated by Shri Narendra Modi, Prime Minister of India, at the space summit held at VSSC, Trivandrum.',
+    ],
+  },
+  {
+    id: 'p1b',
+    title: 'SSLV Core & Base Simulators',
+    location: 'Sriharikota · Chennai Works',
     year: '2024',
     tags: ['Aerospace', 'Simulators', 'Precision'],
     blurb:
-      'Static crew-module mock-up and SSLV core-base simulators built to flight-representative tolerances for ISRO integration and training programmes.',
-    images: [crewModule, sslvCore, sslvBase],
+      'Core-base simulators for ISRO’s Small Satellite Launch Vehicle (SSLV) programme, built to flight-representative tolerances for integration and training.',
+    images: [sslvCore, sslvBase],
   },
   {
     id: 'p2',
@@ -81,6 +100,8 @@ const PROJECTS = [
 ]
 
 export default function Projects() {
+  const [active, setActive] = useState(null)
+
   return (
     <section id="projects" className="section-pad relative">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -108,7 +129,16 @@ export default function Projects() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
               transition={{ duration: 0.6, delay: (i % 3) * 0.1, ease: [0.2, 0.7, 0.2, 1] }}
-              className="group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-white/25"
+              onClick={() => setActive(p)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  setActive(p)
+                }
+              }}
+              className="group relative flex cursor-pointer flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-400/60"
             >
               {/* Photo */}
               <div className="relative aspect-[16/10] overflow-hidden bg-navy-900">
@@ -188,6 +218,10 @@ export default function Projects() {
           ))}
         </div>
       </div>
+
+      {active && (
+        <ProjectModal project={active} onClose={() => setActive(null)} />
+      )}
     </section>
   )
 }
