@@ -4,16 +4,35 @@ import {
   motion,
   AnimatePresence,
   useScroll,
-  useTransform,
   useInView,
   useReducedMotion,
 } from 'framer-motion'
 import { X, MapPin, ChevronDown } from 'lucide-react'
 
+/* Inline "scroll to view more" cue — lives at the top of the header so
+   it scrolls away (disappears) once the visitor scrolls down. */
+function ScrollMore() {
+  const reduce = useReducedMotion()
+  return (
+    <div className="mb-8 flex items-center gap-2 text-white/40">
+      <span className="font-mono text-[10px] uppercase tracking-[0.3em]">
+        Scroll to view more
+      </span>
+      <motion.span
+        animate={reduce ? undefined : { y: [0, 6, 0] }}
+        transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        <ChevronDown className="h-4 w-4" />
+      </motion.span>
+    </div>
+  )
+}
+
 /* ── Shared header ─────────────────────────────────────────────── */
 function StoryHeader({ project }) {
   return (
     <div className="mx-auto max-w-5xl px-5 pt-20 sm:px-8 sm:pt-24">
+      <ScrollMore />
       <div className="flex flex-wrap items-center gap-3">
         <span className="font-mono text-[11px] uppercase tracking-[0.32em] text-gold-400">
           Selected work
@@ -187,6 +206,9 @@ function CinematicStory({ project, story, scrollRef }) {
           className="absolute inset-0 h-full w-full scale-105 object-cover"
         />
         <div className="absolute inset-0 bg-navy-950/65" />
+        <div className="absolute left-1/2 top-8 -translate-x-1/2">
+          <ScrollMore />
+        </div>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -244,6 +266,7 @@ function KenBurnsStory({ project, story, scrollRef }) {
   const reduce = useReducedMotion()
   return (
     <div className="relative bg-navy-950">
+      <StoryHeader project={project} />
       {/* Sticky image underlay — full image, letterboxed, pulled up so
           the caption screens overlay it. Self-contained Ken Burns loop
           (not scroll-linked, so it never gets stuck). */}
@@ -279,8 +302,6 @@ export default function ProjectModal({ project, onClose }) {
   const reduce = useReducedMotion()
   const scrollRef = useRef(null)
   const { scrollYProgress } = useScroll({ container: scrollRef })
-  // Scroll hint fades out as soon as the user starts scrolling.
-  const hintOpacity = useTransform(scrollYProgress, [0, 0.05], [1, 0])
 
   useEffect(() => {
     const onKey = (e) => {
@@ -330,33 +351,6 @@ export default function ProjectModal({ project, onClose }) {
         >
           <X className="h-5 w-5" />
         </button>
-
-        {/* Subtle "scroll to view more" hint — aligned to the same
-            content column as the header, fades out on first scroll */}
-        {style !== 'static' && (
-          <div className="pointer-events-none fixed inset-x-0 top-[24%] z-[140] px-5 sm:px-8">
-            <div className="mx-auto flex max-w-5xl justify-end">
-              <motion.div
-                style={{ opacity: hintOpacity }}
-                className="flex flex-col items-center gap-1.5 text-white/45"
-              >
-                <span className="font-mono text-[10px] uppercase tracking-[0.3em]">
-                  Scroll to view more
-                </span>
-                <motion.span
-                  animate={reduce ? undefined : { y: [0, 7, 0] }}
-                  transition={{
-                    duration: 1.6,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                >
-                  <ChevronDown className="h-5 w-5" />
-                </motion.span>
-              </motion.div>
-            </div>
-          </div>
-        )}
 
         <div
           ref={scrollRef}
