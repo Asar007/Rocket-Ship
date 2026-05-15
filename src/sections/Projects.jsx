@@ -2,215 +2,81 @@ import { motion } from 'framer-motion'
 import { ArrowUpRight, MapPin } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading.jsx'
 
+import crewModule from '../assets/projects/crew-module-mockup.png'
+import sslvCore from '../assets/projects/sslv-core-simulator.png'
+import sslvBase from '../assets/projects/sslv-base-structure.png'
+import platesA from '../assets/projects/connection-plates-a.png'
+import platesB from '../assets/projects/connection-plates-b.png'
+import domeErection from '../assets/projects/dome-erection.png'
+import latticeTower from '../assets/projects/lattice-tower.png'
+import spaceframe from '../assets/projects/spaceframe-fab.png'
+import precisionBracket from '../assets/projects/precision-bracket.png'
+import processVessel from '../assets/projects/process-vessel.png'
+import rotaryDrum from '../assets/projects/rotary-drum.png'
+import coolingTower from '../assets/projects/cooling-tower.png'
+
+// NOTE: stories/locations/years are mock placeholders grouped by what the
+// photographs show — to be replaced with the client's real project copy.
 const PROJECTS = [
   {
     id: 'p1',
-    title: 'Cauvery Refinery — Pipe Rack Erection',
-    location: 'Nagapattinam, TN',
-    tags: ['Structural', 'On-site'],
+    title: 'Crew Module & Launch-Vehicle Simulators',
+    location: 'Sriharikota / Chennai',
     year: '2024',
-    bg: 'from-electric-500/40 via-electric-600/20 to-navy-900',
-    icon: (
-      <svg viewBox="0 0 200 140" className="h-full w-full" fill="none">
-        <defs>
-          <linearGradient id="p1g" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#5aa6ff" stopOpacity="0.8" />
-            <stop offset="1" stopColor="#f0c674" stopOpacity="0.4" />
-          </linearGradient>
-        </defs>
-        {/* horizontal pipes */}
-        {[30, 50, 70, 90].map((y) => (
-          <line key={y} x1="10" y1={y} x2="190" y2={y} stroke="url(#p1g)" strokeWidth="3" />
-        ))}
-        {/* uprights */}
-        {[40, 90, 140].map((x) => (
-          <line
-            key={x}
-            x1={x}
-            y1="10"
-            x2={x}
-            y2="120"
-            stroke="rgba(255,255,255,0.45)"
-            strokeWidth="2"
-          />
-        ))}
-        {/* base */}
-        <line x1="10" y1="120" x2="190" y2="120" stroke="rgba(240,198,116,0.7)" strokeWidth="2" />
-      </svg>
-    ),
+    tags: ['Aerospace', 'Simulators', 'Precision'],
+    blurb:
+      'Static crew-module mock-up and SSLV core-base simulators built to flight-representative tolerances for ISRO integration and training programmes.',
+    images: [crewModule, sslvCore, sslvBase],
   },
   {
     id: 'p2',
-    title: 'GMR Thermal — Skid Assembly Unit',
-    location: 'Tuticorin, TN',
-    tags: ['Fabrication', 'Skid'],
+    title: 'CNC-Drilled Connection Plates',
+    location: 'Guindy Works, Chennai',
     year: '2023',
-    bg: 'from-gold-500/30 via-gold-600/20 to-navy-900',
-    icon: (
-      <svg viewBox="0 0 200 140" className="h-full w-full" fill="none">
-        <rect
-          x="20"
-          y="40"
-          width="160"
-          height="60"
-          rx="4"
-          stroke="rgba(255,255,255,0.5)"
-          strokeWidth="2"
-          strokeDasharray="2 4"
-        />
-        <circle cx="60" cy="70" r="14" stroke="#f0c674" strokeWidth="2" />
-        <circle cx="60" cy="70" r="6" fill="#f0c674" />
-        <circle cx="140" cy="70" r="14" stroke="#5aa6ff" strokeWidth="2" />
-        <circle cx="140" cy="70" r="6" fill="#5aa6ff" />
-        <line x1="74" y1="70" x2="126" y2="70" stroke="rgba(255,255,255,0.6)" strokeWidth="2" />
-        <line x1="20" y1="110" x2="180" y2="110" stroke="rgba(255,255,255,0.4)" strokeWidth="2" />
-        <line x1="40" y1="110" x2="40" y2="120" stroke="rgba(255,255,255,0.4)" strokeWidth="2" />
-        <line x1="160" y1="110" x2="160" y2="120" stroke="rgba(255,255,255,0.4)" strokeWidth="2" />
-      </svg>
-    ),
+    tags: ['Fabrication', 'CNC', 'Coated'],
+    blurb:
+      'Batch production of CNC-drilled, shot-blasted and epoxy-coated gusset and connection plates for structural steel packages.',
+    images: [platesA, platesB],
   },
   {
     id: 'p3',
-    title: 'CPCL — Heat Exchanger Replacement',
-    location: 'Manali, Chennai',
-    tags: ['Mechanical', 'Turnkey'],
+    title: 'Steel Domes, Towers & Space-Frames',
+    location: 'South India — multi-site',
     year: '2024',
-    bg: 'from-electric-400/40 via-gold-400/20 to-navy-900',
-    icon: (
-      <svg viewBox="0 0 200 140" className="h-full w-full" fill="none">
-        <rect
-          x="30"
-          y="50"
-          width="140"
-          height="40"
-          rx="20"
-          stroke="rgba(255,255,255,0.55)"
-          strokeWidth="2"
-        />
-        <circle cx="50" cy="70" r="6" fill="#f0c674" />
-        <circle cx="150" cy="70" r="6" fill="#5aa6ff" />
-        {[70, 90, 110, 130].map((x) => (
-          <line
-            key={x}
-            x1={x}
-            y1="50"
-            x2={x}
-            y2="90"
-            stroke="rgba(255,255,255,0.35)"
-            strokeWidth="1"
-            strokeDasharray="2 2"
-          />
-        ))}
-        <path
-          d="M30 100 C 70 130, 130 130, 170 100"
-          stroke="rgba(240,198,116,0.6)"
-          strokeWidth="2"
-          fill="none"
-        />
-      </svg>
-    ),
+    tags: ['Structural', 'On-site', 'Turnkey'],
+    blurb:
+      'Design-assist fabrication and on-site erection of geodesic domes, conical lattice towers and curved architectural space-frames.',
+    images: [domeErection, spaceframe, latticeTower],
   },
   {
     id: 'p4',
-    title: 'Hyundai Plant — Structural Mezzanine',
-    location: 'Sriperumbudur, TN',
-    tags: ['Structural', 'Turnkey'],
-    year: '2023',
-    bg: 'from-electric-500/30 via-electric-400/20 to-navy-900',
-    icon: (
-      <svg viewBox="0 0 200 140" className="h-full w-full" fill="none">
-        <path d="M10 110 L100 30 L190 110 Z" stroke="rgba(255,255,255,0.5)" strokeWidth="2" />
-        <path d="M30 110 L100 50 L170 110" stroke="rgba(90,166,255,0.7)" strokeWidth="2" />
-        <line x1="60" y1="110" x2="100" y2="70" stroke="rgba(240,198,116,0.6)" strokeWidth="2" />
-        <line x1="140" y1="110" x2="100" y2="70" stroke="rgba(240,198,116,0.6)" strokeWidth="2" />
-        <line x1="10" y1="125" x2="190" y2="125" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
-      </svg>
-    ),
+    title: 'Precision Jigs, Fixtures & Brackets',
+    location: 'Machine Shop, Chennai',
+    year: '2025',
+    tags: ['Machining', 'Tooling', 'Tight-tolerance'],
+    blurb:
+      'Multi-axis machined aluminium fixtures and load brackets finished to micron tolerances for aerospace and instrumentation clients.',
+    images: [precisionBracket],
   },
   {
     id: 'p5',
-    title: 'NTPC — Storage Tank Farm',
-    location: 'Vallur, TN',
-    tags: ['Tankage', 'Field'],
-    year: '2022',
-    bg: 'from-gold-400/30 via-electric-500/20 to-navy-900',
-    icon: (
-      <svg viewBox="0 0 200 140" className="h-full w-full" fill="none">
-        {[40, 100, 160].map((cx) => (
-          <g key={cx}>
-            <ellipse
-              cx={cx}
-              cy="40"
-              rx="22"
-              ry="6"
-              stroke="rgba(255,255,255,0.5)"
-              strokeWidth="2"
-            />
-            <line
-              x1={cx - 22}
-              y1="40"
-              x2={cx - 22}
-              y2="110"
-              stroke="rgba(255,255,255,0.5)"
-              strokeWidth="2"
-            />
-            <line
-              x1={cx + 22}
-              y1="40"
-              x2={cx + 22}
-              y2="110"
-              stroke="rgba(255,255,255,0.5)"
-              strokeWidth="2"
-            />
-            <ellipse
-              cx={cx}
-              cy="110"
-              rx="22"
-              ry="6"
-              stroke="rgba(240,198,116,0.7)"
-              strokeWidth="2"
-            />
-          </g>
-        ))}
-        <line x1="0" y1="125" x2="200" y2="125" stroke="rgba(255,255,255,0.25)" strokeWidth="2" />
-      </svg>
-    ),
+    title: 'Process Vessels & Rotary Equipment',
+    location: 'Guindy Works, Chennai',
+    year: '2023',
+    tags: ['Mechanical', 'Vessels', 'Fabrication'],
+    blurb:
+      'Heavy process vessels and rotary drum assemblies — rolled, welded and finished for chemical and manufacturing plants.',
+    images: [processVessel, rotaryDrum],
   },
   {
     id: 'p6',
-    title: 'L&T — Cooling Tower Retrofit',
+    title: 'Counter-Flow Cooling Tower',
     location: 'Coimbatore, TN',
-    tags: ['Mechanical', 'Retrofit'],
-    year: '2025',
-    bg: 'from-navy-700 via-electric-600/20 to-navy-900',
-    icon: (
-      <svg viewBox="0 0 200 140" className="h-full w-full" fill="none">
-        <path
-          d="M50 20 L150 20 L160 120 L40 120 Z"
-          stroke="rgba(255,255,255,0.55)"
-          strokeWidth="2"
-        />
-        <path
-          d="M60 40 L140 40"
-          stroke="rgba(90,166,255,0.7)"
-          strokeWidth="2"
-          strokeDasharray="3 3"
-        />
-        <path
-          d="M55 60 L145 60"
-          stroke="rgba(240,198,116,0.7)"
-          strokeWidth="2"
-          strokeDasharray="3 3"
-        />
-        <path
-          d="M50 80 L150 80"
-          stroke="rgba(255,255,255,0.4)"
-          strokeWidth="2"
-          strokeDasharray="3 3"
-        />
-        <circle cx="100" cy="40" r="4" fill="#5aa6ff" />
-      </svg>
-    ),
+    year: '2022',
+    tags: ['Mechanical', 'Tankage', 'Retrofit'],
+    blurb:
+      'Shop fabrication and assembly of an induced-draft counter-flow cooling tower shell and internals.',
+    images: [coolingTower],
   },
 ]
 
@@ -242,36 +108,40 @@ export default function Projects() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
               transition={{ duration: 0.6, delay: (i % 3) * 0.1, ease: [0.2, 0.7, 0.2, 1] }}
-              className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-white/25"
+              className="group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-white/25"
             >
-              {/* Thumbnail */}
-              <div className="relative aspect-[16/10] overflow-hidden">
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${p.bg} transition-transform duration-700 group-hover:scale-110`}
+              {/* Photo */}
+              <div className="relative aspect-[16/10] overflow-hidden bg-navy-900">
+                <img
+                  src={p.images[0]}
+                  alt={p.title}
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-grid opacity-40" />
-                <div className="absolute inset-0 grid place-items-center p-8 transition-transform duration-700 group-hover:scale-105">
-                  <div className="h-full w-full max-h-[160px] max-w-[260px] text-white/85">
-                    {p.icon}
-                  </div>
-                </div>
 
-                {/* Overlay */}
+                {/* Top overlay — year + photo count + arrow */}
                 <div className="absolute inset-x-3 top-3 flex items-center justify-between">
-                  <span className="rounded-full border border-white/15 bg-navy-950/70 px-2.5 py-1 font-mono text-[10px] tracking-[0.2em] text-white/80 backdrop-blur">
-                    {p.year}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="rounded-full border border-white/15 bg-navy-950/70 px-2.5 py-1 font-mono text-[10px] tracking-[0.2em] text-white/80 backdrop-blur">
+                      {p.year}
+                    </span>
+                    {p.images.length > 1 && (
+                      <span className="rounded-full border border-white/15 bg-navy-950/70 px-2.5 py-1 font-mono text-[10px] tracking-[0.15em] text-white/70 backdrop-blur">
+                        {p.images.length} PHOTOS
+                      </span>
+                    )}
+                  </div>
                   <span className="grid h-8 w-8 place-items-center rounded-full border border-white/15 bg-navy-950/70 text-gold-400 backdrop-blur transition-all duration-500 group-hover:rotate-[-45deg] group-hover:border-gold-400/60">
                     <ArrowUpRight className="h-3.5 w-3.5" />
                   </span>
                 </div>
 
-                {/* Gradient bottom */}
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-navy-950/85 to-transparent" />
               </div>
 
               {/* Body */}
-              <div className="p-5">
+              <div className="flex flex-1 flex-col p-5">
                 <div className="flex items-center gap-2 text-xs text-white/55">
                   <MapPin className="h-3 w-3 text-gold-400" />
                   <span className="font-mono tracking-wider">{p.location}</span>
@@ -279,6 +149,30 @@ export default function Projects() {
                 <h4 className="mt-2 font-display text-lg font-semibold leading-snug text-white">
                   {p.title}
                 </h4>
+                <p className="mt-2 text-[13px] leading-relaxed text-white/55">
+                  {p.blurb}
+                </p>
+
+                {/* Extra photos strip */}
+                {p.images.length > 1 && (
+                  <div className="mt-4 flex gap-2">
+                    {p.images.slice(1).map((src, idx) => (
+                      <div
+                        key={idx}
+                        className="h-12 w-16 overflow-hidden rounded-lg border border-white/10"
+                      >
+                        <img
+                          src={src}
+                          alt={`${p.title} — ${idx + 2}`}
+                          loading="lazy"
+                          decoding="async"
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 <div className="mt-4 flex flex-wrap gap-2">
                   {p.tags.map((t) => (
                     <span
