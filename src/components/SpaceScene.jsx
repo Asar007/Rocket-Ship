@@ -269,7 +269,7 @@ function makeHeatShieldDiffuse() {
  *  - Solar panels: two thin boxes extending sideways
  *  Positioned at [2.2, 1.4, 0.5] with heat shield angled toward Earth.
  *  No plasma / decals / hover yet — those come in later steps. */
-function Capsule({ active, setHovered, toggleClick }) {
+function Capsule({ active, compactTooltip, setHovered, toggleClick }) {
   // Procedural canvas textures — memoised so they're created once.
   const bodyMap = useMemo(() => {
     const t = new THREE.CanvasTexture(makeBodyDiffuse())
@@ -685,7 +685,7 @@ function Capsule({ active, setHovered, toggleClick }) {
           <Line
             points={[
               [0, 0.28, 0],
-              [0, 0.68, 0],
+              [0, 0.92, 0],
             ]}
             color="#a8e3ff"
             lineWidth={1.4}
@@ -693,15 +693,18 @@ function Capsule({ active, setHovered, toggleClick }) {
             opacity={0.9}
           />
           {/* Small dot where the line meets the tooltip — nice touchpoint */}
-          <mesh position={[0, 0.68, 0]} raycast={() => null}>
+          <mesh position={[0, 0.92, 0]} raycast={() => null}>
             <sphereGeometry args={[0.012, 16, 16]} />
             <meshBasicMaterial color="#a8e3ff" transparent opacity={0.95} />
           </mesh>
-          {/* Tooltip card — modest offset above the capsule */}
+          {/* Tooltip card — sits well clear of the capsule.  During the
+              intro auto-reveal the camera is pushed in close, so a smaller
+              distanceFactor keeps the card from scaling off the page;
+              real hover/tap keeps the larger, more readable size. */}
           <Html
-            position={[0, 0.75, 0]}
+            position={[0, 1.02, 0]}
             center
-            distanceFactor={1.9}
+            distanceFactor={compactTooltip ? 0.95 : 1.9}
             zIndexRange={[100, 0]}
             pointerEvents="none"
           >
@@ -909,6 +912,7 @@ export default function SpaceScene() {
 
         <Capsule
           active={active}
+          compactTooltip={autoShow && !hovered && !clicked}
           setHovered={setHovered}
           toggleClick={toggleClick}
         />
