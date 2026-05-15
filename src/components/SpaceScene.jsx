@@ -655,64 +655,92 @@ function Capsule({ active, setHovered, toggleClick }) {
           line up to the tooltip card.  Only rendered while active. */}
       {active && (
         <>
-          {/* Glowing wireframe halo (sized to clearly enclose the capsule).
+          {/* Glowing wireframe halo — hugs the capsule body but renders
+              ON TOP (depthTest off + high renderOrder) so it's never
+              occluded by the opaque capsule meshes it encloses.
               raycast disabled so it can't fire its own pointer events. */}
-          <mesh raycast={() => null}>
-            <sphereGeometry args={[0.26, 28, 20]} />
+          <mesh raycast={() => null} renderOrder={10}>
+            <sphereGeometry args={[0.3, 28, 20]} />
             <meshBasicMaterial
               color="#7ad6ff"
               wireframe
               transparent
-              opacity={0.32}
+              opacity={0.4}
+              depthTest={false}
               depthWrite={false}
             />
           </mesh>
           {/* Soft additive sphere just inside the wireframe for a glow */}
-          <mesh raycast={() => null}>
-            <sphereGeometry args={[0.25, 28, 20]} />
+          <mesh raycast={() => null} renderOrder={9}>
+            <sphereGeometry args={[0.29, 28, 20]} />
             <meshBasicMaterial
               color="#7ad6ff"
               transparent
-              opacity={0.05}
+              opacity={0.08}
               blending={THREE.AdditiveBlending}
+              depthTest={false}
               depthWrite={false}
               side={THREE.BackSide}
             />
           </mesh>
-          {/* Leader line — halo edge → tooltip anchor.
-              Longer run so the text card sits clearly off to one side
-              of the capsule with a visible connector. */}
-          <Line
-            points={[
-              [0, 0.28, 0],
-              [0, 0.92, 0],
+          {/* Connector + tooltip live in a counter-rotation group that
+              cancels the capsule's 45°/60° tilt, so their axes are
+              world/screen-aligned.  That lets us point the callout cleanly
+              to the LEFT of the capsule (world -X ≈ screen-left) instead
+              of along the capsule's tilted local "up". */}
+          <group
+            rotation={[
+              THREE.MathUtils.degToRad(-45),
+              0,
+              THREE.MathUtils.degToRad(-60),
+              'ZYX',
             ]}
-            color="#a8e3ff"
-            lineWidth={1.4}
-            transparent
-            opacity={0.9}
-          />
-          {/* Small dot where the line meets the tooltip — nice touchpoint */}
-          <mesh position={[0, 0.92, 0]} raycast={() => null}>
-            <sphereGeometry args={[0.012, 16, 16]} />
-            <meshBasicMaterial color="#a8e3ff" transparent opacity={0.95} />
-          </mesh>
-          {/* Tooltip card — sits well clear of the capsule. */}
-          <Html
-            position={[0, 1.02, 0]}
-            center
-            distanceFactor={1.9}
-            zIndexRange={[100, 0]}
-            pointerEvents="none"
           >
-            <div className="mse-capsule-tooltip">
-              <span className="mse-tooltip-tri" aria-hidden />
-              <span className="mse-tooltip-label">◆ Fabricated by</span>
-              <strong className="mse-tooltip-name">Madras Swastic Engineers</strong>
-              <span className="mse-tooltip-divider" aria-hidden />
-              <span className="mse-tooltip-mission">Gaganyaan Crew Module · ISRO</span>
-            </div>
-          </Html>
+            {/* Leader line — halo edge → tooltip anchor, running left.
+                Drawn on top so it's always visible over the capsule. */}
+            <Line
+              points={[
+                [-0.32, 0, 0],
+                [-1.45, 0.06, 0],
+              ]}
+              color="#a8e3ff"
+              lineWidth={1.6}
+              transparent
+              opacity={0.95}
+              depthTest={false}
+              renderOrder={11}
+            />
+            {/* Small dot where the line meets the tooltip */}
+            <mesh
+              position={[-1.45, 0.06, 0]}
+              raycast={() => null}
+              renderOrder={11}
+            >
+              <sphereGeometry args={[0.013, 16, 16]} />
+              <meshBasicMaterial
+                color="#a8e3ff"
+                transparent
+                opacity={0.95}
+                depthTest={false}
+              />
+            </mesh>
+            {/* Tooltip card — sits to the left, clear of the capsule. */}
+            <Html
+              position={[-1.62, 0.06, 0]}
+              center
+              distanceFactor={1.9}
+              zIndexRange={[100, 0]}
+              pointerEvents="none"
+            >
+              <div className="mse-capsule-tooltip">
+                <span className="mse-tooltip-tri" aria-hidden />
+                <span className="mse-tooltip-label">◆ Fabricated by</span>
+                <strong className="mse-tooltip-name">Madras Swastic Engineers</strong>
+                <span className="mse-tooltip-divider" aria-hidden />
+                <span className="mse-tooltip-mission">Gaganyaan Crew Module · ISRO</span>
+              </div>
+            </Html>
+          </group>
         </>
       )}
 
@@ -864,6 +892,14 @@ export default function SpaceScene() {
   // camera has settled back to the default framing — stays up for ~15s,
   // then hides until the user actually hovers/taps.
   const [autoShow, setAutoShow] = useState(false)
+  // Safety net: the intro normally finishes ~4.2s in and flips introDone
+  // via onDone, but if that ever fails to fire (tab backgrounded, frame
+  // loop stalled, reduced-motion edge cases) force it after 6s so the
+  // reveal still happens.
+  useEffect(() => {
+    const t = setTimeout(() => setIntroDone(true), 6000)
+    return () => clearTimeout(t)
+  }, [])
   useEffect(() => {
     if (!introDone) return
     setAutoShow(true)
