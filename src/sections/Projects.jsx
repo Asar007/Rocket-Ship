@@ -136,8 +136,11 @@ const PROJECTS = [
     images: [coolingTower],
     story: [
       'A single induced-draft, counter-flow tower — shell, fan deck and internals fabricated entirely in-house.',
-      'Every FRP louvre and drift eliminator fitted, aligned and water-tested before the unit ever left the shop.',
-      'Installed and commissioned on a live plant — with zero downtime to the existing process line.',
+      'Heavy plate is rolled and seam-welded into the tapered shell, then stress-relieved before any fit-out begins.',
+      'Every FRP louvre and drift eliminator is fitted, aligned and water-tested before the unit leaves the shop.',
+      'The fan deck, gearbox and drive shaft are laser-aligned and trial-run under load to prove vibration limits.',
+      'Lifted in as a single module and commissioned on a live plant — with zero downtime to the existing line.',
+      'Handed over with full hydraulic and thermal performance reports, ahead of the contracted schedule.',
     ],
   },
 ]
