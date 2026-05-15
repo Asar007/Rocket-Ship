@@ -55,6 +55,7 @@ const PROJECTS = [
     location: 'VSSC, Trivandrum · Chennai Works',
     year: '2024',
     tags: ['Aerospace', 'ISRO', 'Gaganyaan'],
+    storyStyle: 'sticky',
     blurb:
       'An exact replica of the Gaganyaan crew capsule — built and handed over to ISRO/HSFC within 90 days.',
     images: [crewModule],
@@ -88,12 +89,19 @@ const PROJECTS = [
   {
     id: 'p3',
     title: 'Steel Domes, Towers & Space-Frames',
+    storyTitle: 'Steel That Holds the Sky',
     location: 'South India — multi-site',
     year: '2024',
     tags: ['Structural', 'On-site', 'Turnkey'],
+    storyStyle: 'cinematic',
     blurb:
       'Design-assist fabrication and on-site erection of geodesic domes, conical lattice towers and curved architectural space-frames.',
     images: [domeErection, spaceframe, latticeTower],
+    story: [
+      'From a bare foundation, a geodesic dome takes shape — every node CNC-cut, match-marked, and lifted into place by a crawler crane under a tight erection window.',
+      'In the Guindy shop, curved space-frame segments are jig-welded to ±2 mm and trial-assembled flat before a single piece ever reaches site.',
+      'Galvanised, bolted, and signed off — the finished conical lattice tower stands as a landmark, delivered in under ninety working days.',
+    ],
   },
   {
     id: 'p4',
@@ -118,12 +126,19 @@ const PROJECTS = [
   {
     id: 'p6',
     title: 'Counter-Flow Cooling Tower',
+    storyTitle: 'One Tower, Built to Breathe',
     location: 'Coimbatore, TN',
     year: '2022',
     tags: ['Mechanical', 'Tankage', 'Retrofit'],
+    storyStyle: 'kenburns',
     blurb:
       'Shop fabrication and assembly of an induced-draft counter-flow cooling tower shell and internals.',
     images: [coolingTower],
+    story: [
+      'A single induced-draft, counter-flow tower — shell, fan deck and internals fabricated entirely in-house.',
+      'Every FRP louvre and drift eliminator fitted, aligned and water-tested before the unit ever left the shop.',
+      'Installed and commissioned on a live plant — with zero downtime to the existing process line.',
+    ],
   },
 ]
 
