@@ -136,8 +136,10 @@ function CinematicSlide({ image, text, index, scrollRef }) {
     target: ref,
     offset: ['start end', 'end start'],
   })
-  const scale = useTransform(scrollYProgress, [0, 1], [1.12, 1.0])
-  const textY = useTransform(scrollYProgress, [0, 1], ['8%', '-8%'])
+  // object-contain: the whole photo shows, no crop / stretch; only a
+  // subtle drift.
+  const scale = useTransform(scrollYProgress, [0, 1], [1.0, 1.06])
+  const textY = useTransform(scrollYProgress, [0, 1], ['6%', '-6%'])
   const textOpacity = useTransform(
     scrollYProgress,
     [0, 0.28, 0.72, 1],
@@ -146,24 +148,23 @@ function CinematicSlide({ image, text, index, scrollRef }) {
   return (
     <section
       ref={ref}
-      className="relative h-screen w-full overflow-hidden"
+      className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-navy-950"
     >
       <motion.img
         src={image}
         alt=""
         style={{ scale }}
-        className="absolute inset-0 h-full w-full object-cover"
+        className="max-h-[82vh] max-w-[92vw] object-contain"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/35 to-navy-950/75" />
       <motion.div
         style={{ opacity: textOpacity, y: textY }}
-        className="absolute inset-0 flex items-end p-8 sm:p-16"
+        className="absolute inset-x-0 bottom-0 flex justify-center p-6 sm:p-10"
       >
-        <div className="max-w-2xl">
+        <div className="max-w-2xl rounded-2xl bg-navy-950/75 px-7 py-5 text-center ring-1 ring-white/10 backdrop-blur-md">
           <span className="font-mono text-sm tracking-[0.3em] text-gold-400">
             {String(index + 1).padStart(2, '0')}
           </span>
-          <p className="mt-3 font-display text-2xl font-semibold leading-snug text-white sm:text-4xl">
+          <p className="mt-2 font-display text-2xl font-semibold leading-snug text-white sm:text-4xl">
             {text}
           </p>
         </div>
