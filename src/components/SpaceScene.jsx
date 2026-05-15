@@ -26,12 +26,14 @@ import {
  *  horizon, and the geometry is bumped to 128×128 segments.
  * ────────────────────────────────────────────────────────────────────────── */
 
-const CDN = 'https://cdn.jsdelivr.net/gh/turban/webgl-earth@master/images'
+// Self-hosted from /public/textures (originally NASA Blue Marble via
+// turban/webgl-earth). Served same-origin — no third-party CDN dependency,
+// better caching, and not subject to jsDelivr availability.
 const TEX = {
-  day: `${CDN}/2_no_clouds_4k.jpg`,
-  bump: `${CDN}/elev_bump_4k.jpg`,
-  water: `${CDN}/water_4k.png`,
-  clouds: `${CDN}/fair_clouds_4k.png`,
+  day: '/textures/2_no_clouds_4k.jpg',
+  bump: '/textures/elev_bump_4k.jpg',
+  water: '/textures/water_4k.png',
+  clouds: '/textures/fair_clouds_4k.png',
 }
 
 /* Mobile-only perf budget.  Evaluated once at module load so the desktop
