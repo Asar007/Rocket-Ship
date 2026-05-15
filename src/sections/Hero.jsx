@@ -1,8 +1,12 @@
+import { Suspense, lazy } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowUpRight, PlayCircle } from 'lucide-react'
 import { openCallback } from '../components/CallbackDialog.jsx'
 import logo from '../assets/logo.png'
-import SpaceScene from '../components/SpaceScene.jsx'
+
+// Lazy so three.js loads in its own async chunk after the Hero text
+// paints, instead of blocking the initial bundle.
+const SpaceScene = lazy(() => import('../components/SpaceScene.jsx'))
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -156,7 +160,18 @@ export default function Hero() {
                 'radial-gradient(ellipse at center, black 58%, transparent 92%)',
             }}
           >
-            <SpaceScene />
+            <Suspense
+              fallback={
+                <div
+                  aria-hidden
+                  className="absolute inset-0 flex items-center justify-center"
+                >
+                  <div className="h-3/5 w-3/5 rounded-full bg-[radial-gradient(circle_at_50%_45%,rgba(90,166,255,0.18),rgba(240,198,116,0.08)_45%,transparent_72%)] blur-2xl" />
+                </div>
+              }
+            >
+              <SpaceScene />
+            </Suspense>
           </div>
         </motion.div>
       </div>

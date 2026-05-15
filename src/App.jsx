@@ -1,9 +1,12 @@
-import { useEffect, useState } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 
 import Navbar from './components/Navbar.jsx'
 import Footer from './components/Footer.jsx'
 import CallbackDialog from './components/CallbackDialog.jsx'
-import SpaceScene from './components/SpaceScene.jsx'
+
+// Heavy three.js scene — split into its own async chunk so it never
+// blocks the initial bundle / first paint.
+const SpaceScene = lazy(() => import('./components/SpaceScene.jsx'))
 
 import Hero from './sections/Hero.jsx'
 import About from './sections/About.jsx'
@@ -33,7 +36,9 @@ export default function App() {
   if (hash === '#space') {
     return (
       <div style={{ width: '100vw', height: '100vh', background: '#000' }}>
-        <SpaceScene />
+        <Suspense fallback={null}>
+          <SpaceScene />
+        </Suspense>
       </div>
     )
   }
