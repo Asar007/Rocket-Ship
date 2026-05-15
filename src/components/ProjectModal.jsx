@@ -331,22 +331,31 @@ export default function ProjectModal({ project, onClose }) {
           <X className="h-5 w-5" />
         </button>
 
-        {/* Subtle "scroll to view more" hint — fades out on first scroll */}
+        {/* Subtle "scroll to view more" hint — aligned to the same
+            content column as the header, fades out on first scroll */}
         {style !== 'static' && (
-          <motion.div
-            style={{ opacity: hintOpacity }}
-            className="pointer-events-none fixed right-[8%] top-[26%] z-[140] flex flex-col items-center gap-1.5 text-white/45"
-          >
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em]">
-              Scroll to view more
-            </span>
-            <motion.span
-              animate={reduce ? undefined : { y: [0, 7, 0] }}
-              transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <ChevronDown className="h-5 w-5" />
-            </motion.span>
-          </motion.div>
+          <div className="pointer-events-none fixed inset-x-0 top-[24%] z-[140] px-5 sm:px-8">
+            <div className="mx-auto flex max-w-5xl justify-end">
+              <motion.div
+                style={{ opacity: hintOpacity }}
+                className="flex flex-col items-center gap-1.5 text-white/45"
+              >
+                <span className="font-mono text-[10px] uppercase tracking-[0.3em]">
+                  Scroll to view more
+                </span>
+                <motion.span
+                  animate={reduce ? undefined : { y: [0, 7, 0] }}
+                  transition={{
+                    duration: 1.6,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                >
+                  <ChevronDown className="h-5 w-5" />
+                </motion.span>
+              </motion.div>
+            </div>
+          </div>
         )}
 
         <div
