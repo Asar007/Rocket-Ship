@@ -58,10 +58,13 @@ function Earth() {
     })
   }, [dayMap, bumpMap, waterMap, cloudMap, gl])
 
+  // Slow, stately rotation — roughly half the previous rate so the globe
+  // turns gently. Cloud decks drift a touch faster than the surface for a
+  // subtle parallax.
   useFrame(() => {
-    if (surfaceRef.current) surfaceRef.current.rotation.y += 0.0008
-    if (cloudRefA.current) cloudRefA.current.rotation.y += 0.0012
-    if (cloudRefB.current) cloudRefB.current.rotation.y += 0.0009
+    if (surfaceRef.current) surfaceRef.current.rotation.y += 0.00035
+    if (cloudRefA.current) cloudRefA.current.rotation.y += 0.0005
+    if (cloudRefB.current) cloudRefB.current.rotation.y += 0.0004
   })
 
   return (
@@ -743,6 +746,98 @@ function Capsule({ active, setHovered, toggleClick }) {
   )
 }
 
+/* ──────────────────────────────────────────────────────────────────────────
+ *  IntroCamera — cinematic open every time the site loads.
+ *
+ *  Three eased keyframes:
+ *    0.0s  wide establishing shot, framed on the whole scene
+ *    2.0s  pushed in close on the Gaganyaan capsule (the "zoom into" beat)
+ *    4.2s  eases back to the default interactive framing, then hands the
+ *          camera over to OrbitControls.
+ *
+ *  OrbitControls stays disabled until the flight finishes (onDone), so the
+ *  manual camera writes don't fight the controls. Honors
+ *  prefers-reduced-motion by snapping straight to the resting shot.
+ * ────────────────────────────────────────────────────────────────────────── */
+const CAPSULE_POS = new THREE.Vector3(0.58, 0.23, 3.78)
+
+function easeInOutCubic(x) {
+  return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2
+}
+
+function IntroCamera({ onDone }) {
+  const { camera } = useThree()
+  const startRef = useRef(null)
+  const finishedRef = useRef(false)
+
+  const keys = useMemo(
+    () => [
+      {
+        t: 0,
+        pos: new THREE.Vector3(2.6, 1.7, 15.5),
+        tgt: new THREE.Vector3(0, 0, 0),
+      },
+      {
+        t: 2.0,
+        pos: new THREE.Vector3(1.05, 0.5, 5.5),
+        tgt: CAPSULE_POS.clone(),
+      },
+      {
+        t: 4.2,
+        pos: new THREE.Vector3(0, 0, 8),
+        tgt: new THREE.Vector3(0, 0, 0),
+      },
+    ],
+    [],
+  )
+
+  // Respect reduced-motion: skip the flight, settle immediately.
+  useEffect(() => {
+    const reduce = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches
+    if (reduce) {
+      const last = keys[keys.length - 1]
+      camera.position.copy(last.pos)
+      camera.lookAt(last.tgt)
+      finishedRef.current = true
+      onDone()
+    }
+  }, [camera, keys, onDone])
+
+  useFrame((state) => {
+    if (finishedRef.current) return
+    if (startRef.current === null) startRef.current = state.clock.elapsedTime
+    const time = state.clock.elapsedTime - startRef.current
+
+    const last = keys[keys.length - 1]
+    if (time >= last.t) {
+      camera.position.copy(last.pos)
+      camera.lookAt(last.tgt)
+      finishedRef.current = true
+      onDone()
+      return
+    }
+
+    // Find the active segment and interpolate with an ease per leg.
+    let a = keys[0]
+    let b = keys[1]
+    for (let i = 0; i < keys.length - 1; i++) {
+      if (time >= keys[i].t && time < keys[i + 1].t) {
+        a = keys[i]
+        b = keys[i + 1]
+        break
+      }
+    }
+    const k = easeInOutCubic((time - a.t) / (b.t - a.t))
+    camera.position.lerpVectors(a.pos, b.pos, k)
+    const tgt = new THREE.Vector3().lerpVectors(a.tgt, b.tgt, k)
+    camera.lookAt(tgt)
+  })
+
+  return null
+}
+
 function EarthFallback() {
   return (
     <mesh>
@@ -760,6 +855,9 @@ export default function SpaceScene() {
   // The visible UI + camera zoom react to the OR of the two.
   const [hovered, setHovered] = useState(false)
   const [clicked, setClicked] = useState(false)
+  // Gates OrbitControls until the opening fly-in finishes so the manual
+  // camera animation isn't fought by the controls.
+  const [introDone, setIntroDone] = useState(false)
   const active = hovered || clicked
   const toggleClick = () => setClicked((c) => !c)
 
@@ -803,8 +901,11 @@ export default function SpaceScene() {
           toggleClick={toggleClick}
         />
 
+        <IntroCamera onDone={() => setIntroDone(true)} />
+
         <OrbitControls
           makeDefault
+          enabled={introDone}
           enablePan={false}
           enableZoom
           zoomSpeed={0.6}
