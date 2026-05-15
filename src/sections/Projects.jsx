@@ -98,8 +98,11 @@ const PROJECTS = [
       'Design-assist fabrication and on-site erection of geodesic domes, conical lattice towers and curved architectural space-frames.',
     images: [domeErection, spaceframe, latticeTower],
     story: [
+      'It begins on paper — a connection-design model where every node, gusset and bolt group is engineered before a single plate is cut.',
       'From a bare foundation, a geodesic dome takes shape — every node CNC-cut, match-marked, and lifted into place by a crawler crane under a tight erection window.',
       'In the Guindy shop, curved space-frame segments are jig-welded to ±2 mm and trial-assembled flat before a single piece ever reaches site.',
+      'Surface treatment is non-negotiable: blast-cleaned to Sa 2½, metallised and top-coated for decades of coastal service.',
+      'On site, modules are flown in and bolted up against a 3D survey — no field welding, no rework, no surprises.',
       'Galvanised, bolted, and signed off — the finished conical lattice tower stands as a landmark, delivered in under ninety working days.',
     ],
   },

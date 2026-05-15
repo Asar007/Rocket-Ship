@@ -136,7 +136,7 @@ function CinematicSlide({ image, text, index, scrollRef }) {
     target: ref,
     offset: ['start end', 'end start'],
   })
-  const scale = useTransform(scrollYProgress, [0, 1], [1.28, 1.0])
+  const scale = useTransform(scrollYProgress, [0, 1], [1.12, 1.0])
   const textY = useTransform(scrollYProgress, [0, 1], ['8%', '-8%'])
   const textOpacity = useTransform(
     scrollYProgress,
@@ -180,7 +180,7 @@ function CinematicStory({ project, story, scrollRef }) {
         <img
           src={project.images[0]}
           alt={project.title}
-          className="absolute inset-0 h-full w-full scale-110 object-cover"
+          className="absolute inset-0 h-full w-full scale-105 object-cover"
         />
         <div className="absolute inset-0 bg-navy-950/65" />
         <motion.div
@@ -222,65 +222,56 @@ function CinematicStory({ project, story, scrollRef }) {
   )
 }
 
-/* ── 4. Ken Burns zoom + cross-fading captions ────────────────── */
-function KenBurnsCaption({ progress, range, index, text }) {
-  const opacity = useTransform(progress, range, [0, 1, 1, 0])
-  return (
-    <motion.div
-      style={{ opacity }}
-      className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center"
-    >
-      <span className="font-mono text-sm tracking-[0.3em] text-gold-400">
-        {String(index + 1).padStart(2, '0')}
-      </span>
-      <p className="mt-4 max-w-2xl font-display text-2xl font-semibold leading-snug text-white sm:text-4xl">
-        {text}
-      </p>
-    </motion.div>
-  )
-}
-
+/* ── 4. Ken Burns zoom — sticky underlay + per-screen captions ── */
 function KenBurnsStory({ project, story, scrollRef }) {
-  const ref = useRef(null)
+  const wrapRef = useRef(null)
   const { scrollYProgress } = useScroll({
     container: scrollRef,
-    target: ref,
+    target: wrapRef,
     offset: ['start start', 'end end'],
   })
-  const scale = useTransform(scrollYProgress, [0, 1], [1.05, 1.4])
-  const x = useTransform(scrollYProgress, [0, 1], ['0%', '-5%'])
+  // Gentle zoom/pan only — no longer over-zoomed.
+  const scale = useTransform(scrollYProgress, [0, 1], [1.0, 1.16])
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '-4%'])
-  const n = story.length
-  const seg = 1 / n
 
   return (
-    <div
-      ref={ref}
-      className="relative"
-      style={{ height: `${(n + 1) * 100}vh` }}
-    >
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
+    <div ref={wrapRef} className="relative">
+      {/* Sticky image underlay (pulled up so caption screens overlay it) */}
+      <div
+        className="sticky top-0 h-screen w-full overflow-hidden"
+        style={{ marginBottom: '-100vh' }}
+      >
         <motion.img
           src={project.images[0]}
           alt={project.title}
-          style={{ scale, x, y }}
+          style={{ scale, y }}
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-navy-950/55" />
-        {story.map((c, i) => {
-          const s = i * seg
-          const e = (i + 1) * seg
-          return (
-            <KenBurnsCaption
-              key={i}
-              progress={scrollYProgress}
-              index={i}
-              text={c}
-              range={[s, s + seg * 0.18, e - seg * 0.18, e]}
-            />
-          )
-        })}
+        <div className="absolute inset-0 bg-navy-950/60" />
       </div>
+
+      {/* One full screen per caption — guarantees the scroll advances */}
+      {story.map((c, i) => (
+        <section
+          key={i}
+          className="relative z-10 flex h-screen items-center justify-center px-8 text-center"
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 36 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ root: scrollRef, amount: 0.6 }}
+            transition={{ duration: 0.6, ease: [0.2, 0.7, 0.2, 1] }}
+            className="max-w-2xl"
+          >
+            <span className="font-mono text-sm tracking-[0.3em] text-gold-400">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <p className="mt-4 font-display text-2xl font-semibold leading-snug text-white sm:text-4xl">
+              {c}
+            </p>
+          </motion.div>
+        </section>
+      ))}
     </div>
   )
 }
