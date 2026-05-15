@@ -655,22 +655,7 @@ function Capsule({ active, setHovered, toggleClick }) {
           line up to the tooltip card.  Only rendered while active. */}
       {active && (
         <>
-          {/* Glowing wireframe halo — hugs the capsule body but renders
-              ON TOP (depthTest off + high renderOrder) so it's never
-              occluded by the opaque capsule meshes it encloses.
-              raycast disabled so it can't fire its own pointer events. */}
-          <mesh raycast={() => null} renderOrder={10}>
-            <sphereGeometry args={[0.3, 28, 20]} />
-            <meshBasicMaterial
-              color="#7ad6ff"
-              wireframe
-              transparent
-              opacity={0.4}
-              depthTest={false}
-              depthWrite={false}
-            />
-          </mesh>
-          {/* Soft additive sphere just inside the wireframe for a glow */}
+          {/* Soft additive glow sphere around the capsule */}
           <mesh raycast={() => null} renderOrder={9}>
             <sphereGeometry args={[0.29, 28, 20]} />
             <meshBasicMaterial
