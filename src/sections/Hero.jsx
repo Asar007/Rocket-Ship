@@ -1,8 +1,9 @@
-import { Suspense, lazy } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowUpRight, PlayCircle } from 'lucide-react'
 import { openCallback } from '../components/CallbackDialog.jsx'
 import ErrorBoundary from '../components/ErrorBoundary.jsx'
+import { isSlowConnection } from '../lib/network.js'
 import logo from '../assets/logo.png'
 
 // Lazy so three.js loads in its own async chunk after the Hero text
@@ -30,6 +31,13 @@ const fadeUp = {
 }
 
 export default function Hero() {
+  // On slow / data-saver connections skip the ~MB three.js scene entirely
+  // and show the static glow. Evaluated client-side after mount.
+  const [skip3D, setSkip3D] = useState(false)
+  useEffect(() => {
+    setSkip3D(isSlowConnection())
+  }, [])
+
   return (
     <section id="home" className="relative pt-32 sm:pt-36 lg:pt-40">
       {/* Top hairline + grid wash */}
@@ -173,11 +181,15 @@ export default function Hero() {
                 'radial-gradient(ellipse at center, black 58%, transparent 92%)',
             }}
           >
-            <ErrorBoundary fallback={<SceneGlow />}>
-              <Suspense fallback={<SceneGlow />}>
-                <SpaceScene />
-              </Suspense>
-            </ErrorBoundary>
+            {skip3D ? (
+              <SceneGlow />
+            ) : (
+              <ErrorBoundary fallback={<SceneGlow />}>
+                <Suspense fallback={<SceneGlow />}>
+                  <SpaceScene />
+                </Suspense>
+              </ErrorBoundary>
+            )}
           </div>
         </motion.div>
       </div>

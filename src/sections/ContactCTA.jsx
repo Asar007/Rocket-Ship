@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { ArrowUpRight, Mail, Phone, MapPin } from 'lucide-react'
 import { openCallback } from '../components/CallbackDialog.jsx'
 import ErrorBoundary from '../components/ErrorBoundary.jsx'
+import { isSlowConnection } from '../lib/network.js'
 
 // Heavy r3f/rapier physics scene — only loaded when the section enters view
 // AND the user hasn't opted out of motion / isn't on a tiny screen.
@@ -15,7 +16,7 @@ function useShouldRenderConnectors(ref) {
     if (typeof window === 'undefined') return
     const motionMq = window.matchMedia('(prefers-reduced-motion: reduce)')
     const sizeMq = window.matchMedia('(max-width: 640px)')
-    if (motionMq.matches || sizeMq.matches) return
+    if (motionMq.matches || sizeMq.matches || isSlowConnection()) return
 
     const node = ref.current
     if (!node || !('IntersectionObserver' in window)) {

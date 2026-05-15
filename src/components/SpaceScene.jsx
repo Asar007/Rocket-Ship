@@ -27,13 +27,14 @@ import {
  * ────────────────────────────────────────────────────────────────────────── */
 
 // Self-hosted from /public/textures (originally NASA Blue Marble via
-// turban/webgl-earth). Served same-origin — no third-party CDN dependency,
-// better caching, and not subject to jsDelivr availability.
+// turban/webgl-earth). Re-encoded to 2K WebP (~7.7 MB -> ~1.5 MB,
+// visually identical at this canvas size). Served same-origin — no
+// third-party CDN dependency. Regenerate with scripts/optimize-textures.mjs.
 const TEX = {
-  day: '/textures/2_no_clouds_4k.jpg',
-  bump: '/textures/elev_bump_4k.jpg',
-  water: '/textures/water_4k.png',
-  clouds: '/textures/fair_clouds_4k.png',
+  day: '/textures/2_no_clouds_2k.webp',
+  bump: '/textures/elev_bump_2k.webp',
+  water: '/textures/water_2k.webp',
+  clouds: '/textures/fair_clouds_2k.webp',
 }
 
 /* Mobile-only perf budget.  Evaluated once at module load so the desktop

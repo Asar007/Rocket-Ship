@@ -59,7 +59,7 @@ export default function AboutVideo() {
           <video
             ref={videoRef}
             src="https://duzsdzur0y9ok0qx.public.blob.vercel-storage.com/gaganyaan-hq.mp4"
-            preload="metadata"
+            preload="none"
             playsInline
             crossOrigin="anonymous"
             controls={started}
