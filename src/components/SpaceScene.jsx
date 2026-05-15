@@ -34,6 +34,13 @@ const TEX = {
   clouds: `${CDN}/fair_clouds_4k.png`,
 }
 
+/* Mobile-only perf budget.  Evaluated once at module load so the desktop
+ * code paths below are byte-for-byte unchanged — only phones (≤640px) take
+ * the lighter geometry / dpr / single-cloud path. */
+const IS_MOBILE =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(max-width: 640px)').matches
+
 /* STEP 3 — Earth + independent cloud layer. */
 function Earth() {
   const surfaceRef = useRef()
@@ -71,7 +78,7 @@ function Earth() {
     <group>
       {/* Surface */}
       <mesh ref={surfaceRef}>
-        <sphereGeometry args={[3, 128, 128]} />
+        <sphereGeometry args={[3, IS_MOBILE ? 64 : 128, IS_MOBILE ? 64 : 128]} />
         <meshStandardMaterial
           map={dayMap}
           bumpMap={bumpMap}
@@ -84,7 +91,7 @@ function Earth() {
 
       {/* Lower cloud deck — full opacity */}
       <mesh ref={cloudRefA} scale={1.012} renderOrder={1}>
-        <sphereGeometry args={[3, 96, 96]} />
+        <sphereGeometry args={[3, IS_MOBILE ? 48 : 96, IS_MOBILE ? 48 : 96]} />
         <meshStandardMaterial
           map={cloudMap}
           alphaMap={cloudMap}
@@ -95,22 +102,25 @@ function Earth() {
       </mesh>
 
       {/* Upper cloud deck — slightly higher, different rotation rate,
-          rotated phase so the two layers parallax instead of stacking flat */}
-      <mesh
-        ref={cloudRefB}
-        scale={1.022}
-        rotation={[0, Math.PI * 0.35, 0]}
-        renderOrder={2}
-      >
-        <sphereGeometry args={[3, 96, 96]} />
-        <meshStandardMaterial
-          map={cloudMap}
-          alphaMap={cloudMap}
-          transparent
-          opacity={0.55}
-          depthWrite={false}
-        />
-      </mesh>
+          rotated phase so the two layers parallax instead of stacking flat.
+          Dropped on mobile: one fewer transparent full-globe sphere. */}
+      {!IS_MOBILE && (
+        <mesh
+          ref={cloudRefB}
+          scale={1.022}
+          rotation={[0, Math.PI * 0.35, 0]}
+          renderOrder={2}
+        >
+          <sphereGeometry args={[3, 96, 96]} />
+          <meshStandardMaterial
+            map={cloudMap}
+            alphaMap={cloudMap}
+            transparent
+            opacity={0.55}
+            depthWrite={false}
+          />
+        </mesh>
+      )}
     </group>
   )
 }
@@ -905,7 +915,7 @@ export default function SpaceScene() {
     <>
       <style>{tooltipCss}</style>
       <Canvas
-        dpr={[1, 2]}
+        dpr={IS_MOBILE ? [1, 1.5] : [1, 2]}
         gl={{
           antialias: true,
           alpha: true,
