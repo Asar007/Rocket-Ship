@@ -196,17 +196,6 @@ function CinematicStory({ project, story, scrollRef }) {
           <h2 className="mx-auto mt-5 max-w-3xl font-display text-4xl font-semibold leading-tight text-white sm:text-6xl">
             {project.storyTitle || project.title}
           </h2>
-          <div className="mt-10 flex flex-col items-center gap-2 text-white/50">
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em]">
-              Scroll
-            </span>
-            <motion.span
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 1.6, repeat: Infinity }}
-            >
-              <ChevronDown className="h-5 w-5" />
-            </motion.span>
-          </div>
         </motion.div>
       </section>
 
@@ -301,6 +290,8 @@ export default function ProjectModal({ project, onClose }) {
   const reduce = useReducedMotion()
   const scrollRef = useRef(null)
   const { scrollYProgress } = useScroll({ container: scrollRef })
+  // Scroll hint fades out as soon as the user starts scrolling.
+  const hintOpacity = useTransform(scrollYProgress, [0, 0.05], [1, 0])
 
   useEffect(() => {
     const onKey = (e) => {
@@ -350,6 +341,24 @@ export default function ProjectModal({ project, onClose }) {
         >
           <X className="h-5 w-5" />
         </button>
+
+        {/* Subtle "scroll to view more" hint — fades out on first scroll */}
+        {style !== 'static' && (
+          <motion.div
+            style={{ opacity: hintOpacity }}
+            className="pointer-events-none fixed inset-x-0 bottom-6 z-[140] flex flex-col items-center gap-1.5 text-white/55"
+          >
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em]">
+              Scroll to view more
+            </span>
+            <motion.span
+              animate={reduce ? undefined : { y: [0, 7, 0] }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <ChevronDown className="h-5 w-5" />
+            </motion.span>
+          </motion.div>
+        )}
 
         <div
           ref={scrollRef}
