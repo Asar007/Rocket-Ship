@@ -335,7 +335,7 @@ export default function ProjectModal({ project, onClose }) {
         {style !== 'static' && (
           <motion.div
             style={{ opacity: hintOpacity }}
-            className="pointer-events-none fixed inset-x-0 bottom-6 z-[140] flex flex-col items-center gap-1.5 text-white/55"
+            className="pointer-events-none fixed right-[8%] top-[26%] z-[140] flex flex-col items-center gap-1.5 text-white/45"
           >
             <span className="font-mono text-[10px] uppercase tracking-[0.3em]">
               Scroll to view more
