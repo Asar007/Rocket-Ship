@@ -47,7 +47,6 @@ const IS_MOBILE =
 function Earth() {
   const surfaceRef = useRef()
   const cloudRefA = useRef()
-  const cloudRefB = useRef()
   const { gl } = useThree()
 
   const [dayMap, bumpMap, waterMap, cloudMap] = useTexture([
@@ -67,13 +66,11 @@ function Earth() {
     })
   }, [dayMap, bumpMap, waterMap, cloudMap, gl])
 
-  // Slow, stately rotation — roughly half the previous rate so the globe
-  // turns gently. Cloud decks drift a touch faster than the surface for a
-  // subtle parallax.
+  // Slow, stately rotation — the single cloud deck drifts a touch faster
+  // than the surface for a subtle sense of motion.
   useFrame(() => {
     if (surfaceRef.current) surfaceRef.current.rotation.y += 0.00035
     if (cloudRefA.current) cloudRefA.current.rotation.y += 0.0005
-    if (cloudRefB.current) cloudRefB.current.rotation.y += 0.0004
   })
 
   return (
@@ -103,26 +100,6 @@ function Earth() {
         />
       </mesh>
 
-      {/* Upper cloud deck — slightly higher, different rotation rate,
-          rotated phase so the two layers parallax instead of stacking flat.
-          Dropped on mobile: one fewer transparent full-globe sphere. */}
-      {!IS_MOBILE && (
-        <mesh
-          ref={cloudRefB}
-          scale={1.022}
-          rotation={[0, Math.PI * 0.35, 0]}
-          renderOrder={2}
-        >
-          <sphereGeometry args={[3, 96, 96]} />
-          <meshStandardMaterial
-            map={cloudMap}
-            alphaMap={cloudMap}
-            transparent
-            opacity={0.55}
-            depthWrite={false}
-          />
-        </mesh>
-      )}
     </group>
   )
 }
