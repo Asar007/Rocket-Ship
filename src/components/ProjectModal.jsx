@@ -159,6 +159,78 @@ function StickyStory({ project, story, scrollRef }) {
   )
 }
 
+/* ── 2b. Mission timeline ─────────────────────────────────────── */
+function TimelineStep({ index, text, scrollRef, last }) {
+  const ref = useRef(null)
+  const inView = useInView(ref, { root: scrollRef, amount: 0.6 })
+  return (
+    <div
+      ref={ref}
+      className={`relative pl-10 ${last ? '' : 'pb-4'} flex min-h-[58vh] flex-col justify-center`}
+    >
+      {/* Node */}
+      <span
+        className={`absolute left-0 top-1/2 grid h-5 w-5 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border transition-all duration-500 ${
+          inView
+            ? 'border-gold-400 bg-gold-400 shadow-[0_0_18px_-2px_rgba(240,198,116,0.7)]'
+            : 'border-white/30 bg-navy-950'
+        }`}
+      >
+        <span
+          className={`h-1.5 w-1.5 rounded-full transition-colors duration-500 ${
+            inView ? 'bg-navy-950' : 'bg-white/40'
+          }`}
+        />
+      </span>
+      <motion.div
+        animate={{ opacity: inView ? 1 : 0.3, x: inView ? 0 : 14 }}
+        transition={{ duration: 0.5, ease: [0.2, 0.7, 0.2, 1] }}
+      >
+        <span className="font-mono text-sm tracking-[0.3em] text-gold-400">
+          STAGE {String(index + 1).padStart(2, '0')}
+        </span>
+        <p className="mt-3 text-xl leading-relaxed text-white/80 sm:text-2xl">
+          {text}
+        </p>
+      </motion.div>
+    </div>
+  )
+}
+
+function TimelineStory({ project, story, scrollRef }) {
+  return (
+    <>
+      <StoryHeader project={project} />
+      <div className="mx-auto max-w-6xl px-5 pb-[15vh] sm:px-8">
+        <div className="mt-10 grid gap-10 lg:grid-cols-2">
+          <div className="lg:sticky lg:top-24 lg:h-fit lg:self-start">
+            <div className="flex items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-navy-900 p-3">
+              <img
+                src={project.images[0]}
+                alt={project.title}
+                className="max-h-[70vh] w-auto object-contain"
+              />
+            </div>
+          </div>
+          <div className="relative">
+            {/* Spine */}
+            <span className="absolute bottom-[8%] left-0 top-[8%] w-px bg-gradient-to-b from-gold-400/10 via-gold-400/40 to-gold-400/10" />
+            {story.map((p, i) => (
+              <TimelineStep
+                key={i}
+                index={i}
+                text={p}
+                scrollRef={scrollRef}
+                last={i === story.length - 1}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
 /* ── 3. Full-screen cinematic steps ───────────────────────────── */
 function CinematicSlide({ image, text, index, scrollRef }) {
   const reduce = useReducedMotion()
@@ -358,6 +430,13 @@ export default function ProjectModal({ project, onClose }) {
         >
           {style === 'sticky' && (
             <StickyStory
+              project={project}
+              story={story}
+              scrollRef={scrollRef}
+            />
+          )}
+          {style === 'timeline' && (
+            <TimelineStory
               project={project}
               story={story}
               scrollRef={scrollRef}
