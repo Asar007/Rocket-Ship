@@ -201,13 +201,19 @@ export default function CapsuleSimulator({
     const canvas = canvasRef.current
     if (!canvas) return
 
+    // Returns true only if it actually painted. The caller must NOT mark
+    // the frame as drawn on a false return, otherwise a first paint that
+    // happens before layout/decode (e.g. while the modal is animating
+    // in) would leave the canvas blank until a scroll changes the frame
+    // index — the "scroll a bit before it renders" bug.
     const draw = (frameIdx) => {
       const img = imagesRef.current[frameIdx]
       const ctx = canvas.getContext('2d')
-      if (!img || !ctx || !img.width) return
+      if (!img || !ctx || !img.width) return false
       const dpr = Math.min(window.devicePixelRatio || 1, 2)
       const cw = canvas.clientWidth
       const ch = canvas.clientHeight
+      if (!cw || !ch) return false
       if (canvas.width !== cw * dpr || canvas.height !== ch * dpr) {
         canvas.width = cw * dpr
         canvas.height = ch * dpr
@@ -232,6 +238,7 @@ export default function CapsuleSimulator({
         rectRef.current = next
         setImgRect(next)
       }
+      return true
     }
 
     let raf
@@ -245,8 +252,8 @@ export default function CapsuleSimulator({
         Math.min(FRAMES - 1, Math.round(s.current)),
       )
       if (frame !== s.drawn) {
-        draw(frame)
-        s.drawn = frame
+        // keep retrying every rAF until it genuinely paints
+        if (draw(frame)) s.drawn = frame
       }
       // Reflect the *smoothed* progress to React, but only when it
       // crosses a ~0.5% step — coalesces a scroll burst into ≤1 render

@@ -163,11 +163,11 @@ function StickyStory({ project, story, scrollRef }) {
 /* ── 2b. Mission timeline ─────────────────────────────────────── */
 function TimelineStep({ index, text, scrollRef, last }) {
   const ref = useRef(null)
-  const inView = useInView(ref, { root: scrollRef, amount: 0.6 })
+  const inView = useInView(ref, { root: scrollRef, amount: 0.55 })
   return (
     <div
       ref={ref}
-      className={`relative pl-10 ${last ? '' : 'pb-4'} flex min-h-[58vh] flex-col justify-center`}
+      className={`relative pl-10 ${last ? '' : 'pb-2'} flex min-h-[42vh] flex-col justify-center`}
     >
       {/* Node */}
       <span
@@ -184,7 +184,13 @@ function TimelineStep({ index, text, scrollRef, last }) {
         />
       </span>
       <motion.div
-        animate={{ opacity: inView ? 1 : 0.3, x: inView ? 0 : 14 }}
+        // Fully hidden until you scroll this stage into view — the next
+        // paragraph only reveals once you reach it, not shown dim ahead.
+        animate={{
+          opacity: inView ? 1 : 0,
+          y: inView ? 0 : 28,
+          filter: inView ? 'blur(0px)' : 'blur(6px)',
+        }}
         transition={{ duration: 0.5, ease: [0.2, 0.7, 0.2, 1] }}
       >
         <span className="font-mono text-sm tracking-[0.3em] text-gold-400">
