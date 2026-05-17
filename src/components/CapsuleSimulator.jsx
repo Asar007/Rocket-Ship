@@ -126,6 +126,11 @@ export default function CapsuleSimulator({
   const canvasRef = useRef(null)
   const imagesRef = useRef([])
   const renderState = useRef({ current: 0, target: 0, drawn: -1 })
+  // Last progress value pushed to React state, quantized to ~0.5% steps.
+  // Scroll updates a ref only; the rAF loop coalesces them into at most
+  // one re-render per frame (and none while idle) — this is what keeps
+  // the blurred callout boxes from re-painting on every scroll tick.
+  const progressStepRef = useRef(-1)
   const [loaded, setLoaded] = useState(0)
   const [ready, setReady] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -165,11 +170,21 @@ export default function CapsuleSimulator({
       const img = new Image()
       img.decoding = 'async'
       img.src = framePath(i + 1, active)
-      img.onload = img.onerror = () => {
+      const done = () => {
         if (cancelled) return
         count += 1
         setLoaded(count)
         if (count === active.frames) setReady(true)
+      }
+      // Decode off-thread up front so the first scroll-through never
+      // pays a synchronous JPEG decode on drawImage (a key stutter).
+      if (typeof img.decode === 'function') {
+        img.decode().then(done, () => {
+          img.onload = img.onerror = done
+          if (img.complete) done()
+        })
+      } else {
+        img.onload = img.onerror = done
       }
       imgs[i] = img
     }
@@ -233,6 +248,16 @@ export default function CapsuleSimulator({
         draw(frame)
         s.drawn = frame
       }
+      // Reflect the *smoothed* progress to React, but only when it
+      // crosses a ~0.5% step — coalesces a scroll burst into ≤1 render
+      // per frame and skips renders entirely once motion settles.
+      const denom = FRAMES - 1 || 1
+      const pp = s.current / denom
+      const step = Math.round(pp * 200)
+      if (step !== progressStepRef.current) {
+        progressStepRef.current = step
+        setProgress(pp)
+      }
       raf = requestAnimationFrame(tick)
     }
     raf = requestAnimationFrame(tick)
@@ -269,8 +294,9 @@ export default function CapsuleSimulator({
       const raw = -rect.top / (section.offsetHeight - vh)
       // brief assembled hold, then fully exploded before the pin releases
       const p = Math.max(0, Math.min(1, (raw - 0.06) / 0.82))
+      // Ref-only write — cheap, no re-render. The rAF loop turns this
+      // into smoothed canvas frames + a coalesced progress state update.
       renderState.current.target = p * (FRAMES - 1)
-      setProgress(p)
     }
     onScroll()
     const target = scroller || window
