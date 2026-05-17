@@ -8,6 +8,7 @@ import {
   useReducedMotion,
 } from 'framer-motion'
 import { X, MapPin, ChevronDown } from 'lucide-react'
+import CapsuleSimulator from './CapsuleSimulator.jsx'
 
 /* Inline "scroll to view more" cue — lives at the top of the header so
    it scrolls away (disappears) once the visitor scrolls down. */
@@ -201,30 +202,21 @@ function TimelineStory({ project, story, scrollRef }) {
   return (
     <>
       <StoryHeader project={project} />
-      <div className="mx-auto max-w-6xl px-5 pb-[15vh] sm:px-8">
-        <div className="mt-10 grid gap-10 lg:grid-cols-2">
-          <div className="lg:sticky lg:top-24 lg:h-fit lg:self-start">
-            <div className="flex items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-navy-900 p-3">
-              <img
-                src={project.images[0]}
-                alt={project.title}
-                className="max-h-[70vh] w-auto object-contain"
-              />
-            </div>
-          </div>
-          <div className="relative">
-            {/* Spine */}
-            <span className="absolute bottom-[6%] left-0 top-[6%] w-[6px] -translate-x-1/2 rounded-full bg-gradient-to-b from-gold-400/25 via-gold-400/70 to-gold-400/25" />
-            {story.map((p, i) => (
-              <TimelineStep
-                key={i}
-                index={i}
-                text={p}
-                scrollRef={scrollRef}
-                last={i === story.length - 1}
-              />
-            ))}
-          </div>
+      <div className="mx-auto max-w-3xl px-5 pb-[15vh] sm:px-8">
+        {/* Single centered timeline column — the capsule simulator above
+            already carries the visual, so no sticky image here. */}
+        <div className="relative mt-10 pl-3">
+          {/* Spine */}
+          <span className="absolute bottom-[6%] left-0 top-[6%] w-[6px] -translate-x-1/2 rounded-full bg-gradient-to-b from-gold-400/25 via-gold-400/70 to-gold-400/25" />
+          {story.map((p, i) => (
+            <TimelineStep
+              key={i}
+              index={i}
+              text={p}
+              scrollRef={scrollRef}
+              last={i === story.length - 1}
+            />
+          ))}
         </div>
       </div>
     </>
@@ -369,6 +361,31 @@ function KenBurnsStory({ project, story, scrollRef }) {
   )
 }
 
+/* ── 5. Scroll-driven crew-capsule simulator ──────────────────── */
+function CapsuleStory({ project, story, scrollRef }) {
+  return (
+    <div className="relative bg-[#000533]">
+      {/* Cinematic lead: the scroll-driven capsule simulator. */}
+      <div className="relative">
+        {/* Lightweight context label — the simulator carries its own
+            phase narrative, so this stays minimal and out of the way. */}
+        <div className="pointer-events-none absolute left-5 top-6 z-20 sm:left-8 sm:top-8">
+          <div className="font-mono text-[10px] uppercase tracking-[0.32em] text-gold-400">
+            {project.location} · {project.year}
+          </div>
+          <div className="mt-1 font-display text-lg font-semibold text-white sm:text-2xl">
+            {project.storyTitle || project.title}
+          </div>
+        </div>
+        <CapsuleSimulator scrollRootRef={scrollRef} embedded />
+      </div>
+
+      {/* Continue scrolling into the mission story (header + timeline). */}
+      <TimelineStory project={project} story={story} scrollRef={scrollRef} />
+    </div>
+  )
+}
+
 /* ── Modal shell ──────────────────────────────────────────────── */
 export default function ProjectModal({ project, onClose }) {
   const reduce = useReducedMotion()
@@ -451,6 +468,13 @@ export default function ProjectModal({ project, onClose }) {
           )}
           {style === 'kenburns' && (
             <KenBurnsStory
+              project={project}
+              story={story}
+              scrollRef={scrollRef}
+            />
+          )}
+          {style === 'capsule' && (
+            <CapsuleStory
               project={project}
               story={story}
               scrollRef={scrollRef}

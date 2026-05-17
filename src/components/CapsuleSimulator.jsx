@@ -109,7 +109,19 @@ const revealAt = (at, progress) => clamp01((progress - at) / 0.1)
 
 const clamp01 = (v) => Math.max(0, Math.min(1, v))
 
-export default function CapsuleSimulator() {
+/**
+ * @param scrollRootRef Optional ref to a scroll container (e.g. the
+ *   project modal's scrollable div). When given, scroll progress is
+ *   driven by that element instead of the window — required when the
+ *   simulator lives inside a modal where the page itself doesn't scroll.
+ * @param embedded When true, drop the standalone-page chrome (navbar
+ *   offset, full-bleed breakout, top margin) and pin to the container
+ *   top at full height.
+ */
+export default function CapsuleSimulator({
+  scrollRootRef = null,
+  embedded = false,
+} = {}) {
   const sectionRef = useRef(null)
   const canvasRef = useRef(null)
   const imagesRef = useRef([])
@@ -243,11 +255,17 @@ export default function CapsuleSimulator() {
     const section = sectionRef.current
     if (!section) return
 
+    // Drive off the modal scroll container when embedded; otherwise the
+    // window. The container is a full-viewport fixed element, so the
+    // section's viewport-relative rect.top still maps correctly.
+    const scroller =
+      scrollRootRef && scrollRootRef.current ? scrollRootRef.current : null
+
     const onScroll = () => {
       const rect = section.getBoundingClientRect()
-      const vh = window.innerHeight
-      // raw: 0 when the section's top hits the viewport top (pin starts),
-      // 1 when the pinned span is exhausted (pin releases)
+      const vh = scroller ? scroller.clientHeight : window.innerHeight
+      // raw: 0 when the section's top hits the scroll-area top (pin
+      // starts), 1 when the pinned span is exhausted (pin releases)
       const raw = -rect.top / (section.offsetHeight - vh)
       // brief assembled hold, then fully exploded before the pin releases
       const p = Math.max(0, Math.min(1, (raw - 0.06) / 0.82))
@@ -255,13 +273,14 @@ export default function CapsuleSimulator() {
       setProgress(p)
     }
     onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
+    const target = scroller || window
+    target.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onScroll)
     return () => {
-      window.removeEventListener('scroll', onScroll)
+      target.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onScroll)
     }
-  }, [ready, FRAMES])
+  }, [ready, FRAMES, scrollRootRef])
 
   const phase = phaseForProgress(progress)
   const pct = Math.round(progress * 100)
@@ -269,13 +288,21 @@ export default function CapsuleSimulator() {
   return (
     <section
       ref={sectionRef}
-      className="relative left-1/2 mt-16 h-[210vh] w-screen -translate-x-1/2"
+      className={
+        embedded
+          ? 'relative h-[210vh] w-full'
+          : 'relative left-1/2 mt-16 h-[210vh] w-screen -translate-x-1/2'
+      }
       style={{ background: NAVY }}
       aria-label="Interactive reusable crew capsule simulator"
     >
       {/* Pinned cinematic stage */}
       <div
-        className="sticky top-24 flex h-[calc(100vh-6rem)] w-full items-center justify-center overflow-hidden sm:top-28 sm:h-[calc(100vh-7rem)]"
+        className={
+          embedded
+            ? 'sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden'
+            : 'sticky top-24 flex h-[calc(100vh-6rem)] w-full items-center justify-center overflow-hidden sm:top-28 sm:h-[calc(100vh-7rem)]'
+        }
         style={{ background: NAVY }}
       >
         {/* soft volumetric ambient glow */}

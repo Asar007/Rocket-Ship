@@ -10,7 +10,6 @@ import {
 import { ArrowUpRight, MapPin } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading.jsx'
 import ProjectModal from '../components/ProjectModal.jsx'
-import CapsuleSimulator from '../components/CapsuleSimulator.jsx'
 
 // Staggered cascade: cards reveal one after another with a soft
 // blur-in / lift, instead of all firing at once.
@@ -56,7 +55,7 @@ const PROJECTS = [
     location: 'VSSC, Trivandrum · Chennai Works',
     year: '2024',
     tags: ['Aerospace', 'ISRO', 'Gaganyaan'],
-    storyStyle: 'timeline',
+    storyStyle: 'capsule',
     blurb:
       'An exact replica of the Gaganyaan crew capsule — built and handed over to ISRO/HSFC within 90 days.',
     images: [crewModule],
@@ -328,10 +327,6 @@ export default function Projects() {
             <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </motion.a>
         </div>
-
-        {/* === Cinematic Crew Training Simulator — scroll-driven hero
-            for the Projects section, before the project grid === */}
-        <CapsuleSimulator />
 
         <motion.div
           variants={gridVariants}
