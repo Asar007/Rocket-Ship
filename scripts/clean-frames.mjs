@@ -95,12 +95,24 @@ const patchBuf = await sharp(join(SRC, cleaned[apex]))
 let i = 1
 for (const f of sequence) {
   const name = `ezgif-frame-${String(i).padStart(3, '0')}.jpg`
-  await sharp(join(SRC, f))
-    .composite([{ input: patchBuf, left: WM.left, top: WM.top }])
+  // The final (fully-exploded) frame is the held resting state, so its
+  // softness/GIF speckle is the most visible. Give just that frame a
+  // mild unsharp pass (no denoise — keeps rivets/seams) at slightly
+  // higher quality. All other frames are untouched.
+  const isLast = i === sequence.length
+  let pipe = sharp(join(SRC, f)).composite([
+    { input: patchBuf, left: WM.left, top: WM.top },
+  ])
+  if (isLast) pipe = pipe.sharpen({ sigma: 0.9, m1: 0.5, m2: 2.4 })
+  await pipe
     // Near-lossless re-encode: the watermark composite forces a re-save,
     // so use q95 + full 4:4:4 chroma to avoid adding a visible second
     // generation of JPEG/chroma loss on top of the original source.
-    .jpeg({ quality: 95, chromaSubsampling: '4:4:4', mozjpeg: true })
+    .jpeg({
+      quality: isLast ? 96 : 95,
+      chromaSubsampling: '4:4:4',
+      mozjpeg: true,
+    })
     .toFile(join(OUT, name))
   i++
 }
