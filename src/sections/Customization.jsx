@@ -12,7 +12,6 @@ import {
   Sparkles,
 } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading.jsx'
-import CapsuleSimulator from '../components/CapsuleSimulator.jsx'
 
 const SECTORS = [
   'Energy',
@@ -105,8 +104,6 @@ const CAPABILITIES = [
 export default function Customization() {
   return (
     <section id="customization" className="section-pad relative">
-      {/* glows clipped in their own layer so the section never becomes an
-          overflow context — that would break the simulator's sticky pin */}
       <div className="pointer-events-none absolute inset-0 -z-0 overflow-hidden">
         <div className="absolute right-[-10%] top-[8%] h-[420px] w-[420px] rounded-full bg-electric-500/12 blur-3xl" />
         <div className="absolute left-[-10%] bottom-[20%] h-[420px] w-[420px] rounded-full bg-gold-500/10 blur-3xl" />
@@ -119,9 +116,6 @@ export default function Customization() {
           accentWord="anything"
           subtitle="A refinery stair tower one week, a space-grade structural module the next. Every project starts from a blank page and a senior engineer — there's no catalogue we're picking from."
         />
-
-        {/* === Cinematic capsule simulator === */}
-        <CapsuleSimulator />
 
         {/* === Range + sectors callout === */}
         <motion.div

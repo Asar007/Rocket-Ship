@@ -18,8 +18,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 // and are intentionally not used here).
 // Desktop = full-res JPEG sequence; mobile = ~80% lighter 960px WebP set
 // (forward / explode only). Both map assembled → fully-exploded apex.
-const DESKTOP = { dir: 'capsule', ext: 'jpg', frames: 122 }
-const MOBILE = { dir: 'capsule-sm', ext: 'webp', frames: 62 }
+const DESKTOP = { dir: 'capsule', ext: 'jpg', frames: 102 }
+const MOBILE = { dir: 'capsule-sm', ext: 'webp', frames: 52 }
 const NAVY = '#000533'
 const framePath = (i, cfg) =>
   `/${cfg.dir}/ezgif-frame-${String(i).padStart(3, '0')}.${cfg.ext}`
@@ -269,7 +269,7 @@ export default function CapsuleSimulator() {
   return (
     <section
       ref={sectionRef}
-      className="relative left-1/2 mt-16 h-[260vh] w-screen -translate-x-1/2"
+      className="relative left-1/2 mt-16 h-[210vh] w-screen -translate-x-1/2"
       style={{ background: NAVY }}
       aria-label="Interactive reusable crew capsule simulator"
     >

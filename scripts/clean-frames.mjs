@@ -28,7 +28,7 @@ const files = readdirSync(SRC)
   .filter((f) => /^ezgif-frame-\d+\.jpg$/.test(f))
   .sort()
 
-// 1. de-dupe by exact file content
+// 1a. de-dupe by exact file content (drops byte-identical GIF padding)
 const deduped = []
 let lastHash = null
 for (const f of files) {
@@ -40,25 +40,54 @@ for (const f of files) {
   }
 }
 
-// 2. apex = deduped frame whose original number is closest to APEX_TARGET
+// 1b. perceptual de-dupe: GIF re-encoding leaves frames that look
+// identical but differ by a few JPEG bytes (so 1a misses them). Compare
+// a 96x54 grayscale signature against the last KEPT frame and drop the
+// candidate if it has not visibly moved. Comparing to the last *kept*
+// frame (not the immediate predecessor) lets slow exploded-view motion
+// accumulate and survive, while genuinely stuck frames never accumulate
+// and are removed.
+const PERCEPTUAL_THRESHOLD = 0.35 // mean per-pixel delta (0..255)
+const sig = (f) =>
+  sharp(join(SRC, f))
+    .grayscale()
+    .resize(96, 54, { fit: 'fill' })
+    .raw()
+    .toBuffer()
+const cleaned = []
+let lastSig = null
+for (const f of deduped) {
+  const s = await sig(f)
+  if (lastSig) {
+    let acc = 0
+    for (let i = 0; i < s.length; i++) acc += Math.abs(s[i] - lastSig[i])
+    if (acc / s.length < PERCEPTUAL_THRESHOLD) continue
+  }
+  cleaned.push(f)
+  lastSig = s
+}
+
+// 2. apex = cleaned frame whose original number is closest to APEX_TARGET
 const num = (f) => parseInt(f.match(/(\d+)/)[1], 10)
 let apex = 0
-for (let i = 0; i < deduped.length; i++) {
+for (let i = 0; i < cleaned.length; i++) {
   if (
-    Math.abs(num(deduped[i]) - APEX_TARGET) <
-    Math.abs(num(deduped[apex]) - APEX_TARGET)
+    Math.abs(num(cleaned[i]) - APEX_TARGET) <
+    Math.abs(num(cleaned[apex]) - APEX_TARGET)
   )
     apex = i
 }
-const forward = deduped.slice(0, apex + 1)
-const back = forward.slice(1, -1).reverse() // reassembly = reversed forward
-const sequence = [...forward, ...back]
+// Desktop = disassembly ONLY (assembled -> fully-exploded apex). The
+// scroll maps the whole span onto this range so the capsule comes apart
+// and stays apart — it must NOT reassemble. (No reversed/loop tail.)
+const sequence = cleaned.slice(0, apex + 1)
+const forward = sequence
 
 // 3. regenerate output
 rmSync(OUT, { recursive: true, force: true })
 mkdirSync(OUT, { recursive: true })
 
-const patchBuf = await sharp(join(SRC, deduped[apex]))
+const patchBuf = await sharp(join(SRC, cleaned[apex]))
   .extract(PATCH)
   .flop()
   .toBuffer()
@@ -68,7 +97,10 @@ for (const f of sequence) {
   const name = `ezgif-frame-${String(i).padStart(3, '0')}.jpg`
   await sharp(join(SRC, f))
     .composite([{ input: patchBuf, left: WM.left, top: WM.top }])
-    .jpeg({ quality: 84, mozjpeg: true })
+    // Near-lossless re-encode: the watermark composite forces a re-save,
+    // so use q95 + full 4:4:4 chroma to avoid adding a visible second
+    // generation of JPEG/chroma loss on top of the original source.
+    .jpeg({ quality: 95, chromaSubsampling: '4:4:4', mozjpeg: true })
     .toFile(join(OUT, name))
   i++
 }
@@ -90,13 +122,13 @@ for (const f of mobileSrc) {
   await sharp(join(SRC, f))
     .composite([{ input: patchBuf, left: WM.left, top: WM.top }])
     .resize({ width: 960 })
-    .webp({ quality: 72 })
+    .webp({ quality: 85 })
     .toFile(join(OUT_SM, name))
   m++
 }
 
 console.log(
-  `source ${files.length} -> deduped ${deduped.length} -> ` +
-    `apex@orig${num(deduped[apex])} -> desktop loop ${sequence.length} -> ` +
-    `mobile ${mobileSrc.length} frames`,
+  `source ${files.length} -> exact-deduped ${deduped.length} -> ` +
+    `perceptual-cleaned ${cleaned.length} -> apex@orig${num(cleaned[apex])} -> ` +
+    `desktop disassembly ${sequence.length} -> mobile ${mobileSrc.length} frames`,
 )
