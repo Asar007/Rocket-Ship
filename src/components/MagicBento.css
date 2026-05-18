@@ -6,19 +6,19 @@
 
 .mb-card-grid {
   display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+  grid-template-columns: repeat(3, 1fr);
 }
 
 @media (min-width: 640px) {
   .mb-card-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
 @media (min-width: 1024px) {
   .mb-card-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(6, 1fr);
   }
 }
 
@@ -35,26 +35,37 @@
   justify-content: space-between;
   gap: 0.75rem;
   aspect-ratio: 1 / 1;
-  padding: 1rem;
-  border-radius: 1.25rem;
+  padding: 0.55rem;
+  border-radius: 0.9rem;
   border: 1px solid var(--mb-border);
   background: var(--mb-bg);
   backdrop-filter: blur(20px);
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   transform-style: preserve-3d;
+  /* Soft always-on ambient glow — visible on mobile / no-cursor too */
+  box-shadow: 0 0 18px rgba(var(--mb-glow), 0.1);
 
   --glow-x: 50%;
   --glow-y: 50%;
   --glow-intensity: 0;
-  --glow-radius: 220px;
+  --glow-radius: 280px;
 }
 
 .mb-card:hover {
-  border-color: rgba(var(--mb-glow), 0.35);
+  border-color: rgba(var(--mb-glow), 0.55);
   box-shadow:
     0 8px 30px rgba(0, 0, 0, 0.35),
-    0 0 30px rgba(var(--mb-glow), 0.18);
+    0 0 45px rgba(var(--mb-glow), 0.35);
+}
+
+/* Touch / no-cursor devices: stronger resting glow since the
+   cursor-driven spotlight never fires there */
+@media (hover: none) {
+  .mb-card {
+    border-color: rgba(var(--mb-glow), 0.28);
+    box-shadow: 0 0 26px rgba(var(--mb-glow), 0.18);
+  }
 }
 
 .mb-card__logo {
@@ -63,9 +74,9 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  border-radius: 0.9rem;
+  border-radius: 0.6rem;
   background: #fff;
-  padding: 0.9rem;
+  padding: 0.5rem;
 }
 
 .mb-card__logo img {
@@ -79,8 +90,8 @@
   z-index: 2;
   width: 100%;
   text-align: center;
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
+  font-size: 0.6rem;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.65);
   white-space: nowrap;
@@ -96,9 +107,9 @@
   padding: 5px;
   background: radial-gradient(
     var(--glow-radius) circle at var(--glow-x) var(--glow-y),
-    rgba(var(--mb-glow), calc(var(--glow-intensity) * 0.85)) 0%,
-    rgba(var(--mb-glow), calc(var(--glow-intensity) * 0.4)) 30%,
-    transparent 60%
+    rgba(var(--mb-glow), var(--glow-intensity)) 0%,
+    rgba(var(--mb-glow), calc(var(--glow-intensity) * 0.65)) 30%,
+    transparent 65%
   );
   border-radius: inherit;
   -webkit-mask:

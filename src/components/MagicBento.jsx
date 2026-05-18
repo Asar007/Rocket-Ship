@@ -25,6 +25,12 @@ const createParticleElement = (x, y, color = DEFAULT_GLOW_COLOR) => {
   return el
 }
 
+const getEventPoint = (e) => {
+  if (e.touches && e.touches.length) return e.touches[0]
+  if (e.changedTouches && e.changedTouches.length) return e.changedTouches[0]
+  return e
+}
+
 const calculateSpotlightValues = (radius) => ({
   proximity: radius * 0.5,
   fadeDistance: radius * 0.75,
@@ -150,9 +156,10 @@ function ParticleCard({
 
     const handleMouseMove = (e) => {
       if (!enableTilt && !enableMagnetism) return
+      const point = getEventPoint(e)
       const rect = element.getBoundingClientRect()
-      const x = e.clientX - rect.left
-      const y = e.clientY - rect.top
+      const x = point.clientX - rect.left
+      const y = point.clientY - rect.top
       const centerX = rect.width / 2
       const centerY = rect.height / 2
 
@@ -176,9 +183,10 @@ function ParticleCard({
 
     const handleClick = (e) => {
       if (!clickEffect) return
+      const point = getEventPoint(e)
       const rect = element.getBoundingClientRect()
-      const x = e.clientX - rect.left
-      const y = e.clientY - rect.top
+      const x = point.clientX - rect.left
+      const y = point.clientY - rect.top
 
       const maxDistance = Math.max(
         Math.hypot(x, y),
@@ -208,10 +216,20 @@ function ParticleCard({
       )
     }
 
+    const handleTouchStart = (e) => {
+      handleMouseEnter()
+      handleClick(e)
+    }
+    const handleTouchEnd = () => handleMouseLeave()
+
     element.addEventListener('mouseenter', handleMouseEnter)
     element.addEventListener('mouseleave', handleMouseLeave)
     element.addEventListener('mousemove', handleMouseMove)
     element.addEventListener('click', handleClick)
+    element.addEventListener('touchstart', handleTouchStart, { passive: true })
+    element.addEventListener('touchmove', handleMouseMove, { passive: true })
+    element.addEventListener('touchend', handleTouchEnd, { passive: true })
+    element.addEventListener('touchcancel', handleTouchEnd, { passive: true })
 
     return () => {
       isHoveredRef.current = false
@@ -219,6 +237,10 @@ function ParticleCard({
       element.removeEventListener('mouseleave', handleMouseLeave)
       element.removeEventListener('mousemove', handleMouseMove)
       element.removeEventListener('click', handleClick)
+      element.removeEventListener('touchstart', handleTouchStart)
+      element.removeEventListener('touchmove', handleMouseMove)
+      element.removeEventListener('touchend', handleTouchEnd)
+      element.removeEventListener('touchcancel', handleTouchEnd)
       clearAllParticles()
     }
   }, [animateParticles, clearAllParticles, disableAnimations, enableTilt, enableMagnetism, clickEffect, glowColor])
@@ -255,11 +277,11 @@ function GlobalSpotlight({
       border-radius: 50%;
       pointer-events: none;
       background: radial-gradient(circle,
-        rgba(${glowColor}, 0.14) 0%,
-        rgba(${glowColor}, 0.07) 15%,
-        rgba(${glowColor}, 0.04) 25%,
-        rgba(${glowColor}, 0.02) 40%,
-        rgba(${glowColor}, 0.01) 65%,
+        rgba(${glowColor}, 0.28) 0%,
+        rgba(${glowColor}, 0.15) 15%,
+        rgba(${glowColor}, 0.08) 25%,
+        rgba(${glowColor}, 0.04) 40%,
+        rgba(${glowColor}, 0.02) 65%,
         transparent 70%
       );
       z-index: 200;
@@ -273,10 +295,15 @@ function GlobalSpotlight({
     const handleMouseMove = (e) => {
       if (!spotlightRef.current || !gridRef.current) return
 
+      const point = getEventPoint(e)
+      const px = point.clientX
+      const py = point.clientY
+      if (px == null || py == null) return
+
       const section = gridRef.current.closest('.mb-section')
       const rect = section?.getBoundingClientRect()
       const mouseInside =
-        rect && e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom
+        rect && px >= rect.left && px <= rect.right && py >= rect.top && py <= rect.bottom
 
       const cards = gridRef.current.querySelectorAll('.mb-card')
 
@@ -294,7 +321,7 @@ function GlobalSpotlight({
         const centerX = cardRect.left + cardRect.width / 2
         const centerY = cardRect.top + cardRect.height / 2
         const distance =
-          Math.hypot(e.clientX - centerX, e.clientY - centerY) - Math.max(cardRect.width, cardRect.height) / 2
+          Math.hypot(px - centerX, py - centerY) - Math.max(cardRect.width, cardRect.height) / 2
         const effectiveDistance = Math.max(0, distance)
 
         minDistance = Math.min(minDistance, effectiveDistance)
@@ -306,16 +333,16 @@ function GlobalSpotlight({
           glowIntensity = (fadeDistance - effectiveDistance) / (fadeDistance - proximity)
         }
 
-        updateCardGlowProperties(card, e.clientX, e.clientY, glowIntensity, spotlightRadius)
+        updateCardGlowProperties(card, px, py, glowIntensity, spotlightRadius)
       })
 
-      gsap.to(spotlightRef.current, { left: e.clientX, top: e.clientY, duration: 0.1, ease: 'power2.out' })
+      gsap.to(spotlightRef.current, { left: px, top: py, duration: 0.1, ease: 'power2.out' })
 
       const targetOpacity =
         minDistance <= proximity
-          ? 0.8
+          ? 1
           : minDistance <= fadeDistance
-            ? ((fadeDistance - minDistance) / (fadeDistance - proximity)) * 0.8
+            ? (fadeDistance - minDistance) / (fadeDistance - proximity)
             : 0
 
       gsap.to(spotlightRef.current, {
@@ -336,10 +363,18 @@ function GlobalSpotlight({
 
     document.addEventListener('mousemove', handleMouseMove)
     document.addEventListener('mouseleave', handleMouseLeave)
+    document.addEventListener('touchstart', handleMouseMove, { passive: true })
+    document.addEventListener('touchmove', handleMouseMove, { passive: true })
+    document.addEventListener('touchend', handleMouseLeave, { passive: true })
+    document.addEventListener('touchcancel', handleMouseLeave, { passive: true })
 
     return () => {
       document.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseleave', handleMouseLeave)
+      document.removeEventListener('touchstart', handleMouseMove)
+      document.removeEventListener('touchmove', handleMouseMove)
+      document.removeEventListener('touchend', handleMouseLeave)
+      document.removeEventListener('touchcancel', handleMouseLeave)
       spotlightRef.current?.parentNode?.removeChild(spotlightRef.current)
     }
   }, [gridRef, disableAnimations, enabled, spotlightRadius, glowColor])
@@ -375,7 +410,12 @@ export default function MagicBento({
 }) {
   const gridRef = useRef(null)
   const isMobile = useMobileDetection()
-  const shouldDisableAnimations = disableAnimations || isMobile
+  // Glow / spotlight / particles stay enabled on touch (driven by touch
+  // events). Only tilt + magnetism are dropped — they feel wrong when a
+  // finger covers the card.
+  const shouldDisableAnimations = disableAnimations
+  const tiltEnabled = enableTilt && !isMobile
+  const magnetismEnabled = enableMagnetism && !isMobile
 
   return (
     <>
@@ -412,9 +452,9 @@ export default function MagicBento({
                 disableAnimations={shouldDisableAnimations}
                 particleCount={particleCount}
                 glowColor={glowColor}
-                enableTilt={enableTilt}
+                enableTilt={tiltEnabled}
                 clickEffect={clickEffect}
-                enableMagnetism={enableMagnetism}
+                enableMagnetism={magnetismEnabled}
               >
                 {inner}
               </ParticleCard>
