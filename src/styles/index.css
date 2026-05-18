@@ -195,22 +195,6 @@ body {
   background-size: 56px 56px;
 }
 
-/* Hide marquee gap */
-.marquee-mask {
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
-  mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
-  /* Isolate the masked + blurred container on its own layer so the
-     moving track underneath doesn't force a full re-raster each frame. */
-  transform: translateZ(0);
-}
-
-/* GPU-composite the moving track to kill sub-pixel shutter */
-.marquee-track {
-  will-change: transform;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-}
-
 /* Reduce motion */
 @media (prefers-reduced-motion: reduce) {
   *,
