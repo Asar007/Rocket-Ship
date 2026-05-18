@@ -3,7 +3,6 @@ import { Outlet, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar.jsx'
 import Footer from './components/Footer.jsx'
 import CallbackDialog from './components/CallbackDialog.jsx'
-import ScrollCue from './components/ScrollCue.jsx'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -23,7 +22,6 @@ export default function Layout() {
       </main>
       <Footer />
       <CallbackDialog />
-      <ScrollCue />
     </div>
   )
 }
