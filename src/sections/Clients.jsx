@@ -71,7 +71,7 @@ export default function Clients() {
         >
           {/* Row 1 — first half (unique set) */}
           <div className="group/marquee overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] py-6 backdrop-blur-xl marquee-mask">
-            <ul className="flex animate-marquee whitespace-nowrap group-hover/marquee:[animation-play-state:paused]">
+            <ul className="marquee-track flex animate-marquee whitespace-nowrap group-hover/marquee:[animation-play-state:paused]">
               {[...ROW_A, ...ROW_A].map((c, i) => (
                 <LogoChip key={`a-${c.name}-${i}`} {...c} />
               ))}
@@ -81,7 +81,7 @@ export default function Clients() {
           {/* Row 2 — second half (unique set), reverse direction */}
           <div className="group/marquee overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] py-6 backdrop-blur-xl marquee-mask">
             <ul
-              className="flex animate-marquee whitespace-nowrap group-hover/marquee:[animation-play-state:paused]"
+              className="marquee-track flex animate-marquee whitespace-nowrap group-hover/marquee:[animation-play-state:paused]"
               style={{ animationDirection: 'reverse', animationDuration: '55s' }}
             >
               {[...ROW_B, ...ROW_B].map((c, i) => (
