@@ -7,33 +7,13 @@ import {
   useInView,
   useReducedMotion,
 } from 'framer-motion'
-import { X, MapPin, ChevronDown } from 'lucide-react'
+import { X, MapPin } from 'lucide-react'
 import CapsuleSimulator from './CapsuleSimulator.jsx'
-
-/* Inline "scroll to view more" cue — lives at the top of the header so
-   it scrolls away (disappears) once the visitor scrolls down. */
-function ScrollMore() {
-  const reduce = useReducedMotion()
-  return (
-    <div className="mb-8 flex items-center gap-2 text-white/40">
-      <span className="font-mono text-[10px] uppercase tracking-[0.3em]">
-        Scroll to view more
-      </span>
-      <motion.span
-        animate={reduce ? undefined : { y: [0, 6, 0] }}
-        transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
-      >
-        <ChevronDown className="h-4 w-4" />
-      </motion.span>
-    </div>
-  )
-}
 
 /* ── Shared header ─────────────────────────────────────────────── */
 function StoryHeader({ project }) {
   return (
     <div className="mx-auto max-w-5xl px-5 pt-20 sm:px-8 sm:pt-24">
-      <ScrollMore />
       <div className="flex flex-wrap items-center gap-3">
         <span className="font-mono text-[11px] uppercase tracking-[0.32em] text-gold-400">
           Selected work
@@ -276,9 +256,6 @@ function CinematicStory({ project, story, scrollRef }) {
           className="absolute inset-0 h-full w-full scale-105 object-cover"
         />
         <div className="absolute inset-0 bg-navy-950/65" />
-        <div className="absolute left-1/2 top-8 -translate-x-1/2">
-          <ScrollMore />
-        </div>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
