@@ -323,7 +323,17 @@ export default function CapsuleSimulator({
       ref={sectionRef}
       className={
         embedded
-          ? 'relative h-[210vh] w-full'
+          ? // dvh (not vh): on mobile, vh counts the area behind the
+            // dynamic toolbar, so the section overshoots the visible
+            // viewport and the scroll/pin math (which divides by the
+            // container's real px height) drifts. dvh tracks the
+            // visible viewport and == vh on desktop. Shorter pin span
+            // on mobile — a phone has less scroll patience and the
+            // mobile frame set is lighter, so ~0.5 screen of travel
+            // disassembles it instead of ~1.1.
+            isMobile
+            ? 'relative h-[150dvh] w-full'
+            : 'relative h-[210dvh] w-full'
           : 'relative left-1/2 mt-16 h-[210vh] w-screen -translate-x-1/2'
       }
       style={{ background: NAVY }}
@@ -333,7 +343,7 @@ export default function CapsuleSimulator({
       <div
         className={
           embedded
-            ? 'sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden'
+            ? 'sticky top-0 flex h-[100dvh] w-full items-center justify-center overflow-hidden'
             : 'sticky top-24 flex h-[calc(100vh-6rem)] w-full items-center justify-center overflow-hidden sm:top-28 sm:h-[calc(100vh-7rem)]'
         }
         style={{ background: NAVY }}
