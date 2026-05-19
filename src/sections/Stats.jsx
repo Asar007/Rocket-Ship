@@ -1,14 +1,14 @@
 import { motion } from 'framer-motion'
-import { Briefcase, Calendar, Users, Wrench } from 'lucide-react'
+import { Briefcase, Calendar, Users, Clock } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading.jsx'
 import AnimatedCounter from '../components/AnimatedCounter.jsx'
 import ProgressRing from '../components/ProgressRing.jsx'
 
 const NUMBERS = [
-  { icon: Briefcase, label: 'Projects delivered', value: 120, suffix: '+' },
-  { icon: Calendar, label: 'Years of operation', value: 27, suffix: '' },
-  { icon: Users, label: 'Field engineers', value: 90, suffix: '+' },
-  { icon: Wrench, label: 'Tonnes fabricated', value: 8400, suffix: '' },
+  { icon: Briefcase, label: 'Projects completed', value: 200, suffix: '' },
+  { icon: Calendar, label: 'Years of operation', value: 17, suffix: '' },
+  { icon: Users, label: 'Team members', value: 100, suffix: '' },
+  { icon: Clock, label: 'Hours worked', value: 6260, suffix: '' },
 ]
 
 export default function Stats() {
@@ -19,7 +19,7 @@ export default function Stats() {
           eyebrow="By the numbers"
           title="Track record, measured."
           accentWord="measured"
-          subtitle="Numbers from the last 12 months — refreshed quarterly, audited annually."
+          subtitle="A snapshot of our work since 2009 — across space, paper, sugar and petrochemical projects."
         />
 
         <div className="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-5">

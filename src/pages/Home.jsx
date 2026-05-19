@@ -15,8 +15,8 @@ export function Component() {
   return (
     <>
       <Seo
-        title="Engineering Precision for Modern Infrastructure"
-        description="Madras Swastic Engineers — turnkey industrial engineering: structural fabrication, plant erection, and precision mechanical solutions across India. Fabrication partner on ISRO's Gaganyaan programme."
+        title="Engineering Precision for Space & Industry"
+        description="Madras Swastic Engineers fabricates anything from the smallest precision connection to complete space-capsule and rocket-test systems for ISRO — plus turnkey plants for the paper, sugar and petrochemical industries across India."
         path="/"
       />
       <Hero />

@@ -8,9 +8,9 @@ const CARDS = [
     eyebrow: '01 / Quality',
     title: 'Built to Outlast.',
     body:
-      'Every weld, plate and bolt passes a documented inspection protocol. We hold ourselves to standards our clients use as benchmarks.',
+      'Every weld, plate and bolt passes a documented inspection protocol. We hold ourselves to the standards space-grade work demands.',
     icon: Gem,
-    metric: 'ISO 9001 : 2015',
+    metric: 'Space-grade QA',
     accent: 'from-electric-400/50 via-electric-500/30 to-transparent',
   },
   {
@@ -18,9 +18,9 @@ const CARDS = [
     eyebrow: '02 / Delivery',
     title: 'Timelines, Hit.',
     body:
-      'On-the-day project handovers are our default. Critical-path scheduling, in-house fabrication and a 90-strong field team make it possible.',
+      'On-the-day project handovers are our default. Critical-path scheduling and in-house fabrication keep timelines intact.',
     icon: Timer,
-    metric: '96.4% on-time',
+    metric: 'On-time handover',
     accent: 'from-gold-400/50 via-gold-500/30 to-transparent',
   },
   {
@@ -30,7 +30,7 @@ const CARDS = [
     body:
       'Transparent BOQs, in-house engineering and direct material sourcing — we pass the savings to you, not into a bloated middle layer.',
     icon: LineChart,
-    metric: 'Avg. 18% cost-saving',
+    metric: 'Transparent BOQs',
     accent: 'from-electric-400/50 via-gold-400/30 to-transparent',
   },
 ]

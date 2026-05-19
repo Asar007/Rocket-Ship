@@ -98,8 +98,8 @@ export default function Hero() {
                   </defs>
                 </svg>
               </span>{' '}
-              for Modern <br className="hidden sm:block" />
-              <span className="text-white/90">Infrastructure.</span>
+              for Space <br className="hidden sm:block" />
+              <span className="text-white/90">&amp; Industry.</span>
             </h1>
           </motion.div>
 
@@ -110,9 +110,10 @@ export default function Hero() {
             custom={2}
             className="mt-7 max-w-xl text-base leading-relaxed text-white/65 sm:text-lg"
           >
-            Madras Swastic Engineers is a turnkey industrial engineering firm delivering structural
-            fabrication, plant erection, and precision mechanical solutions for energy, refinery,
-            and manufacturing leaders across India.
+            Founded in 2009, Madras Swastic Engineers fabricates across the full scale of
+            industry, from the smallest precision connection to complete rocket test systems and
+            space capsule handling for ISRO. Turnkey engineering for the space, paper, sugar and
+            petrochemical sectors across India.
           </motion.p>
 
           {/* Trust strip */}
@@ -124,9 +125,9 @@ export default function Hero() {
             className="mt-12 grid grid-cols-3 gap-4 sm:max-w-lg"
           >
             {[
-              { k: '120+', v: 'Projects' },
-              { k: '27 yrs', v: 'On the field' },
-              { k: 'ISO 9001', v: 'Certified' },
+              { k: '2009', v: 'Established' },
+              { k: 'Space-grade', v: 'Engineering' },
+              { k: 'Any scale', v: 'Connections to capsules' },
             ].map((s) => (
               <div key={s.v} className="border-l border-white/10 pl-4">
                 <div className="font-display text-xl font-semibold text-white sm:text-2xl">

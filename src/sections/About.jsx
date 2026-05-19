@@ -1,35 +1,35 @@
 import { motion } from 'framer-motion'
-import { Factory, ShieldCheck, Award, Building2 } from 'lucide-react'
+import { Rocket, Factory, Droplets, FlaskConical } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading.jsx'
 
-const MILESTONES = [
+const CAPABILITIES = [
   {
-    year: '1998',
-    title: 'Founded in Chennai',
+    tag: 'SPACE',
+    title: 'ISRO launch programmes',
     body:
-      'Madras Swastic Engineers begins as a small fabrication workshop serving local refineries.',
-    icon: Building2,
+      'Design, development, manufacture and installation of rocket vibration-simulation systems, zero-G testing rigs, rocket equipment handling and ground systems for launch — across PSLV, GSLV, GSLV Mk III and the Gaganyaan mission.',
+    icon: Rocket,
   },
   {
-    year: '2006',
-    title: 'ISO 9001 Certified',
+    tag: 'PAPER',
+    title: 'Paper industry turnkey plants',
     body:
-      'Quality management systems formalized; first multi-state turnkey contract for a petrochem client.',
-    icon: ShieldCheck,
-  },
-  {
-    year: '2014',
-    title: 'New Plant — Sriperumbudur',
-    body:
-      '42,000 sq.ft. manufacturing facility commissioned. Heavy steel, piping and skid assembly under one roof.',
+      'Turnkey equipment for the manufacture of Milk of Lime, plus raw-water and effluent treatment plants for paper mills.',
     icon: Factory,
   },
   {
-    year: '2023',
-    title: 'Industry Excellence Award',
+    tag: 'SUGAR',
+    title: 'Sugar industry ETP',
     body:
-      'Recognised for zero-incident execution across 12 simultaneous on-site projects.',
-    icon: Award,
+      'Effluent treatment plants engineered and supplied for sugar processing operations.',
+    icon: Droplets,
+  },
+  {
+    tag: 'PETROCHEM',
+    title: 'Petrochemical ETP & water treatment',
+    body:
+      'Effluent treatment plants and water-treatment equipment for petrochemical clients.',
+    icon: FlaskConical,
   },
 ]
 
@@ -39,9 +39,9 @@ export default function About() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="About the firm"
-          title="Built on Precision. Driven by People."
-          accentWord="Precision"
-          subtitle="Three decades of engineering work across India's industrial backbone — refineries, power plants, manufacturing floors. We treat every drawing like it matters, because it does."
+          title="Engineering for Space. Built for Industry."
+          accentWord="Space"
+          subtitle="Founded in 2009, Madras Swastik Engineers provides service and engineering support to ISRO and to the paper, sugar and petrochemical industries — from rocket test systems to turnkey treatment plants."
         />
 
         <div className="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-12">
@@ -58,20 +58,23 @@ export default function About() {
 
             <span className="eyebrow">Our story</span>
             <h3 className="mt-3 font-display text-2xl font-semibold leading-tight text-white sm:text-3xl">
-              From a single fabrication bay to a multi-site industrial partner.
+              Supporting India&rsquo;s space programme and core industries since 2009.
             </h3>
             <p className="mt-5 text-[15px] leading-relaxed text-white/70">
-              We started with three engineers, two welders and a stubborn belief that Indian
-              industry deserved better execution. Today, we operate two manufacturing facilities
-              and a 90-strong on-site team — and we still take every drawing home at night.
+              Madras Swastic Engineers was started in 2009 to provide service and
+              engineering support to the ISRO group, paper, sugar and petrochemical
+              industries, and water-treatment equipment. For ISRO&rsquo;s PSLV, GSLV,
+              GSLV Mk III and Gaganyaan missions our role spans the design, development,
+              manufacture and installation of rocket vibration-simulation systems, zero-G
+              testing, rocket equipment handling and ground systems for launch.
             </p>
 
             <div className="mt-7 grid grid-cols-2 gap-3 text-sm">
               {[
-                ['90+', 'Field engineers'],
-                ['42k sq.ft.', 'Manufacturing'],
-                ['12', 'Active sites'],
-                ['0', 'Lost-time incidents 2024'],
+                ['2009', 'Established'],
+                ['ISRO', 'Space programmes'],
+                ['4', 'Industry sectors'],
+                ['Turnkey', 'Delivery model'],
               ].map(([k, v]) => (
                 <div
                   key={v}
@@ -84,15 +87,15 @@ export default function About() {
             </div>
           </motion.div>
 
-          {/* Timeline */}
+          {/* Capabilities */}
           <div className="relative lg:col-span-7">
             {/* Vertical rail */}
             <div className="absolute left-4 top-2 bottom-2 w-px bg-gradient-to-b from-transparent via-white/15 to-transparent sm:left-6" />
 
             <ul className="space-y-5">
-              {MILESTONES.map((m, i) => (
+              {CAPABILITIES.map((m, i) => (
                 <motion.li
-                  key={m.year}
+                  key={m.tag}
                   initial={{ opacity: 0, x: 24 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, margin: '-60px' }}
@@ -107,7 +110,7 @@ export default function About() {
                   <div className="glass group rounded-2xl p-5 transition-all duration-500 hover:border-white/20 hover:shadow-glow-blue">
                     <div className="flex items-baseline gap-3">
                       <span className="font-mono text-xs tracking-[0.25em] text-gold-400">
-                        {m.year}
+                        {m.tag}
                       </span>
                       <span className="h-px flex-1 bg-white/10" />
                     </div>
