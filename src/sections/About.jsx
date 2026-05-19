@@ -1,6 +1,8 @@
+import { useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Rocket, Factory, Droplets, FlaskConical } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading.jsx'
+import { GlobalSpotlight } from '../components/MagicBento.jsx'
 
 const CAPABILITIES = [
   {
@@ -34,6 +36,8 @@ const CAPABILITIES = [
 ]
 
 export default function About() {
+  const gridRef = useRef(null)
+
   return (
     <section id="about" className="section-pad relative">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -44,7 +48,16 @@ export default function About() {
           subtitle="Founded in 2009, Madras Swastik Engineers provides service and engineering support to ISRO and to the paper, sugar and petrochemical industries, from rocket test systems to turnkey treatment plants."
         />
 
-        <div className="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-12">
+        <GlobalSpotlight
+          gridRef={gridRef}
+          sectionSelector=".mb-glow-section"
+          cardSelector=".mb-glow-card"
+          spotlightRadius={380}
+        />
+        <div
+          ref={gridRef}
+          className="mb-glow-section mt-14 grid grid-cols-1 gap-8 lg:grid-cols-12"
+        >
           {/* Story panel */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -78,7 +91,7 @@ export default function About() {
               ].map(([k, v]) => (
                 <div
                   key={v}
-                  className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3"
+                  className="mb-glow-card relative rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3"
                 >
                   <div className="font-display text-lg font-semibold text-white">{k}</div>
                   <div className="text-xs uppercase tracking-[0.15em] text-white/55">{v}</div>
@@ -107,7 +120,7 @@ export default function About() {
                     <m.icon className="h-3.5 w-3.5 text-gold-400" />
                   </span>
 
-                  <div className="glass group rounded-2xl p-5 transition-all duration-500 hover:border-white/20 hover:shadow-glow-blue">
+                  <div className="mb-glow-card relative glass group rounded-2xl p-5 transition-all duration-500 hover:border-white/20 hover:shadow-glow-blue">
                     <div className="flex items-baseline gap-3">
                       <span className="font-mono text-xs tracking-[0.25em] text-gold-400">
                         {m.tag}

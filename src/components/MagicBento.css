@@ -125,6 +125,47 @@
   z-index: 1;
 }
 
+/* Layout-free glow: reuse the spotlight/border-glow behaviour on any
+   existing card without inheriting .mb-card's size/background/layout. */
+.mb-glow-card {
+  --glow-x: 50%;
+  --glow-y: 50%;
+  --glow-intensity: 0;
+  --glow-radius: 280px;
+  box-shadow: 0 0 18px rgba(var(--mb-glow), 0.08);
+}
+
+.mb-glow-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 4px;
+  background: radial-gradient(
+    var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+    rgba(var(--mb-glow), var(--glow-intensity)) 0%,
+    rgba(var(--mb-glow), calc(var(--glow-intensity) * 0.65)) 30%,
+    transparent 65%
+  );
+  border-radius: inherit;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+@media (hover: none) {
+  .mb-glow-card {
+    box-shadow: 0 0 24px rgba(var(--mb-glow), 0.16);
+  }
+}
+
 .mb-particle-container {
   position: relative;
   overflow: hidden;

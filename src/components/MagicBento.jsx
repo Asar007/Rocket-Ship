@@ -47,7 +47,7 @@ const updateCardGlowProperties = (card, mouseX, mouseY, glow, radius) => {
   card.style.setProperty('--glow-radius', `${radius}px`)
 }
 
-function ParticleCard({
+export function ParticleCard({
   children,
   className = '',
   disableAnimations = false,
@@ -256,17 +256,32 @@ function ParticleCard({
   )
 }
 
-function GlobalSpotlight({
+export function GlobalSpotlight({
   gridRef,
   disableAnimations = false,
   enabled = true,
   spotlightRadius = DEFAULT_SPOTLIGHT_RADIUS,
   glowColor = DEFAULT_GLOW_COLOR,
+  sectionSelector = '.mb-section',
+  cardSelector = '.mb-card',
 }) {
   const spotlightRef = useRef(null)
 
   useEffect(() => {
     if (disableAnimations || !gridRef?.current || !enabled) return
+
+    // Touch / no-cursor devices: skip the spotlight element and the
+    // document-level move listeners entirely. The cursor-follow has no
+    // meaning without a cursor, and 3 global touchmove handlers doing
+    // getBoundingClientRect per scroll frame cause jank. The CSS-only
+    // ambient glow (.mb-glow-card @media (hover: none)) still shows.
+    if (
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(hover: none)').matches
+    ) {
+      return
+    }
 
     const spotlight = document.createElement('div')
     spotlight.className = 'mb-global-spotlight'
@@ -300,12 +315,12 @@ function GlobalSpotlight({
       const py = point.clientY
       if (px == null || py == null) return
 
-      const section = gridRef.current.closest('.mb-section')
+      const section = gridRef.current.closest(sectionSelector)
       const rect = section?.getBoundingClientRect()
       const mouseInside =
         rect && px >= rect.left && px <= rect.right && py >= rect.top && py <= rect.bottom
 
-      const cards = gridRef.current.querySelectorAll('.mb-card')
+      const cards = gridRef.current.querySelectorAll(cardSelector)
 
       if (!mouseInside) {
         gsap.to(spotlightRef.current, { opacity: 0, duration: 0.3, ease: 'power2.out' })
@@ -353,7 +368,7 @@ function GlobalSpotlight({
     }
 
     const handleMouseLeave = () => {
-      gridRef.current?.querySelectorAll('.mb-card').forEach((card) => {
+      gridRef.current?.querySelectorAll(cardSelector).forEach((card) => {
         card.style.setProperty('--glow-intensity', '0')
       })
       if (spotlightRef.current) {
@@ -377,7 +392,7 @@ function GlobalSpotlight({
       document.removeEventListener('touchcancel', handleMouseLeave)
       spotlightRef.current?.parentNode?.removeChild(spotlightRef.current)
     }
-  }, [gridRef, disableAnimations, enabled, spotlightRadius, glowColor])
+  }, [gridRef, disableAnimations, enabled, spotlightRadius, glowColor, sectionSelector, cardSelector])
 
   return null
 }

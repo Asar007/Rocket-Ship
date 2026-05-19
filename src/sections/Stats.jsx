@@ -1,7 +1,9 @@
+import { useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Briefcase, Calendar, Users, Clock } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading.jsx'
 import AnimatedCounter from '../components/AnimatedCounter.jsx'
+import { ParticleCard, GlobalSpotlight } from '../components/MagicBento.jsx'
 
 const NUMBERS = [
   { icon: Briefcase, label: 'Projects completed', value: 200, suffix: '' },
@@ -11,6 +13,8 @@ const NUMBERS = [
 ]
 
 export default function Stats() {
+  const gridRef = useRef(null)
+
   return (
     <section className="section-pad relative">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -36,11 +40,23 @@ export default function Stats() {
               Steel, hours, and reliability, in real numbers.
             </h3>
 
-            <div className="mt-8 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+            <GlobalSpotlight
+              gridRef={gridRef}
+              sectionSelector=".mb-glow-section"
+              cardSelector=".mb-glow-card"
+              spotlightRadius={340}
+            />
+            <div
+              ref={gridRef}
+              className="mb-glow-section mt-8 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4"
+            >
               {NUMBERS.map((n) => (
-                <div
+                <ParticleCard
                   key={n.label}
-                  className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-all duration-500 hover:border-gold-400/30 hover:bg-white/[0.06]"
+                  enableTilt={false}
+                  enableMagnetism={false}
+                  particleCount={6}
+                  className="mb-glow-card group rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-all duration-500 hover:border-gold-400/30 hover:bg-white/[0.06]"
                 >
                   <div className="flex items-center gap-2 text-gold-400">
                     <n.icon className="h-4 w-4" />
@@ -68,7 +84,7 @@ export default function Stats() {
                       strokeLinecap="round"
                     />
                   </svg>
-                </div>
+                </ParticleCard>
               ))}
             </div>
           </motion.div>

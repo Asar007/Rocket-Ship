@@ -1,6 +1,8 @@
+import { useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Gem, Timer, LineChart, ArrowUpRight } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading.jsx'
+import { GlobalSpotlight } from '../components/MagicBento.jsx'
 
 const CARDS = [
   {
@@ -36,6 +38,8 @@ const CARDS = [
 ]
 
 export default function WhyChooseUs() {
+  const gridRef = useRef(null)
+
   return (
     <section id="services" className="section-pad relative">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -46,7 +50,16 @@ export default function WhyChooseUs() {
           subtitle="Engineering is a promise made with steel. We keep ours through process, people, and discipline."
         />
 
-        <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3">
+        <GlobalSpotlight
+          gridRef={gridRef}
+          sectionSelector=".mb-glow-section"
+          cardSelector=".mb-glow-card"
+          spotlightRadius={380}
+        />
+        <div
+          ref={gridRef}
+          className="mb-glow-section mt-14 grid grid-cols-1 gap-6 md:grid-cols-3"
+        >
           {CARDS.map((c, i) => (
             <motion.article
               key={c.id}
@@ -54,7 +67,7 @@ export default function WhyChooseUs() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-80px' }}
               transition={{ duration: 0.7, delay: i * 0.12, ease: [0.2, 0.7, 0.2, 1] }}
-              className="glow-ring group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-7 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-white/20 hover:shadow-glow-blue"
+              className="mb-glow-card glow-ring group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-7 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-white/20 hover:shadow-glow-blue"
             >
               {/* Top accent line */}
               <div
