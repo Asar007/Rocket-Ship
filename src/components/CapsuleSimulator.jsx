@@ -30,7 +30,7 @@ const PHASES = [
     at: 0.0,
     eyebrow: 'Assembled · Flight configuration',
     title: 'The reusable crew capsule.',
-    body: 'Aerospace-grade aluminium–titanium primary structure, matte-white thermal coating, fully integrated and flight-ready.',
+    body: 'Aerospace-grade aluminium and titanium primary structure, matte-white thermal coating, fully integrated and flight-ready.',
   },
   {
     at: 0.32,
@@ -42,7 +42,7 @@ const PHASES = [
     at: 0.78,
     eyebrow: 'Precision exploded view',
     title: 'Built from these parts.',
-    body: 'Each authentic fabricated component, fully separated — with the real shop process that produces it.',
+    body: 'Each authentic fabricated component, fully separated, with the real shop process that produces it.',
   },
 ]
 

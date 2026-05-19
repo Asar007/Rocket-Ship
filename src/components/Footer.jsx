@@ -56,7 +56,7 @@ export default function Footer() {
             </div>
 
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/60">
-              A turnkey industrial engineering firm based in Chennai — delivering structural,
+              A turnkey industrial engineering firm based in Chennai, delivering structural,
               mechanical and piping work for India's energy and manufacturing sectors since 1998.
             </p>
 

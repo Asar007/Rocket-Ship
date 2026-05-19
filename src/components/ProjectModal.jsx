@@ -75,7 +75,7 @@ function StaticStory({ project, story }) {
               >
                 <img
                   src={src}
-                  alt={`${project.title} — ${i + 2}`}
+                  alt={`${project.title} photo ${i + 2}`}
                   loading="lazy"
                   className="aspect-[4/3] w-full object-cover"
                 />

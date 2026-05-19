@@ -43,7 +43,7 @@ export default function AboutVideo() {
           eyebrow="Gaganyaan · ISRO"
           title="Engineered to carry India to space."
           accentWord="space"
-          subtitle="Madras Swastic Engineers is a fabrication partner on the Gaganyaan programme — India's first crewed spaceflight, taking our astronauts to low Earth orbit."
+          subtitle="Madras Swastic Engineers is a fabrication partner on the Gaganyaan programme, India's first crewed spaceflight, taking our astronauts to low Earth orbit."
           align="center"
         />
 
@@ -99,7 +99,7 @@ export default function AboutVideo() {
 
         {/* Caption strip below the player */}
         <p className="mx-auto mt-5 max-w-2xl text-center text-[12.5px] leading-relaxed text-white/45">
-          Fabricated at our Guindy works for the Gaganyaan crew module programme — proud to play a
+          Fabricated at our Guindy works for the Gaganyaan crew module programme. Proud to play a
           part in taking India's first astronauts to space.
         </p>
       </div>

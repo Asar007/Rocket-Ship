@@ -9,7 +9,7 @@ const SITE = 'https://rocket-ship-plum.vercel.app'
  */
 export default function Seo({ title, description, path = '/' }) {
   const url = `${SITE}${path}`
-  const full = `${title} — Madras Swastic Engineers`
+  const full = `${title} · Madras Swastic Engineers`
   return (
     <Head>
       <title>{full}</title>

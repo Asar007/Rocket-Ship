@@ -28,7 +28,7 @@ const CARDS = [
     eyebrow: '03 / Efficiency',
     title: 'Honest Economics.',
     body:
-      'Transparent BOQs, in-house engineering and direct material sourcing — we pass the savings to you, not into a bloated middle layer.',
+      'Transparent BOQs, in-house engineering and direct material sourcing. We pass the savings to you, not into a bloated middle layer.',
     icon: LineChart,
     metric: 'Transparent BOQs',
     accent: 'from-electric-400/50 via-gold-400/30 to-transparent',

@@ -78,12 +78,12 @@ export default function CallbackDialog() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    const subject = `Callback request — ${form.company || form.name || 'New enquiry'}`
+    const subject = `Callback request: ${form.company || form.name || 'New enquiry'}`
     const body = [
       `Name: ${form.name}`,
       `Company: ${form.company}`,
       `Phone: ${form.phone}`,
-      `Email: ${form.email || '—'}`,
+      `Email: ${form.email || 'N/A'}`,
       `Preferred call window: ${form.window}`,
       '',
       'Brief:',
@@ -147,17 +147,17 @@ export default function CallbackDialog() {
                   id="callback-title"
                   className="mt-5 font-display text-2xl font-semibold leading-tight text-white sm:text-3xl"
                 >
-                  Tell us about your build — we'll call you back within a working day.
+                  Tell us about your build. We'll call you back within a working day.
                 </h3>
                 <p className="mt-4 text-[13.5px] leading-relaxed text-white/65">
-                  Drawings, an RFQ, or a one-line napkin sketch — share whatever you've got. A
+                  Drawings, an RFQ, or a one-line napkin sketch, share whatever you've got. A
                   senior engineer reviews every enquiry before we respond.
                 </p>
 
                 <ul className="mt-7 space-y-3 text-[12.5px] text-white/65">
                   <li className="flex items-center gap-2.5">
                     <Clock className="h-3.5 w-3.5 text-electric-400" />
-                    Mon–Sat · 9 am – 7 pm IST
+                    Mon to Sat · 9 am to 7 pm IST
                   </li>
                   <li className="flex items-center gap-2.5">
                     <ShieldCheck className="h-3.5 w-3.5 text-gold-400" />
@@ -165,7 +165,7 @@ export default function CallbackDialog() {
                   </li>
                   <li className="flex items-center gap-2.5">
                     <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-                    Senior engineer reviews — not a sales pass-through
+                    Senior engineer reviews, not a sales pass-through
                   </li>
                 </ul>
               </div>

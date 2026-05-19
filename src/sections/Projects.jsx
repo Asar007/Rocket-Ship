@@ -57,12 +57,12 @@ const PROJECTS = [
     tags: ['Aerospace', 'ISRO', 'Gaganyaan'],
     storyStyle: 'capsule',
     blurb:
-      'An exact replica of the Gaganyaan crew capsule — built and handed over to ISRO/HSFC within 90 days.',
+      'An exact replica of the Gaganyaan crew capsule, built and handed over to ISRO/HSFC within 90 days.',
     images: [crewModule],
     story: [
       "Gaganyaan is the Indian Space Research Organisation's (ISRO) ambitious mission to send three humans per flight to Low Earth Orbit (LEO) for a three-day mission and back to Earth. The Crew Training Simulator (CTS) is an exact replica of the actual capsule in which the crew will be on board the GSLV rocket and return to Earth.",
       'The CTS houses crew seats, life-support equipment, mission-control computers and interfaces, sleeping pods, food, and life-support medicines.',
-      'A CTS was manufactured within a 90-day period and successfully handed over to ISRO/HSFC Director, Shri M. Mohan — the handover video shows immense satisfaction and happiness from the customer.',
+      'A CTS was manufactured within a 90-day period and successfully handed over to ISRO/HSFC Director, Shri M. Mohan. The handover video shows immense satisfaction and happiness from the customer.',
       'The CTS was officially inaugurated by Shri Narendra Modi, Prime Minister of India, at the space summit held at VSSC, Trivandrum.',
     ],
   },
@@ -90,7 +90,7 @@ const PROJECTS = [
     id: 'p3',
     title: 'Steel Domes, Towers & Space-Frames',
     storyTitle: 'Steel That Holds the Sky',
-    location: 'South India — multi-site',
+    location: 'South India, multi-site',
     year: '2024',
     tags: ['Structural', 'On-site', 'Turnkey'],
     storyStyle: 'cinematic',
@@ -98,12 +98,12 @@ const PROJECTS = [
       'Design-assist fabrication and on-site erection of geodesic domes, conical lattice towers and curved architectural space-frames.',
     images: [domeErection, spaceframe, latticeTower],
     story: [
-      'It begins on paper — a connection-design model where every node, gusset and bolt group is engineered before a single plate is cut.',
-      'From a bare foundation, a geodesic dome takes shape — every node CNC-cut, match-marked, and lifted into place by a crawler crane under a tight erection window.',
+      'It begins on paper, a connection-design model where every node, gusset and bolt group is engineered before a single plate is cut.',
+      'From a bare foundation, a geodesic dome takes shape, every node CNC-cut, match-marked, and lifted into place by a crawler crane under a tight erection window.',
       'In the Guindy shop, curved space-frame segments are jig-welded to ±2 mm and trial-assembled flat before a single piece ever reaches site.',
       'Surface treatment is non-negotiable: blast-cleaned to Sa 2½, metallised and top-coated for decades of coastal service.',
-      'On site, modules are flown in and bolted up against a 3D survey — no field welding, no rework, no surprises.',
-      'Galvanised, bolted, and signed off — the finished conical lattice tower stands as a landmark, delivered in under ninety working days.',
+      'On site, modules are flown in and bolted up against a 3D survey: no field welding, no rework, no surprises.',
+      'Galvanised, bolted, and signed off, the finished conical lattice tower stands as a landmark, delivered in under ninety working days.',
     ],
   },
   {
@@ -123,7 +123,7 @@ const PROJECTS = [
     year: '2023',
     tags: ['Mechanical', 'Vessels', 'Fabrication'],
     blurb:
-      'Heavy process vessels and rotary drum assemblies — rolled, welded and finished for chemical and manufacturing plants.',
+      'Heavy process vessels and rotary drum assemblies, rolled, welded and finished for chemical and manufacturing plants.',
     images: [processVessel, rotaryDrum],
   },
   {
@@ -138,11 +138,11 @@ const PROJECTS = [
       'Shop fabrication and assembly of an induced-draft counter-flow cooling tower shell and internals.',
     images: [coolingTower],
     story: [
-      'A single induced-draft, counter-flow tower — shell, fan deck and internals fabricated entirely in-house.',
+      'A single induced-draft, counter-flow tower: shell, fan deck and internals fabricated entirely in-house.',
       'Heavy plate is rolled and seam-welded into the tapered shell, then stress-relieved before any fit-out begins.',
       'Every FRP louvre and drift eliminator is fitted, aligned and water-tested before the unit leaves the shop.',
       'The fan deck, gearbox and drive shaft are laser-aligned and trial-run under load to prove vibration limits.',
-      'Lifted in as a single module and commissioned on a live plant — with zero downtime to the existing line.',
+      'Lifted in as a single module and commissioned on a live plant, with zero downtime to the existing line.',
       'Handed over with full hydraulic and thermal performance reports, ahead of the contracted schedule.',
     ],
   },
@@ -275,7 +275,7 @@ function ProjectCard({ project: p, onOpen }) {
               >
                 <img
                   src={src}
-                  alt={`${p.title} — ${idx + 2}`}
+                  alt={`${p.title} photo ${idx + 2}`}
                   loading="lazy"
                   decoding="async"
                   className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"

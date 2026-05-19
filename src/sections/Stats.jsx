@@ -2,7 +2,6 @@ import { motion } from 'framer-motion'
 import { Briefcase, Calendar, Users, Clock } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading.jsx'
 import AnimatedCounter from '../components/AnimatedCounter.jsx'
-import ProgressRing from '../components/ProgressRing.jsx'
 
 const NUMBERS = [
   { icon: Briefcase, label: 'Projects completed', value: 200, suffix: '' },
@@ -19,25 +18,25 @@ export default function Stats() {
           eyebrow="By the numbers"
           title="Track record, measured."
           accentWord="measured"
-          subtitle="A snapshot of our work since 2009 — across space, paper, sugar and petrochemical projects."
+          subtitle="A snapshot of our work since 2009, across space, paper, sugar and petrochemical projects."
         />
 
-        <div className="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-5">
+        <div className="mt-14">
           {/* Counters */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.7, ease: [0.2, 0.7, 0.2, 1] }}
-            className="glass relative overflow-hidden rounded-3xl p-6 sm:p-8 lg:col-span-3"
+            className="glass relative overflow-hidden rounded-3xl p-6 sm:p-8"
           >
             <div className="absolute -right-12 -top-12 h-44 w-44 rounded-full bg-electric-500/25 blur-3xl" />
             <span className="eyebrow">Quantified output</span>
             <h3 className="mt-3 font-display text-2xl font-semibold text-white sm:text-3xl">
-              Steel, hours, and reliability — in real numbers.
+              Steel, hours, and reliability, in real numbers.
             </h3>
 
-            <div className="mt-8 grid grid-cols-2 gap-4 sm:gap-6">
+            <div className="mt-8 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
               {NUMBERS.map((n) => (
                 <div
                   key={n.label}
@@ -69,50 +68,6 @@ export default function Stats() {
                       strokeLinecap="round"
                     />
                   </svg>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Progress rings */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.7, delay: 0.15, ease: [0.2, 0.7, 0.2, 1] }}
-            className="glass-strong relative overflow-hidden rounded-3xl p-6 sm:p-8 lg:col-span-2"
-          >
-            <div className="absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-gold-500/20 blur-3xl" />
-            <span className="eyebrow">Performance</span>
-            <h3 className="mt-3 font-display text-xl font-semibold text-white">
-              Operational ratings
-            </h3>
-
-            <div className="mt-6 grid grid-cols-2 gap-4">
-              <ProgressRing value={0.964} label="On-time" sublabel="Delivery 2024" />
-              <ProgressRing value={0.98} label="Client retention" sublabel="Last 5 yrs" />
-            </div>
-
-            <div className="mt-6 space-y-3">
-              {[
-                { k: 'Safety score', v: 0.99 },
-                { k: 'Inspection pass-rate', v: 0.96 },
-                { k: 'BOQ accuracy', v: 0.92 },
-              ].map((m) => (
-                <div key={m.k}>
-                  <div className="flex items-center justify-between font-mono text-[11px] tracking-[0.18em] uppercase text-white/55">
-                    <span>{m.k}</span>
-                    <span className="text-gold-400">{Math.round(m.v * 100)}%</span>
-                  </div>
-                  <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-white/[0.06]">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${m.v * 100}%` }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1.4, ease: [0.2, 0.7, 0.2, 1] }}
-                      className="h-full rounded-full bg-gradient-to-r from-electric-400 via-electric-500 to-gold-400"
-                    />
-                  </div>
                 </div>
               ))}
             </div>

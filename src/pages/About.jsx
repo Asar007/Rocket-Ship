@@ -8,7 +8,7 @@ export function Component() {
     <div className="pt-24 sm:pt-28">
       <Seo
         title="About Us"
-        description="27 years of turnkey industrial engineering — structural fabrication, plant erection and precision mechanical work, and a fabrication partner on ISRO's Gaganyaan crew module programme."
+        description="27 years of turnkey industrial engineering, structural fabrication, plant erection and precision mechanical work, and a fabrication partner on ISRO's Gaganyaan crew module programme."
         path="/about"
       />
       <About />

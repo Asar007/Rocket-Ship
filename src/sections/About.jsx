@@ -7,7 +7,7 @@ const CAPABILITIES = [
     tag: 'SPACE',
     title: 'ISRO launch programmes',
     body:
-      'Design, development, manufacture and installation of rocket vibration-simulation systems, zero-G testing rigs, rocket equipment handling and ground systems for launch — across PSLV, GSLV, GSLV Mk III and the Gaganyaan mission.',
+      'Design, development, manufacture and installation of rocket vibration-simulation systems, zero-G testing rigs, rocket equipment handling and ground systems for launch, across PSLV, GSLV, GSLV Mk III and the Gaganyaan mission.',
     icon: Rocket,
   },
   {
@@ -41,7 +41,7 @@ export default function About() {
           eyebrow="About the firm"
           title="Engineering for Space. Built for Industry."
           accentWord="Space"
-          subtitle="Founded in 2009, Madras Swastik Engineers provides service and engineering support to ISRO and to the paper, sugar and petrochemical industries — from rocket test systems to turnkey treatment plants."
+          subtitle="Founded in 2009, Madras Swastik Engineers provides service and engineering support to ISRO and to the paper, sugar and petrochemical industries, from rocket test systems to turnkey treatment plants."
         />
 
         <div className="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-12">

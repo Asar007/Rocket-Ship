@@ -46,7 +46,7 @@ const PROCESS = [
   {
     id: 'fab',
     title: 'Fabrication',
-    body: 'CNC cutting, qualified welders, blast & paint — all in our Chennai works.',
+    body: 'CNC cutting, qualified welders, blast & paint, all in our Chennai works.',
     icon: Hammer,
   },
   {
@@ -67,7 +67,7 @@ const CAPABILITIES = [
   {
     id: 'alloy',
     title: 'Custom alloys & coatings',
-    body: 'Carbon, stainless, duplex, Inconel — picked for the corrosive cycle in your plant.',
+    body: 'Carbon, stainless, duplex, Inconel, picked for the corrosive cycle in your plant.',
     icon: Layers,
     span: 'lg:col-span-2',
   },
@@ -81,14 +81,14 @@ const CAPABILITIES = [
   {
     id: 'modular',
     title: 'Modular delivery',
-    body: 'Shop-assembled, road-transportable modules — minimise site weld time.',
+    body: 'Shop-assembled, road-transportable modules to minimise site weld time.',
     icon: Boxes,
     span: 'lg:col-span-2',
   },
   {
     id: 'iso',
     title: 'ISO 9001 : 2015',
-    body: 'Quality system audited and certified — full traceability, project by project.',
+    body: 'Quality system audited and certified, with full traceability, project by project.',
     icon: ShieldCheck,
     span: 'lg:col-span-3',
   },
@@ -114,7 +114,7 @@ export default function Customization() {
           eyebrow="Customization"
           title="We custom-fabricate anything you can specify."
           accentWord="anything"
-          subtitle="A refinery stair tower one week, a space-grade structural module the next. Every project starts from a blank page and a senior engineer — there's no catalogue we're picking from."
+          subtitle="A refinery stair tower one week, a space-grade structural module the next. Every project starts from a blank page and a senior engineer. There's no catalogue we're picking from."
         />
 
         {/* === Range + sectors callout === */}
@@ -132,7 +132,7 @@ export default function Customization() {
                 If it can be engineered, we will build it.
               </span>
               <br />
-              From a stair handrail to flight-class structural hardware — every brief is bespoke, every drawing reviewed by a chartered engineer.
+              From a stair handrail to flight-class structural hardware, every brief is bespoke, every drawing reviewed by a chartered engineer.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10.5px] uppercase tracking-[0.28em] text-white/55">
