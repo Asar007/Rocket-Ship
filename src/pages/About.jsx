@@ -11,8 +11,8 @@ export function Component() {
         description="27 years of turnkey industrial engineering, structural fabrication, plant erection and precision mechanical work, and a fabrication partner on ISRO's Gaganyaan crew module programme."
         path="/about"
       />
-      <About />
       <AboutVideo />
+      <About />
       <WhyChooseUs />
     </div>
   )

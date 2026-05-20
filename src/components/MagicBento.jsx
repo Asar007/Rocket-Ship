@@ -3,7 +3,7 @@ import { gsap } from 'gsap'
 import './MagicBento.css'
 
 const DEFAULT_PARTICLE_COUNT = 10
-const DEFAULT_SPOTLIGHT_RADIUS = 320
+const DEFAULT_SPOTLIGHT_RADIUS = 240
 const DEFAULT_GLOW_COLOR = '240, 198, 116' // site gold-400 #f0c674
 const MOBILE_BREAKPOINT = 768
 
@@ -57,6 +57,7 @@ export function ParticleCard({
   enableTilt = true,
   clickEffect = true,
   enableMagnetism = true,
+  ...rest
 }) {
   const cardRef = useRef(null)
   const particlesRef = useRef([])
@@ -250,6 +251,7 @@ export function ParticleCard({
       ref={cardRef}
       className={`${className} mb-particle-container`}
       style={{ ...style, position: 'relative', overflow: 'hidden' }}
+      {...rest}
     >
       {children}
     </div>
@@ -292,11 +294,11 @@ export function GlobalSpotlight({
       border-radius: 50%;
       pointer-events: none;
       background: radial-gradient(circle,
-        rgba(${glowColor}, 0.28) 0%,
-        rgba(${glowColor}, 0.15) 15%,
-        rgba(${glowColor}, 0.08) 25%,
-        rgba(${glowColor}, 0.04) 40%,
-        rgba(${glowColor}, 0.02) 65%,
+        rgba(${glowColor}, 0.14) 0%,
+        rgba(${glowColor}, 0.07) 15%,
+        rgba(${glowColor}, 0.04) 25%,
+        rgba(${glowColor}, 0.02) 40%,
+        rgba(${glowColor}, 0.01) 65%,
         transparent 70%
       );
       z-index: 200;

@@ -129,11 +129,13 @@ export default function Hero() {
               { k: 'Space-grade', v: 'Engineering' },
               { k: 'Any scale', v: 'Connections to capsules' },
             ].map((s) => (
-              <div key={s.v} className="border-l border-white/10 pl-4">
-                <div className="font-display text-xl font-semibold text-white sm:text-2xl">
+              <div key={s.v} className="flex flex-col border-l border-white/10 pl-3 sm:pl-4">
+                <div className="font-display min-h-[2.6em] text-lg font-semibold leading-tight text-white sm:min-h-0 sm:text-2xl">
                   {s.k}
                 </div>
-                <div className="text-xs uppercase tracking-[0.18em] text-white/50">{s.v}</div>
+                <div className="mt-1 text-[10px] uppercase leading-snug tracking-[0.16em] text-white/50 sm:text-xs sm:tracking-[0.18em]">
+                  {s.v}
+                </div>
               </div>
             ))}
           </motion.div>

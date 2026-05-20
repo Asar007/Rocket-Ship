@@ -1,4 +1,6 @@
-import { motion, useReducedMotion } from 'framer-motion'
+import { useRef } from 'react'
+import { useReducedMotion } from 'framer-motion'
+import { useScrollReveal } from '../hooks/useScrollReveal.js'
 
 export default function SectionHeading({
   eyebrow,
@@ -8,48 +10,66 @@ export default function SectionHeading({
   align = 'left',
 }) {
   const reduce = useReducedMotion()
+  const rootRef = useRef(null)
   const alignCls =
     align === 'center'
       ? 'items-center text-center mx-auto'
       : 'items-start text-left'
 
-  const container = {
-    hidden: {},
-    show: {
-      transition: { staggerChildren: reduce ? 0 : 0.12, delayChildren: 0.05 },
-    },
-  }
-  const item = reduce
-    ? { hidden: { opacity: 0 }, show: { opacity: 1 } }
-    : {
-        hidden: { opacity: 0, y: 22 },
-        show: {
-          opacity: 1,
-          y: 0,
-          transition: { duration: 0.6, ease: [0.2, 0.7, 0.2, 1] },
-        },
-      }
-  const lineGrow = reduce
-    ? { hidden: { opacity: 0 }, show: { opacity: 1 } }
-    : {
-        hidden: { scaleX: 0, opacity: 0 },
-        show: {
-          scaleX: 1,
-          opacity: 1,
-          transition: { duration: 0.6, ease: [0.2, 0.7, 0.2, 1] },
-        },
-      }
-  const underline = reduce
-    ? { hidden: { opacity: 0 }, show: { opacity: 1 } }
-    : {
-        hidden: { scaleX: 0 },
-        show: {
-          scaleX: 1,
-          transition: { duration: 0.7, ease: [0.2, 0.7, 0.2, 1] },
-        },
+  // GSAP scroll-driven reveal: triggers as the heading enters the viewport.
+  // The accent underline is *scrubbed* against scroll so it grows with the
+  // user's progress through the heading.
+  useScrollReveal(
+    rootRef,
+    ({ gsap, ScrollTrigger, el }) => {
+      if (reduce) {
+        gsap.set(el.querySelectorAll('[data-sh-item]'), { opacity: 1, y: 0 })
+        return
       }
 
-  // Highlight the accent word inside the title
+      const items = el.querySelectorAll('[data-sh-item]')
+      const eyebrowLine = el.querySelector('[data-sh-line]')
+      const underline = el.querySelector('[data-sh-underline]')
+
+      gsap.set(items, { opacity: 0, y: 28, filter: 'blur(8px)' })
+      if (eyebrowLine) gsap.set(eyebrowLine, { scaleX: 0, transformOrigin: 'left center' })
+      if (underline) gsap.set(underline, { scaleX: 0, transformOrigin: 'left center' })
+
+      const tl = gsap.timeline({
+        defaults: { ease: 'power3.out' },
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 85%',
+          toggleActions: 'play none none reverse',
+        },
+      })
+
+      if (eyebrowLine) tl.to(eyebrowLine, { scaleX: 1, duration: 0.6 }, 0)
+      tl.to(items, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.7, stagger: 0.1 }, 0.05)
+
+      // Underline scrubs against scroll progress for an active feel
+      let scrubTrigger
+      if (underline) {
+        scrubTrigger = ScrollTrigger.create({
+          trigger: el,
+          start: 'top 70%',
+          end: 'top 30%',
+          scrub: 0.6,
+          onUpdate: (self) => {
+            gsap.to(underline, { scaleX: self.progress, duration: 0.1, overwrite: true })
+          },
+        })
+      }
+
+      return () => {
+        tl.scrollTrigger?.kill()
+        tl.kill()
+        scrubTrigger?.kill()
+      }
+    },
+    [reduce, title, accentWord, subtitle, eyebrow],
+  )
+
   const renderedTitle = accentWord
     ? title.split(new RegExp(`(${accentWord})`, 'gi')).map((part, i) =>
         part.toLowerCase() === accentWord.toLowerCase() ? (
@@ -57,9 +77,8 @@ export default function SectionHeading({
             <span className="bg-gradient-to-br from-gold-400 via-gold-500 to-gold-600 bg-clip-text text-transparent">
               {part}
             </span>
-            <motion.span
-              variants={underline}
-              style={{ originX: 0 }}
+            <span
+              data-sh-underline
               className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-400/70 to-transparent"
             />
           </span>
@@ -70,37 +89,27 @@ export default function SectionHeading({
     : title
 
   return (
-    <motion.div
-      variants={container}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, margin: '-80px' }}
-      className={`flex max-w-3xl flex-col gap-4 ${alignCls}`}
-    >
+    <div ref={rootRef} className={`flex max-w-3xl flex-col gap-4 ${alignCls}`}>
       {eyebrow && (
-        <motion.div variants={item} className="inline-flex items-center gap-2">
-          <motion.span
-            variants={lineGrow}
-            style={{ originX: 0 }}
-            className="h-px w-8 bg-gold-400/60"
-          />
+        <div data-sh-item className="inline-flex items-center gap-2">
+          <span data-sh-line className="h-px w-8 bg-gold-400/60" />
           <span className="eyebrow">{eyebrow}</span>
-        </motion.div>
+        </div>
       )}
-      <motion.h2
-        variants={item}
+      <h2
+        data-sh-item
         className="font-display text-3xl font-semibold leading-[1.1] tracking-tight text-white sm:text-4xl md:text-5xl"
       >
         {renderedTitle}
-      </motion.h2>
+      </h2>
       {subtitle && (
-        <motion.p
-          variants={item}
+        <p
+          data-sh-item
           className="max-w-2xl text-base leading-relaxed text-white/65 sm:text-lg"
         >
           {subtitle}
-        </motion.p>
+        </p>
       )}
-    </motion.div>
+    </div>
   )
 }

@@ -52,7 +52,7 @@ export default function About() {
           gridRef={gridRef}
           sectionSelector=".mb-glow-section"
           cardSelector=".mb-glow-card"
-          spotlightRadius={380}
+          spotlightRadius={260}
         />
         <div
           ref={gridRef}

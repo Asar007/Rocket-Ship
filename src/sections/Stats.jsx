@@ -1,9 +1,10 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Briefcase, Calendar, Users, Clock } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading.jsx'
 import AnimatedCounter from '../components/AnimatedCounter.jsx'
 import { ParticleCard, GlobalSpotlight } from '../components/MagicBento.jsx'
+import { ensureScrollTrigger, getGsap } from '../lib/gsap.js'
 
 const NUMBERS = [
   { icon: Briefcase, label: 'Projects completed', value: 200, suffix: '' },
@@ -14,6 +15,63 @@ const NUMBERS = [
 
 export default function Stats() {
   const gridRef = useRef(null)
+  const cardsWrapRef = useRef(null)
+
+  // GSAP scroll scrub: stagger the counter cards in and draw each
+  // sparkline path against scroll progress.
+  useEffect(() => {
+    let cancelled = false
+    let triggers = []
+
+    ensureScrollTrigger().then((ScrollTrigger) => {
+      if (cancelled || !cardsWrapRef.current || !ScrollTrigger) return
+      const gsap = getGsap()
+      const wrap = cardsWrapRef.current
+      const cards = wrap.querySelectorAll('[data-stat-card]')
+      const paths = wrap.querySelectorAll('[data-spark]')
+
+      gsap.set(cards, { opacity: 0, y: 36 })
+      paths.forEach((p) => {
+        p.style.strokeDasharray = '1'
+        p.style.strokeDashoffset = '1'
+      })
+
+      const entryTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: wrap,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse',
+        },
+      })
+      entryTl.to(cards, {
+        opacity: 1,
+        y: 0,
+        duration: 0.7,
+        ease: 'power3.out',
+        stagger: 0.12,
+      })
+
+      const scrubTrigger = ScrollTrigger.create({
+        trigger: wrap,
+        start: 'top 75%',
+        end: 'bottom 60%',
+        scrub: 0.6,
+        onUpdate: (self) => {
+          const offset = 1 - self.progress
+          paths.forEach((p) => {
+            p.style.strokeDashoffset = String(offset)
+          })
+        },
+      })
+
+      triggers.push(entryTl.scrollTrigger, scrubTrigger)
+    })
+
+    return () => {
+      cancelled = true
+      triggers.forEach((t) => t?.kill())
+    }
+  }, [])
 
   return (
     <section className="section-pad relative">
@@ -44,10 +102,13 @@ export default function Stats() {
               gridRef={gridRef}
               sectionSelector=".mb-glow-section"
               cardSelector=".mb-glow-card"
-              spotlightRadius={340}
+              spotlightRadius={240}
             />
             <div
-              ref={gridRef}
+              ref={(node) => {
+                gridRef.current = node
+                cardsWrapRef.current = node
+              }}
               className="mb-glow-section mt-8 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4"
             >
               {NUMBERS.map((n) => (
@@ -56,6 +117,7 @@ export default function Stats() {
                   enableTilt={false}
                   enableMagnetism={false}
                   particleCount={6}
+                  data-stat-card
                   className="mb-glow-card group rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-all duration-500 hover:border-gold-400/30 hover:bg-white/[0.06]"
                 >
                   <div className="flex items-center gap-2 text-gold-400">
@@ -77,6 +139,8 @@ export default function Stats() {
                       </linearGradient>
                     </defs>
                     <path
+                      data-spark
+                      pathLength="1"
                       d="M0 22 L15 18 L30 20 L45 14 L60 16 L75 9 L90 12 L105 5 L120 8"
                       stroke={`url(#spark-${n.label})`}
                       strokeWidth="1.5"
