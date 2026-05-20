@@ -49,10 +49,11 @@ export default function AboutCapsule() {
         </span>
       </div>
 
-      {/* Devanagari accent beneath the wordmark */}
+      {/* Devanagari accent beneath the wordmark — sits above the bottom
+          gradient fade so it stays legible on short mobile viewports. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-[10%] flex items-center justify-center px-6 sm:bottom-[16%]"
+        className="pointer-events-none absolute inset-x-0 bottom-[18%] flex items-center justify-center px-6 sm:bottom-[16%]"
       >
         <span
           className="select-none whitespace-nowrap font-mono uppercase text-white/35"

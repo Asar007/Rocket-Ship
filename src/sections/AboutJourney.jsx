@@ -162,8 +162,8 @@ export default function AboutJourney() {
 
           {/* Scrolling chapter column */}
           <div className="relative lg:col-span-7">
-            {/* vertical rail */}
-            <div className="absolute left-3 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/15 to-transparent" />
+            {/* vertical rail — aligned to the dot center (left-0 + w-7/2 = 14px) */}
+            <div className="absolute left-[13.5px] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/15 to-transparent" />
 
             <ol className="space-y-20 sm:space-y-28">
               {CHAPTERS.map((c, i) => {

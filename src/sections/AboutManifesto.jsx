@@ -26,7 +26,7 @@ export default function AboutManifesto() {
         </div>
 
         {/* TextPressure giant headline */}
-        <div className="relative mt-6 h-[180px] select-none sm:h-[240px] md:h-[300px] lg:h-[360px]">
+        <div className="relative mt-6 h-[120px] select-none overflow-hidden sm:h-[240px] md:h-[300px] lg:h-[360px]">
           <TextPressure
             text="BUILT TO LAUNCH"
             flex={true}
@@ -37,7 +37,7 @@ export default function AboutManifesto() {
             italic={true}
             textColor="#FFFFFF"
             strokeColor="#D4AF37"
-            minFontSize={56}
+            minFontSize={28}
           />
         </div>
 
