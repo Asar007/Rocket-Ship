@@ -1,6 +1,7 @@
 import { Linkedin, Mail, Phone, Instagram, Youtube, ArrowUp } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import logo from '../assets/logo.png'
+import TextPressure from './TextPressure'
 
 const LINKS = [
   {
@@ -34,10 +35,31 @@ const LINKS = [
 export default function Footer() {
   const onTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
   return (
-    <footer className="relative mt-12 border-t border-white/10 bg-navy-950/70 backdrop-blur-xl">
-      <div className="hairline-gold absolute inset-x-0 top-0" />
+    <footer className="relative isolate mt-12 overflow-hidden border-t border-white/10 bg-navy-950/70 backdrop-blur-xl">
+      <div className="hairline-gold absolute inset-x-0 top-0 z-30" />
 
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
+      {/* MSE watermark — clipped inside the footer, sits behind all content */}
+      <div
+        className="pointer-events-none absolute inset-x-0 -top-[64px] z-0 flex select-none justify-center opacity-[0.12] sm:-top-[80px] lg:-top-[96px]"
+        aria-hidden="true"
+      >
+        <div className="h-[210px] w-[75%] max-w-[820px] sm:h-[260px] lg:h-[310px]">
+          <TextPressure
+            text="MSE"
+            flex={true}
+            alpha={false}
+            stroke={false}
+            width={true}
+            weight={true}
+            italic={true}
+            textColor="#FFFFFF"
+            strokeColor="#D4AF37"
+            minFontSize={72}
+          />
+        </div>
+      </div>
+
+      <div className="relative z-20 mx-auto max-w-7xl px-4 py-14 sm:px-6">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
           {/* Brand */}
           <div className="lg:col-span-4">
@@ -57,7 +79,7 @@ export default function Footer() {
 
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/60">
               A turnkey industrial engineering firm based in Chennai, delivering structural,
-              mechanical and piping work for India's energy and manufacturing sectors since 1998.
+              mechanical and piping work for India's energy and manufacturing sectors since 2009.
             </p>
 
             <div className="mt-6 flex items-center gap-2">

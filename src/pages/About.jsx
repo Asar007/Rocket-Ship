@@ -1,6 +1,9 @@
 import Seo from '../lib/seo.jsx'
 import About from '../sections/About.jsx'
 import AboutVideo from '../sections/AboutVideo.jsx'
+import AboutManifesto from '../sections/AboutManifesto.jsx'
+import AboutJourney from '../sections/AboutJourney.jsx'
+import AboutMetrics from '../sections/AboutMetrics.jsx'
 import WhyChooseUs from '../sections/WhyChooseUs.jsx'
 
 export function Component() {
@@ -8,10 +11,13 @@ export function Component() {
     <div className="pt-24 sm:pt-28">
       <Seo
         title="About Us"
-        description="27 years of turnkey industrial engineering, structural fabrication, plant erection and precision mechanical work, and a fabrication partner on ISRO's Gaganyaan crew module programme."
+        description="Madras Swastic Engineers — a turnkey industrial engineering firm in Chennai since 2009. Fabrication partner on ISRO's Gaganyaan crew-module programme, with delivery across paper, sugar and petrochemical sectors."
         path="/about"
       />
       <AboutVideo />
+      <AboutManifesto />
+      <AboutJourney />
+      <AboutMetrics />
       <About />
       <WhyChooseUs />
     </div>
