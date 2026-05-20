@@ -33,7 +33,7 @@ export default function Navbar() {
       className="fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-3 sm:px-6 sm:pt-5"
     >
       <nav
-        className={`flex w-full max-w-7xl items-center justify-between rounded-full border px-3 py-2 transition-all duration-500 sm:px-4 ${
+        className={`flex w-full min-w-0 max-w-[min(100%,80rem)] items-center justify-between rounded-full border px-3 py-2 transition-all duration-500 sm:px-4 ${
           scrolled
             ? 'border-white/10 bg-navy-950/70 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.7)] backdrop-blur-xl'
             : 'border-white/5 bg-white/[0.04] backdrop-blur-md'
@@ -43,21 +43,24 @@ export default function Navbar() {
         <Link
           to="/"
           onClick={closeMenu}
-          className="group flex items-center gap-3 rounded-full pl-1 pr-3 py-1"
+          className="group flex min-w-0 shrink items-center gap-3 rounded-full pl-1 pr-2 py-1 sm:pr-3"
         >
-          <span className="relative grid h-12 w-12 place-items-center overflow-hidden rounded-full border border-white/15 bg-navy-950/60 ring-1 ring-inset ring-white/5 sm:h-14 sm:w-14">
+          <span className="relative grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full border border-white/15 bg-navy-950/60 ring-1 ring-inset ring-white/5 sm:h-12 sm:w-12 lg:h-14 lg:w-14">
             <img
               src={logo}
               alt="Madras Swastic Engineers"
-              className="h-9 w-9 object-contain drop-shadow-[0_0_10px_rgba(240,198,116,0.4)] sm:h-11 sm:w-11"
+              className="h-7 w-7 object-contain drop-shadow-[0_0_10px_rgba(240,198,116,0.4)] sm:h-9 sm:w-9 lg:h-11 lg:w-11"
             />
             <span className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(240,198,116,0.35),transparent_60%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </span>
-          <span className="hidden flex-col leading-tight sm:flex">
-            <span className="font-display text-[13px] font-semibold tracking-[0.16em] text-white">
+          {/* Wordmark — desktop only. Hiding below lg keeps the pill compact
+              on every phone (portrait + landscape) and on tablets, so it
+              never overflows the viewport. */}
+          <span className="hidden min-w-0 flex-col leading-tight lg:flex">
+            <span className="truncate font-display text-[13px] font-semibold tracking-[0.16em] text-white">
               MADRAS SWASTIC
             </span>
-            <span className="font-mono text-[10px] tracking-[0.32em] text-gold-400">
+            <span className="truncate font-mono text-[10px] tracking-[0.32em] text-gold-400">
               ENGINEERS
             </span>
           </span>
@@ -95,11 +98,11 @@ export default function Navbar() {
         </ul>
 
         {/* CTA + mobile toggle */}
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <button
             onClick={() => setOpen((v) => !v)}
             aria-label="Toggle menu"
-            className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-white/90 backdrop-blur lg:hidden"
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-white/90 backdrop-blur lg:hidden"
           >
             {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
