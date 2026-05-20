@@ -20,4 +20,5 @@ export const routes = [
     ],
   },
   { path: '/space', lazy: () => import('./pages/Space.jsx') },
+  { path: '/cts-render', lazy: () => import('./pages/CTSRender.jsx') },
 ]
