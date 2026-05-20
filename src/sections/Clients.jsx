@@ -1,5 +1,16 @@
+import { Suspense, lazy } from 'react'
 import SectionHeading from '../components/SectionHeading.jsx'
-import TicketBand3D from '../components/TicketBand3D.jsx'
+
+// Lazy so the Three.js chunk loads in its own bundle after the rest of
+// the page has painted, instead of blocking the initial JS.
+const TicketBand3D = lazy(() => import('../components/TicketBand3D.jsx'))
+
+const BandFallback = () => (
+  <div
+    aria-hidden
+    className="h-[360px] w-full sm:h-[460px] md:h-[560px]"
+  />
+)
 
 export default function Clients() {
   return (
@@ -13,7 +24,9 @@ export default function Clients() {
         />
 
         <div className="mt-12 mb-12 sm:mb-16">
-          <TicketBand3D />
+          <Suspense fallback={<BandFallback />}>
+            <TicketBand3D />
+          </Suspense>
         </div>
       </div>
     </section>

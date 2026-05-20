@@ -1,7 +1,7 @@
-import { Suspense, useMemo, useRef } from 'react'
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Environment, useTexture } from '@react-three/drei'
+import { useTexture } from '@react-three/drei'
 
 import isro from '../assets/clients/isro.jpg'
 import nsil from '../assets/clients/nsil.jpg'
@@ -38,28 +38,11 @@ const PANEL_ARC = (2 * Math.PI * BAND_RADIUS) / PANELS // ≈ 1.885 — unchange
 const BAND_HEIGHT = PANEL_ARC
 const BAND_SEGMENTS = 192
 
-// Texture canvas: one square per panel, no stretching.
-const PANEL_PX = 320
-const TEX_W = PANEL_PX * PANELS // 5760
-const TEX_H = PANEL_PX // 320
-
-// Tiny short strokes that simulate paper fibres
-function strewFibres(ctx, count, palette, alphaMin, alphaMax, lenMin, lenMax) {
-  for (let i = 0; i < count; i++) {
-    const x = Math.random() * TEX_W
-    const y = Math.random() * TEX_H
-    const len = lenMin + Math.random() * (lenMax - lenMin)
-    const ang = Math.random() * Math.PI * 2
-    const col = palette[(Math.random() * palette.length) | 0]
-    const a = alphaMin + Math.random() * (alphaMax - alphaMin)
-    ctx.strokeStyle = `rgba(${col},${a})`
-    ctx.lineWidth = 0.4 + Math.random() * 0.7
-    ctx.beginPath()
-    ctx.moveTo(x, y)
-    ctx.lineTo(x + Math.cos(ang) * len, y + Math.sin(ang) * len)
-    ctx.stroke()
-  }
-}
+// Texture canvas: 240px per panel chip — comfortably above the on-screen
+// chip size at retina DPR, well below the previous 320px overkill.
+const PANEL_PX = 240
+const TEX_W = PANEL_PX * PANELS // 4320
+const TEX_H = PANEL_PX // 240
 
 function roundRectPath(ctx, x, y, w, h, r) {
   ctx.beginPath()
@@ -85,28 +68,6 @@ function makeBandBackground() {
   return c
 }
 
-function makeBandBump() {
-  const c = document.createElement('canvas')
-  c.width = TEX_W
-  c.height = TEX_H
-  const ctx = c.getContext('2d')
-  ctx.fillStyle = '#808080'
-  ctx.fillRect(0, 0, TEX_W, TEX_H)
-
-  const img = ctx.getImageData(0, 0, TEX_W, TEX_H)
-  const d = img.data
-  for (let i = 0; i < d.length; i += 4) {
-    const v = 128 + (Math.random() - 0.5) * 60
-    d[i] = d[i + 1] = d[i + 2] = v
-  }
-  ctx.putImageData(img, 0, 0)
-
-  strewFibres(ctx, 3500, ['60,60,60'], 0.25, 0.5, 3, 16)
-  strewFibres(ctx, 2500, ['220,220,220'], 0.2, 0.45, 2, 12)
-
-  return c
-}
-
 // Alpha mask — only the logo chips are opaque; the rest of the cylinder
 // is fully transparent. The "band" is gone; only the logos remain visible.
 function makeBandAlpha() {
@@ -120,9 +81,9 @@ function makeBandAlpha() {
   ctx.fillRect(0, 0, TEX_W, TEX_H)
 
   // Chip-shaped mask — matches the chip dimensions used when drawing logos.
-  const rectW = 248 // = chipSize from bandMap loop
-  const rectH = 248
-  const r = 24 // = chipRadius
+  const rectW = 186 // = chipSize from bandMap loop
+  const rectH = 186
+  const r = 18 // = chipRadius
 
   ctx.fillStyle = '#ffffff'
   for (const wrap of [-TEX_W, 0, TEX_W]) {
@@ -138,19 +99,21 @@ function makeBandAlpha() {
   return c
 }
 
-function makeBandRoughness() {
-  const c = document.createElement('canvas')
-  c.width = TEX_W
-  c.height = TEX_H
-  const ctx = c.getContext('2d')
-  ctx.fillStyle = '#c8c8c8'
-  ctx.fillRect(0, 0, TEX_W, TEX_H)
-  for (let i = 0; i < 8000; i++) {
-    const v = 180 + Math.random() * 60
-    ctx.fillStyle = `rgb(${v},${v},${v})`
-    ctx.fillRect(Math.random() * TEX_W, Math.random() * TEX_H, 1, 1)
-  }
-  return c
+/* Camera/viewport presets — mobile uses a closer camera + wider FOV so
+ * the band fills the narrower portrait viewport. The depth-fade
+ * thresholds shift correspondingly so the rear tickets still ghost out
+ * starting at the cylinder centreline. */
+const CAM_DESKTOP = {
+  pos: [0, 2.4, 12.2],
+  fov: 35,
+  fadeNear: 11.2,
+  fadeRange: 6.4,
+}
+const CAM_MOBILE = {
+  pos: [0, 1.6, 10.5],
+  fov: 46,
+  fadeNear: 9.5,
+  fadeRange: 6.4,
 }
 
 /* Depth-fade shader patch: front tickets opaque + saturated, rear tickets
@@ -160,12 +123,8 @@ function applyDepthFade(shader, opts = {}) {
   const minAlpha = opts.minAlpha ?? 0.15
   const desat = opts.desat ?? 0.55
   const frostTint = opts.frostTint ?? 0.22
-  // Front-most band fragments sit around view-Z ≈ 6.8 (camera 12.2, radius 5.4).
-  // Sides sit at ≈ 12.2. Back-most at ≈ 17.6. Setting near=11.2 keeps the
-  // entire front-facing half fully opaque; fade only starts as tickets
-  // rotate past the cylinder centreline toward the back.
-  const near = opts.near ?? 11.2
-  const range = opts.range ?? 6.4
+  const near = opts.near ?? CAM_DESKTOP.fadeNear
+  const range = opts.range ?? CAM_DESKTOP.fadeRange
 
   shader.vertexShader = shader.vertexShader
     .replace(
@@ -199,9 +158,11 @@ function applyDepthFade(shader, opts = {}) {
     )
 }
 
-function Band({ groupRef, dragState }) {
+function Band({ groupRef, dragState, isMobile }) {
   // Drei suspends the component until all 12 logos are loaded.
   const logoTextures = useTexture(LOGO_SOURCES)
+  const fadeNear = isMobile ? CAM_MOBILE.fadeNear : CAM_DESKTOP.fadeNear
+  const fadeRange = isMobile ? CAM_MOBILE.fadeRange : CAM_DESKTOP.fadeRange
 
   // Composite diffuse: paper background, then a white rounded chip per panel
   // with the client logo drawn inside it (contain-fit, centered).
@@ -209,9 +170,9 @@ function Band({ groupRef, dragState }) {
     const c = makeBandBackground()
     const ctx = c.getContext('2d')
 
-    const padding = 36 // px of pink margin around each chip
-    const chipSize = PANEL_PX - padding * 2 // 248
-    const chipRadius = 24 // subtle rounding on the logo chips
+    const padding = 27
+    const chipSize = PANEL_PX - padding * 2 // 186
+    const chipRadius = 18
 
     for (let i = 0; i < PANELS; i++) {
       const tex = logoTextures[i % logoTextures.length]
@@ -253,43 +214,31 @@ function Band({ groupRef, dragState }) {
     return t
   }, [logoTextures])
 
-  const bumpMap = useMemo(() => {
-    const t = new THREE.CanvasTexture(makeBandBump())
-    t.anisotropy = 8
-    return t
-  }, [])
-  const roughnessMap = useMemo(() => {
-    const t = new THREE.CanvasTexture(makeBandRoughness())
-    t.anisotropy = 8
-    return t
-  }, [])
   const alphaMap = useMemo(() => {
     const t = new THREE.CanvasTexture(makeBandAlpha())
-    t.anisotropy = 8
+    t.anisotropy = 4
     return t
   }, [])
 
-  // Outer paper shell — alpha-masked into rounded panels, with depth-fade
-  // shader so rear tickets ghost out into frosted translucency.
-  // DoubleSide so the back-half of the cylinder renders too — those become
-  // the faded "tickets behind" visible through the front-side gaps.
+  // Alpha-masked into rounded panels, with depth-fade shader so rear
+  // tickets ghost out into frosted translucency. DoubleSide so the back-
+  // half of the cylinder renders as the faded "tickets behind". Bump and
+  // roughness maps removed — they only mattered while the paper band was
+  // visible; chips read fine without them.
   const outerMat = useMemo(() => {
     const m = new THREE.MeshStandardMaterial({
       map: bandMap,
-      bumpMap,
-      bumpScale: 0.04,
-      roughnessMap,
       roughness: 0.78,
       metalness: 0,
-      envMapIntensity: 0.9,
       alphaMap,
       transparent: true,
       side: THREE.DoubleSide,
       depthWrite: false,
     })
-    m.onBeforeCompile = (s) => applyDepthFade(s, { minAlpha: 0.14 })
+    m.onBeforeCompile = (s) =>
+      applyDepthFade(s, { minAlpha: 0.14, near: fadeNear, range: fadeRange })
     return m
-  }, [bandMap, bumpMap, roughnessMap, alphaMap])
+  }, [bandMap, alphaMap, fadeNear, fadeRange])
 
   useFrame((_, dt) => {
     if (!groupRef.current) return
@@ -339,6 +288,35 @@ export default function TicketBand3D() {
     velocity: 0, // radians/sec, used for release-momentum
   })
 
+  // Viewport-driven camera/DPR — phones get a closer camera with wider FOV
+  // and a lower DPR cap so the band fills the narrow viewport and stays
+  // smooth even on weaker GPUs.
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const mq = window.matchMedia('(max-width: 640px)')
+    const update = () => setIsMobile(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+
+  const cam = isMobile ? CAM_MOBILE : CAM_DESKTOP
+
+  // Pause rendering when the band is off-screen — the biggest perf win,
+  // since useFrame would otherwise keep ticking at 60fps regardless.
+  const wrapperRef = useRef(null)
+  const [inView, setInView] = useState(true)
+  useEffect(() => {
+    if (typeof window === 'undefined' || !wrapperRef.current) return
+    const io = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { rootMargin: '120px' },
+    )
+    io.observe(wrapperRef.current)
+    return () => io.disconnect()
+  }, [])
+
   const onPointerDown = (e) => {
     if (!groupRef.current) return
     e.currentTarget.setPointerCapture?.(e.pointerId)
@@ -372,15 +350,22 @@ export default function TicketBand3D() {
 
   return (
     <div
-      className="relative h-[560px] w-full cursor-grab touch-none select-none active:cursor-grabbing"
+      ref={wrapperRef}
+      className="relative h-[360px] w-full cursor-grab touch-none select-none active:cursor-grabbing sm:h-[460px] md:h-[560px]"
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
     >
       <Canvas
-        dpr={[1, 2]}
-        camera={{ position: [0, 2.4, 12.2], fov: 35 }}
+        // R3F locks the camera prop at mount time, so we key the Canvas
+        // on viewport size to rebuild when crossing the mobile breakpoint.
+        key={isMobile ? 'm' : 'd'}
+        dpr={isMobile ? [1, 1.5] : [1, 2]}
+        camera={{ position: cam.pos, fov: cam.fov }}
+        // Off-screen pause — biggest perf win: stops the render loop
+        // entirely when the band isn't on screen.
+        frameloop={inView ? 'always' : 'never'}
         gl={{
           antialias: true,
           alpha: true,
@@ -394,8 +379,11 @@ export default function TicketBand3D() {
         <directionalLight position={[-4, 2, -3]} intensity={0.35} />
 
         <Suspense fallback={null}>
-          <Environment preset="city" background={false} resolution={64} />
-          <Band groupRef={groupRef} dragState={dragState} />
+          <Band
+            groupRef={groupRef}
+            dragState={dragState}
+            isMobile={isMobile}
+          />
         </Suspense>
       </Canvas>
     </div>
