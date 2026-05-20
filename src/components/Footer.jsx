@@ -40,13 +40,13 @@ export default function Footer() {
 
       {/* MSE watermark — clipped inside the footer, sits behind all content */}
       <div
-        className="pointer-events-none absolute inset-x-0 -top-[64px] z-0 flex select-none justify-center opacity-[0.12] sm:-top-[80px] lg:-top-[96px]"
+        className="pointer-events-none absolute inset-x-0 -top-[36px] z-0 flex select-none justify-center opacity-[0.10] sm:-top-[72px] sm:opacity-[0.12] lg:-top-[96px]"
         aria-hidden="true"
       >
-        <div className="h-[210px] w-[75%] max-w-[820px] sm:h-[260px] lg:h-[310px]">
+        <div className="h-[150px] w-[86%] max-w-[820px] sm:h-[240px] sm:w-[78%] lg:h-[310px] lg:w-[75%]">
           <TextPressure
             text="MSE"
-            flex={true}
+            flex={false}
             alpha={false}
             stroke={false}
             width={true}
@@ -54,7 +54,7 @@ export default function Footer() {
             italic={true}
             textColor="#FFFFFF"
             strokeColor="#D4AF37"
-            minFontSize={72}
+            minFontSize={48}
           />
         </div>
       </div>
