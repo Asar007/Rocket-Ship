@@ -36,7 +36,11 @@ const PANELS = 18
 // Square panels in 3D arc-length.
 const PANEL_ARC = (2 * Math.PI * BAND_RADIUS) / PANELS // ≈ 1.885 — unchanged
 const BAND_HEIGHT = PANEL_ARC
-const BAND_SEGMENTS = 192
+// Desktop keeps the smooth curve; mobile drops to ~1/3 the triangle
+// count which is still visually smooth at the lower resolution and
+// saves a lot of vertex+fragment work.
+const SEGMENTS_DESKTOP = 128
+const SEGMENTS_MOBILE = 64
 
 // Texture canvas: 240px per panel chip — comfortably above the on-screen
 // chip size at retina DPR, well below the previous 320px overkill.
@@ -158,11 +162,13 @@ function applyDepthFade(shader, opts = {}) {
     )
 }
 
-function Band({ groupRef, dragState, isMobile }) {
+function Band({ groupRef, dragState, isNarrow, isLowTier }) {
   // Drei suspends the component until all 12 logos are loaded.
   const logoTextures = useTexture(LOGO_SOURCES)
-  const fadeNear = isMobile ? CAM_MOBILE.fadeNear : CAM_DESKTOP.fadeNear
-  const fadeRange = isMobile ? CAM_MOBILE.fadeRange : CAM_DESKTOP.fadeRange
+  // Camera framing follows viewport width (narrow viewports need the
+  // closer + wider-FOV preset so the band doesn't clip on the sides).
+  const fadeNear = isNarrow ? CAM_MOBILE.fadeNear : CAM_DESKTOP.fadeNear
+  const fadeRange = isNarrow ? CAM_MOBILE.fadeRange : CAM_DESKTOP.fadeRange
 
   // Composite diffuse: paper background, then a white rounded chip per panel
   // with the client logo drawn inside it (contain-fit, centered).
@@ -232,13 +238,16 @@ function Band({ groupRef, dragState, isMobile }) {
       metalness: 0,
       alphaMap,
       transparent: true,
-      side: THREE.DoubleSide,
+      // Low-tier devices: FrontSide only — no back-half ghost tickets,
+      // ~50% less fragment work. High-tier (including beefy phones) keeps
+      // DoubleSide for the layered look.
+      side: isLowTier ? THREE.FrontSide : THREE.DoubleSide,
       depthWrite: false,
     })
     m.onBeforeCompile = (s) =>
       applyDepthFade(s, { minAlpha: 0.14, near: fadeNear, range: fadeRange })
     return m
-  }, [bandMap, alphaMap, fadeNear, fadeRange])
+  }, [bandMap, alphaMap, fadeNear, fadeRange, isLowTier])
 
   useFrame((_, dt) => {
     if (!groupRef.current) return
@@ -269,7 +278,14 @@ function Band({ groupRef, dragState, isMobile }) {
           alpha mask show through to the page background. */}
       <mesh material={outerMat}>
         <cylinderGeometry
-          args={[BAND_RADIUS, BAND_RADIUS, BAND_HEIGHT, BAND_SEGMENTS, 1, true]}
+          args={[
+            BAND_RADIUS,
+            BAND_RADIUS,
+            BAND_HEIGHT,
+            isLowTier ? SEGMENTS_MOBILE : SEGMENTS_DESKTOP,
+            1,
+            true,
+          ]}
         />
       </mesh>
     </group>
@@ -288,20 +304,42 @@ export default function TicketBand3D() {
     velocity: 0, // radians/sec, used for release-momentum
   })
 
-  // Viewport-driven camera/DPR — phones get a closer camera with wider FOV
-  // and a lower DPR cap so the band fills the narrow viewport and stays
-  // smooth even on weaker GPUs.
-  const [isMobile, setIsMobile] = useState(false)
+  // Two independent signals:
+  //   isNarrow  — viewport ≤ 640px → use the closer mobile camera framing
+  //   isLowTier — device can't comfortably run the full preset → drop
+  //               drag, DoubleSide, MSAA, full DPR, and segment count
+  // A beefy phone in portrait gets isNarrow=true (mobile camera) BUT
+  // isLowTier=false (full features including drag).
+  const [isNarrow, setIsNarrow] = useState(false)
+  const [isLowTier, setIsLowTier] = useState(false)
   useEffect(() => {
     if (typeof window === 'undefined') return
+
     const mq = window.matchMedia('(max-width: 640px)')
-    const update = () => setIsMobile(mq.matches)
-    update()
-    mq.addEventListener('change', update)
-    return () => mq.removeEventListener('change', update)
+    const onResize = () => setIsNarrow(mq.matches)
+    onResize()
+    mq.addEventListener('change', onResize)
+
+    // Capability check, run once on mount.
+    const detectLowTier = () => {
+      // Desktop-style input (mouse) → trust the platform, high tier.
+      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        return false
+      }
+      // iOS exposes no deviceMemory; iPhones/iPads from the last few
+      // years are very capable, so treat iOS as high tier by default.
+      if (/iPad|iPhone|iPod/.test(navigator.userAgent)) return false
+      // Android (and others): require flagship-class signals.
+      const mem = navigator.deviceMemory ?? 4
+      const cores = navigator.hardwareConcurrency ?? 4
+      return !(mem >= 6 && cores >= 8)
+    }
+    setIsLowTier(detectLowTier())
+
+    return () => mq.removeEventListener('change', onResize)
   }, [])
 
-  const cam = isMobile ? CAM_MOBILE : CAM_DESKTOP
+  const cam = isNarrow ? CAM_MOBILE : CAM_DESKTOP
 
   // Pause rendering when the band is off-screen — the biggest perf win,
   // since useFrame would otherwise keep ticking at 60fps regardless.
@@ -351,24 +389,31 @@ export default function TicketBand3D() {
   return (
     <div
       ref={wrapperRef}
-      className="relative h-[360px] w-full cursor-grab touch-none select-none active:cursor-grabbing sm:h-[460px] md:h-[560px]"
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      onPointerCancel={onPointerUp}
+      // Low-tier devices: no drag handlers, no grab cursor, no touch-action
+      // lock — so the band area scrolls naturally with the rest of the page.
+      className={`relative h-[360px] w-full sm:h-[460px] md:h-[560px] ${
+        isLowTier ? '' : 'cursor-grab touch-none select-none active:cursor-grabbing'
+      }`}
+      onPointerDown={isLowTier ? undefined : onPointerDown}
+      onPointerMove={isLowTier ? undefined : onPointerMove}
+      onPointerUp={isLowTier ? undefined : onPointerUp}
+      onPointerCancel={isLowTier ? undefined : onPointerUp}
     >
       <Canvas
-        // R3F locks the camera prop at mount time, so we key the Canvas
-        // on viewport size to rebuild when crossing the mobile breakpoint.
-        key={isMobile ? 'm' : 'd'}
-        dpr={isMobile ? [1, 1.5] : [1, 2]}
+        // R3F locks the camera prop at mount time; key the Canvas on the
+        // (camera, perf-tier) pair so it rebuilds when either flips.
+        key={`${isNarrow ? 'n' : 'w'}-${isLowTier ? 'l' : 'h'}`}
+        // Low tier: dpr 1 + no MSAA — biggest fragment-shader win.
+        // High tier (including beefy phones): full 2x DPR.
+        dpr={isLowTier ? 1 : [1, 2]}
         camera={{ position: cam.pos, fov: cam.fov }}
-        // Off-screen pause — biggest perf win: stops the render loop
-        // entirely when the band isn't on screen.
+        // Off-screen pause — biggest overall perf win: stops the render
+        // loop entirely when the band isn't on screen.
         frameloop={inView ? 'always' : 'never'}
         gl={{
-          antialias: true,
+          antialias: !isLowTier,
           alpha: true,
+          powerPreference: 'high-performance',
           toneMapping: THREE.ACESFilmicToneMapping,
           outputColorSpace: THREE.SRGBColorSpace,
         }}
@@ -382,7 +427,8 @@ export default function TicketBand3D() {
           <Band
             groupRef={groupRef}
             dragState={dragState}
-            isMobile={isMobile}
+            isNarrow={isNarrow}
+            isLowTier={isLowTier}
           />
         </Suspense>
       </Canvas>
