@@ -1,8 +1,6 @@
 import Seo from '../lib/seo.jsx'
 import About from '../sections/About.jsx'
-import AboutVideo from '../sections/AboutVideo.jsx'
-import AboutCapsule from '../sections/AboutCapsule.jsx'
-import AboutManifesto from '../sections/AboutManifesto.jsx'
+import AboutHero from '../sections/AboutHero.jsx'
 import AboutJourney from '../sections/AboutJourney.jsx'
 import AboutMetrics from '../sections/AboutMetrics.jsx'
 import WhyChooseUs from '../sections/WhyChooseUs.jsx'
@@ -15,9 +13,7 @@ export function Component() {
         description="Madras Swastic Engineers — a turnkey industrial engineering firm in Chennai since 2009. Fabrication partner on ISRO's Gaganyaan crew-module programme, with delivery across paper, sugar and petrochemical sectors."
         path="/about"
       />
-      <AboutCapsule />
-      <AboutVideo />
-      <AboutManifesto />
+      <AboutHero />
       <AboutJourney />
       <AboutMetrics />
       <About />
