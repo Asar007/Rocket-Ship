@@ -21,7 +21,7 @@ export default function AboutMetrics() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.7, ease: [0.2, 0.7, 0.2, 1] }}
-          className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl sm:p-10"
+          className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-xl sm:p-8 lg:p-10"
         >
           {/* corner washes */}
           <div className="absolute -left-12 -top-12 h-44 w-44 rounded-full bg-gold-500/15 blur-3xl" />
@@ -33,7 +33,10 @@ export default function AboutMetrics() {
                 <span className="h-px w-10 bg-gold-400/60" />
                 <span className="eyebrow">Proof</span>
               </div>
-              <h2 className="mt-3 font-display text-2xl font-semibold leading-tight text-white sm:text-3xl">
+              <h2
+                className="mt-3 font-display font-semibold leading-tight text-white"
+                style={{ fontSize: 'clamp(1.4rem, 1rem + 1.6vw, 1.875rem)' }}
+              >
                 Quantified credibility.
               </h2>
             </div>
@@ -44,9 +47,9 @@ export default function AboutMetrics() {
           </div>
 
           {/* gold hairline */}
-          <div className="my-8 h-px w-full bg-gradient-to-r from-transparent via-gold-400/30 to-transparent" />
+          <div className="my-6 h-px w-full bg-gradient-to-r from-transparent via-gold-400/30 to-transparent sm:my-8" />
 
-          <div className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-x-5 gap-y-8 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-4">
             {METRICS.map((m, i) => (
               <motion.div
                 key={m.label}
@@ -60,7 +63,10 @@ export default function AboutMetrics() {
                 }}
                 className="relative"
               >
-                <div className="font-display text-5xl font-semibold leading-none tracking-tight text-white sm:text-6xl lg:text-7xl">
+                <div
+                  className="font-display font-semibold leading-none tracking-tight text-white"
+                  style={{ fontSize: 'clamp(2.25rem, 1.4rem + 4vw, 4.5rem)' }}
+                >
                   <span className="bg-gradient-to-br from-white via-white to-gold-300 bg-clip-text text-transparent">
                     <AnimatedCounter value={m.value} suffix={m.suffix || ''} />
                   </span>

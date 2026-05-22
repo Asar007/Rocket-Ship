@@ -96,7 +96,7 @@ export default function CallbackDialog() {
   }
 
   const inputCls =
-    'w-full rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-[13px] text-white placeholder-white/35 outline-none transition-all focus:border-gold-400/50 focus:bg-white/[0.05]'
+    'w-full rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-3 text-base text-white placeholder-white/35 outline-none transition-all focus:border-gold-400/50 focus:bg-white/[0.05] sm:py-2.5 sm:text-[13px]'
   const labelCls =
     'mb-1.5 block font-mono text-[10.5px] uppercase tracking-[0.22em] text-white/55'
 
@@ -130,7 +130,7 @@ export default function CallbackDialog() {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="absolute right-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.05] text-white/70 transition-colors hover:bg-white/[0.1] hover:text-white"
+              className="absolute right-3 top-3 z-10 grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-white/[0.05] text-white/70 transition-colors hover:bg-white/[0.1] hover:text-white sm:right-4 sm:top-4"
               aria-label="Close dialog"
             >
               <X className="h-4 w-4" />
@@ -138,7 +138,7 @@ export default function CallbackDialog() {
 
             <div className="grid grid-cols-1 lg:grid-cols-12">
               {/* Pitch */}
-              <div className="border-b border-white/10 p-6 sm:p-8 lg:col-span-5 lg:border-b-0 lg:border-r">
+              <div className="border-b border-white/10 p-5 sm:p-8 lg:col-span-5 lg:border-b-0 lg:border-r">
                 <div className="flex items-center gap-2">
                   <PhoneCall className="h-4 w-4 text-gold-400" />
                   <span className="eyebrow text-white/65">Schedule a callback</span>
@@ -171,7 +171,7 @@ export default function CallbackDialog() {
               </div>
 
               {/* Form */}
-              <div className="p-6 sm:p-8 lg:col-span-7">
+              <div className="p-5 sm:p-8 lg:col-span-7">
                 <AnimatePresence mode="wait">
                   {submitted ? (
                     <motion.div
@@ -214,51 +214,62 @@ export default function CallbackDialog() {
                     >
                       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
-                          <label className={labelCls}>Name</label>
+                          <label className={labelCls} htmlFor="cb-name">Name</label>
                           <input
+                            id="cb-name"
                             ref={firstInputRef}
                             required
                             value={form.name}
                             onChange={onField('name')}
                             placeholder="Your name"
+                            autoComplete="name"
                             className={inputCls}
                           />
                         </div>
                         <div>
-                          <label className={labelCls}>Company</label>
+                          <label className={labelCls} htmlFor="cb-company">Company</label>
                           <input
+                            id="cb-company"
                             value={form.company}
                             onChange={onField('company')}
                             placeholder="Organisation"
+                            autoComplete="organization"
                             className={inputCls}
                           />
                         </div>
                         <div>
-                          <label className={labelCls}>Phone</label>
+                          <label className={labelCls} htmlFor="cb-phone">Phone</label>
                           <input
+                            id="cb-phone"
                             required
                             type="tel"
+                            inputMode="tel"
                             value={form.phone}
                             onChange={onField('phone')}
                             placeholder="+91 ..."
+                            autoComplete="tel"
                             className={inputCls}
                           />
                         </div>
                         <div>
-                          <label className={labelCls}>Email</label>
+                          <label className={labelCls} htmlFor="cb-email">Email</label>
                           <input
+                            id="cb-email"
                             type="email"
+                            inputMode="email"
                             value={form.email}
                             onChange={onField('email')}
                             placeholder="optional"
+                            autoComplete="email"
                             className={inputCls}
                           />
                         </div>
                       </div>
 
                       <div>
-                        <label className={labelCls}>Project brief</label>
+                        <label className={labelCls} htmlFor="cb-brief">Project brief</label>
                         <textarea
+                          id="cb-brief"
                           rows={3}
                           value={form.brief}
                           onChange={onField('brief')}
@@ -275,7 +286,7 @@ export default function CallbackDialog() {
                               key={w}
                               type="button"
                               onClick={() => setForm((s) => ({ ...s, window: w }))}
-                              className={`rounded-full border px-3.5 py-1.5 text-[12px] font-medium transition-all duration-200 ${
+                              className={`min-h-[44px] rounded-full border px-4 py-2 text-[13px] font-medium transition-all duration-200 sm:min-h-0 sm:px-3.5 sm:py-1.5 sm:text-[12px] ${
                                 form.window === w
                                   ? 'border-gold-400/60 bg-gold-400/10 text-gold-200 shadow-[0_0_18px_-6px_rgba(240,198,116,0.45)]'
                                   : 'border-white/10 bg-white/[0.03] text-white/65 hover:border-white/25 hover:text-white'
@@ -294,7 +305,7 @@ export default function CallbackDialog() {
                         </p>
                         <button
                           type="submit"
-                          className="btn-primary shrink-0"
+                          className="btn-primary w-full justify-center shrink-0 sm:w-auto"
                         >
                           Request callback
                           <Send className="h-4 w-4" />

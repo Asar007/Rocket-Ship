@@ -379,7 +379,7 @@ export default function Projects() {
   return (
     <section id="projects" className="section-pad relative">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
+        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end sm:gap-6">
           <SectionHeading
             eyebrow="Selected work"
             title="Projects we're proud of."
@@ -406,7 +406,7 @@ export default function Projects() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: '-60px' }}
-          className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3"
+          className="mt-8 grid grid-cols-1 gap-4 sm:mt-12 sm:gap-5 md:grid-cols-2 lg:grid-cols-3"
         >
           {PROJECTS.map((p) => (
             <ProjectCard key={p.id} project={p} onOpen={setActive} />

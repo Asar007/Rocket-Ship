@@ -26,7 +26,7 @@ export default function AboutManifesto() {
         </div>
 
         {/* TextPressure giant headline */}
-        <div className="relative mt-6 h-[120px] select-none overflow-hidden sm:h-[240px] md:h-[300px] lg:h-[360px]">
+        <div className="relative mt-5 h-[96px] select-none overflow-hidden sm:mt-6 sm:h-[240px] md:h-[300px] lg:h-[360px]">
           <TextPressure
             text="BUILT TO LAUNCH"
             flex={true}
@@ -42,8 +42,11 @@ export default function AboutManifesto() {
         </div>
 
         {/* Rotating word manifesto line */}
-        <div className="mt-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2 font-display text-3xl font-light tracking-tight text-white/85 sm:text-4xl md:text-5xl">
+        <div className="mt-6 flex flex-col gap-5 sm:mt-8 sm:gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div
+            className="flex flex-wrap items-baseline gap-x-3 gap-y-2 font-display font-light tracking-tight text-white/85"
+            style={{ fontSize: 'clamp(1.5rem, 1rem + 2.4vw, 3rem)' }}
+          >
             <span>We engineer for</span>
             <span className="relative inline-flex h-[1.05em] min-w-[5.5ch] overflow-hidden align-baseline sm:min-w-[7ch] md:min-w-[8ch]">
               <AnimatePresence mode="wait">
@@ -69,7 +72,7 @@ export default function AboutManifesto() {
         </div>
 
         {/* gold hairline divider */}
-        <div className="mt-16 h-px w-full bg-gradient-to-r from-transparent via-gold-400/40 to-transparent" />
+        <div className="mt-10 h-px w-full bg-gradient-to-r from-transparent via-gold-400/40 to-transparent sm:mt-16" />
       </div>
     </section>
   )

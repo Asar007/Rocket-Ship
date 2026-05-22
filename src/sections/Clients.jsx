@@ -8,7 +8,7 @@ const TicketBand3D = lazy(() => import('../components/TicketBand3D.jsx'))
 const BandFallback = () => (
   <div
     aria-hidden
-    className="h-[360px] w-full sm:h-[460px] md:h-[560px]"
+    className="h-[320px] w-full sm:h-[460px] md:h-[560px]"
   />
 )
 
@@ -23,7 +23,7 @@ export default function Clients() {
           subtitle="Public-sector space agencies and private operators that depend on engineering work executed without drama."
         />
 
-        <div className="mt-12 mb-12 sm:mb-16">
+        <div className="mt-6 mb-6 sm:mt-12 sm:mb-16">
           <Suspense fallback={<BandFallback />}>
             <TicketBand3D />
           </Suspense>

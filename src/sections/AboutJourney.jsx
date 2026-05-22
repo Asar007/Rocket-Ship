@@ -85,16 +85,20 @@ export default function AboutJourney() {
           <span className="h-px w-10 bg-gold-400/60" />
           <span className="eyebrow">The journey</span>
         </div>
-        <h2 className="mt-4 max-w-3xl font-display text-3xl font-semibold leading-[1.1] tracking-tight text-white sm:text-4xl md:text-5xl">
+        <h2
+          className="mt-4 max-w-3xl font-display font-semibold leading-[1.1] tracking-tight text-white"
+          style={{ fontSize: 'clamp(1.75rem, 1.1rem + 3vw, 3rem)' }}
+        >
           From a Chennai shop floor to{' '}
           <span className="bg-gradient-to-br from-gold-400 via-gold-500 to-gold-600 bg-clip-text text-transparent">
             India's first crewed spaceflight.
           </span>
         </h2>
 
-        <div className="mt-16 grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-10">
-          {/* Sticky visual stage */}
-          <div className="lg:col-span-5">
+        <div className="mt-10 grid grid-cols-1 gap-10 sm:mt-14 lg:grid-cols-12 lg:gap-10">
+          {/* Sticky visual stage — hidden on mobile to save scroll real-estate;
+              the chapter timeline carries the story alone below the breakpoint. */}
+          <div className="hidden lg:col-span-5 lg:block">
             <div className="sticky top-28">
               <div className="glass relative aspect-square w-full overflow-hidden rounded-3xl border border-white/10 p-8">
                 {/* Rotating orbit ring */}
@@ -165,17 +169,17 @@ export default function AboutJourney() {
             {/* vertical rail — aligned to the dot center (left-0 + w-7/2 = 14px) */}
             <div className="absolute left-[13.5px] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/15 to-transparent" />
 
-            <ol className="space-y-20 sm:space-y-28">
+            <ol className="space-y-12 sm:space-y-20 lg:space-y-28">
               {CHAPTERS.map((c, i) => {
                 const Icon = c.icon
                 return (
                   <motion.li
                     key={c.no}
                     data-chapter={i}
-                    initial={{ opacity: 0, y: 32 }}
+                    initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: '-120px' }}
-                    transition={{ duration: 0.7, ease: [0.2, 0.7, 0.2, 1] }}
+                    viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }}
+                    transition={{ duration: 0.55, ease: [0.2, 0.7, 0.2, 1] }}
                     className="relative pl-12 sm:pl-16"
                   >
                     {/* Dot on rail */}

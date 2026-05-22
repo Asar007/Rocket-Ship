@@ -23,6 +23,22 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Lock body scroll while the mobile sheet is open so background content
+  // doesn't slide under the user's thumb on small phones.
+  useEffect(() => {
+    if (!open) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKey = (e) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = prev
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [open])
+
   const closeMenu = () => setOpen(false)
 
   return (
@@ -101,10 +117,12 @@ export default function Navbar() {
         <div className="flex shrink-0 items-center gap-2">
           <button
             onClick={() => setOpen((v) => !v)}
-            aria-label="Toggle menu"
-            className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-white/90 backdrop-blur lg:hidden"
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
+            aria-controls="mobile-nav-sheet"
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-white/90 backdrop-blur transition-colors hover:bg-white/[0.08] active:bg-white/[0.12] lg:hidden"
           >
-            {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
       </nav>
@@ -112,29 +130,57 @@ export default function Navbar() {
       {/* Mobile sheet */}
       <AnimatePresence>
         {open && (
-          <motion.div
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.25 }}
-            className="absolute left-3 right-3 top-[72px] rounded-3xl border border-white/10 bg-navy-950/85 p-5 backdrop-blur-2xl lg:hidden"
-          >
-            <ul className="flex flex-col gap-1">
-              {NAV_ITEMS.map((item) => (
-                <li key={item.to}>
-                  <NavLink
-                    to={item.to}
-                    end={item.to === '/'}
-                    onClick={closeMenu}
-                    className="flex items-center justify-between rounded-2xl border border-transparent px-4 py-3 font-display text-base text-white/85 hover:border-white/10 hover:bg-white/[0.04]"
+          <>
+            {/* Tap-anywhere backdrop closes the menu on mobile. */}
+            <motion.button
+              type="button"
+              aria-label="Close menu"
+              onClick={closeMenu}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 -z-10 bg-navy-950/40 backdrop-blur-sm lg:hidden"
+            />
+            <motion.div
+              id="mobile-nav-sheet"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Site navigation"
+              initial={{ opacity: 0, y: -12, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -12, scale: 0.98 }}
+              transition={{ duration: 0.28, ease: [0.2, 0.7, 0.2, 1] }}
+              className="absolute left-3 right-3 top-[72px] rounded-3xl border border-white/10 bg-navy-950/90 p-4 backdrop-blur-2xl shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] lg:hidden"
+            >
+              <ul className="flex flex-col gap-1">
+                {NAV_ITEMS.map((item, idx) => (
+                  <motion.li
+                    key={item.to}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.04 + idx * 0.04, duration: 0.25 }}
                   >
-                    <span>{item.label}</span>
-                    <ArrowUpRight className="h-4 w-4 text-gold-400" />
-                  </NavLink>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
+                    <NavLink
+                      to={item.to}
+                      end={item.to === '/'}
+                      onClick={closeMenu}
+                      className={({ isActive }) =>
+                        `flex min-h-[52px] items-center justify-between rounded-2xl border px-4 py-3 font-display text-base text-white/85 transition-colors ${
+                          isActive
+                            ? 'border-gold-400/30 bg-gold-400/10 text-white'
+                            : 'border-transparent hover:border-white/10 hover:bg-white/[0.04] active:bg-white/[0.08]'
+                        }`
+                      }
+                    >
+                      <span>{item.label}</span>
+                      <ArrowUpRight className="h-4 w-4 text-gold-400" />
+                    </NavLink>
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </motion.header>

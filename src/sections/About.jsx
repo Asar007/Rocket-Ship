@@ -56,7 +56,7 @@ export default function About() {
         />
         <div
           ref={gridRef}
-          className="mb-glow-section mt-14 grid grid-cols-1 gap-8 lg:grid-cols-12"
+          className="mb-glow-section mt-8 grid grid-cols-1 gap-6 sm:mt-12 sm:gap-8 lg:grid-cols-12"
         >
           {/* Story panel */}
           <motion.div
@@ -64,13 +64,16 @@ export default function About() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 0.7, ease: [0.2, 0.7, 0.2, 1] }}
-            className="glass relative overflow-hidden rounded-3xl p-7 sm:p-9 lg:col-span-5"
+            className="glass relative overflow-hidden rounded-3xl p-5 sm:p-7 lg:col-span-5 lg:p-9"
           >
             <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-electric-500/30 blur-3xl" />
             <div className="absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-gold-500/25 blur-3xl" />
 
             <span className="eyebrow">Our story</span>
-            <h3 className="mt-3 font-display text-2xl font-semibold leading-tight text-white sm:text-3xl">
+            <h3
+              className="mt-3 font-display font-semibold leading-tight text-white"
+              style={{ fontSize: 'clamp(1.35rem, 1rem + 1.4vw, 1.875rem)' }}
+            >
               Supporting India&rsquo;s space programme and core industries since 2009.
             </h3>
             <p className="mt-5 text-[15px] leading-relaxed text-white/70">
@@ -82,7 +85,7 @@ export default function About() {
               testing, rocket equipment handling and ground systems for launch.
             </p>
 
-            <div className="mt-7 grid grid-cols-2 gap-3 text-sm">
+            <div className="mt-6 grid grid-cols-2 gap-3 text-sm">
               {[
                 ['2009', 'Established'],
                 ['ISRO', 'Space programmes'],
@@ -105,7 +108,7 @@ export default function About() {
             {/* Vertical rail */}
             <div className="absolute left-4 top-2 bottom-2 w-px bg-gradient-to-b from-transparent via-white/15 to-transparent sm:left-6" />
 
-            <ul className="space-y-5">
+            <ul className="space-y-4 sm:space-y-5">
               {CAPABILITIES.map((m, i) => (
                 <motion.li
                   key={m.tag}

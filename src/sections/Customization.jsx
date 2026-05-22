@@ -123,7 +123,7 @@ export default function Customization() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.7, ease: [0.2, 0.7, 0.2, 1] }}
-          className="mt-12 flex flex-col gap-6 rounded-2xl border border-white/10 bg-white/[0.02] px-5 py-5 backdrop-blur md:flex-row md:items-center md:justify-between md:gap-10 md:px-7"
+          className="mt-8 flex flex-col gap-5 rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-5 backdrop-blur sm:mt-12 sm:px-5 md:flex-row md:items-center md:justify-between md:gap-10 md:px-7"
         >
           <div className="flex items-start gap-3">
             <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-gold-400" />
@@ -135,9 +135,9 @@ export default function Customization() {
               From a stair handrail to flight-class structural hardware, every brief is bespoke, every drawing reviewed by a chartered engineer.
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10.5px] uppercase tracking-[0.28em] text-white/55">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[10px] uppercase tracking-[0.24em] text-white/55 sm:text-[10.5px] sm:tracking-[0.28em]">
             {SECTORS.map((s, i) => (
-              <span key={s} className="flex items-center gap-4">
+              <span key={s} className="flex items-center gap-3">
                 <span>{s}</span>
                 {i < SECTORS.length - 1 && (
                   <span className="text-white/20" aria-hidden>
@@ -150,7 +150,7 @@ export default function Customization() {
         </motion.div>
 
         {/* === Process Timeline === */}
-        <div className="mt-20">
+        <div className="mt-14 sm:mt-20">
           <SectionHeading
             eyebrow="Build journey"
             title="From sketch to commissioned asset."
@@ -159,7 +159,7 @@ export default function Customization() {
             align="left"
           />
 
-          <div className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+          <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-6">
             {PROCESS.map((p, i) => (
               <motion.div
                 key={p.id}
@@ -184,7 +184,7 @@ export default function Customization() {
         </div>
 
         {/* === Capabilities mosaic === */}
-        <div className="mt-20">
+        <div className="mt-14 sm:mt-20">
           <SectionHeading
             eyebrow="Capabilities"
             title="Custom doesn't stop at dimensions."
@@ -193,7 +193,7 @@ export default function Customization() {
             align="left"
           />
 
-          <div className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+          <div className="mt-8 grid grid-cols-1 gap-3 sm:mt-12 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-6">
             {CAPABILITIES.map((cap, i) => (
               <motion.div
                 key={cap.id}

@@ -4,8 +4,13 @@ export default function AboutHero() {
   return (
     <section
       id="about-hero"
-      className="relative -mt-24 h-screen w-full overflow-hidden sm:-mt-28"
-      style={{ height: '100svh' }}
+      // Mobile uses a banner-height hero (~64svh, capped at 540px) instead
+      // of full viewport. The shop-floor photo is a wide landscape — at
+      // full 100svh in portrait it was being object-cover-cropped so
+      // aggressively that the frame looked "zoomed in." A shorter
+      // container lets more of the composition show without distortion.
+      // Tablet+ restores the full-viewport landscape hero.
+      className="relative -mt-24 h-[min(64svh,540px)] w-full overflow-hidden sm:-mt-28 md:h-[100svh]"
     >
       {/*
         Image focal point: on portrait/mobile we shift toward the centre of the
@@ -21,7 +26,7 @@ export default function AboutHero() {
           src="/about-hero.png"
           alt="Madras Swastic Engineers shop floor — crew-module structural frame under fabrication"
           className="absolute inset-0 h-full w-full object-cover"
-          style={{ objectPosition: '55% 55%' }}
+          style={{ objectPosition: '50% 40%' }}
           loading="eager"
           decoding="async"
         />
@@ -40,7 +45,7 @@ export default function AboutHero() {
       {/* Corner mask — hides the Gemini watermark in the bottom-right. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute bottom-0 right-0 h-32 w-44 sm:h-48 sm:w-80"
+        className="pointer-events-none absolute bottom-0 right-0 h-24 w-36 sm:h-48 sm:w-80"
         style={{
           background:
             'radial-gradient(ellipse at bottom right, rgba(3,6,26,0.98) 0%, rgba(3,6,26,0.85) 40%, rgba(3,6,26,0) 80%)',
@@ -49,8 +54,8 @@ export default function AboutHero() {
 
       {/* Copy */}
       <div
-        className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-end px-5 pb-14 sm:px-6 sm:pb-24 lg:pb-32"
-        style={{ paddingBottom: 'max(3.5rem, env(safe-area-inset-bottom))' }}
+        className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-end px-5 pb-8 sm:px-6 sm:pb-24 lg:pb-32"
+        style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom))' }}
       >
         <motion.div
           initial={{ opacity: 0, y: 12 }}

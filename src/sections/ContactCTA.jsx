@@ -53,7 +53,7 @@ export default function ContactCTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.8, ease: [0.2, 0.7, 0.2, 1] }}
-          className="glass-strong relative overflow-hidden rounded-[32px] px-6 py-14 text-center sm:px-12 sm:py-20"
+          className="glass-strong relative overflow-hidden rounded-[28px] px-5 py-10 text-center sm:rounded-[32px] sm:px-12 sm:py-20"
         >
           {/* Connectors scene fills the panel. Pointer-events confined to itself
               via a wrapper so the CTA buttons stay clickable; clicking empty
@@ -82,34 +82,40 @@ export default function ContactCTA() {
               <span className="eyebrow">Open for 2026 projects</span>
             </div>
 
-            <h2 className="mx-auto mt-6 max-w-3xl font-display text-3xl font-semibold leading-[1.05] tracking-tight text-white sm:text-5xl md:text-6xl">
+            <h2
+              className="mx-auto mt-5 max-w-3xl font-display font-semibold leading-[1.05] tracking-tight text-white sm:mt-6"
+              style={{ fontSize: 'clamp(1.85rem, 1.2rem + 3.4vw, 3.75rem)' }}
+            >
               Let's Build Something{' '}
               <span className="bg-gradient-to-br from-gold-400 via-gold-500 to-gold-600 bg-clip-text text-transparent">
                 Great
               </span>{' '}
               Together.
             </h2>
-            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-white/70 sm:text-lg">
+            <p
+              className="mx-auto mt-5 max-w-xl leading-relaxed text-white/70"
+              style={{ fontSize: 'clamp(0.95rem, 0.88rem + 0.4vw, 1.125rem)' }}
+            >
               Tell us about your site, drawings or RFQ. We'll respond inside 24 hours with a senior
               engineer assigned to your conversation.
             </p>
 
-            <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+            <div className="mt-7 flex flex-col items-stretch justify-center gap-3 sm:mt-9 sm:flex-row sm:flex-wrap sm:items-center">
               <button
                 type="button"
                 onClick={openCallback}
-                className="btn-primary group"
+                className="btn-primary group justify-center"
               >
                 Start a Conversation
                 <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </button>
-              <a href="tel:+919884148474" className="btn-ghost">
+              <a href="tel:+919884148474" className="btn-ghost justify-center">
                 <Phone className="h-4 w-4 text-gold-400" />
                 +91 98841 48474
               </a>
             </div>
 
-            <div className="mt-12 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] sm:grid-cols-3">
+            <div className="mt-8 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] sm:mt-12 sm:grid-cols-3">
               {[
                 { icon: Mail, label: 'Email us', value: 'md@madrasswastic.com' },
                 { icon: Phone, label: 'Call directly', value: '+91 98841 48474' },
@@ -122,16 +128,16 @@ export default function ContactCTA() {
               ].map((c) => (
                 <div
                   key={c.label}
-                  className="flex items-center gap-3 bg-navy-950/30 px-5 py-4 text-left"
+                  className="flex items-center gap-3 bg-navy-950/30 px-4 py-4 text-left sm:px-5"
                 >
-                  <span className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04]">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.04]">
                     <c.icon className="h-4 w-4 text-gold-400" />
                   </span>
-                  <div>
+                  <div className="min-w-0">
                     <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/50">
                       {c.label}
                     </div>
-                    <div className="font-body text-sm font-medium tracking-wide text-white tabular-nums">
+                    <div className="font-body text-sm font-medium leading-snug tracking-wide text-white tabular-nums break-words">
                       {c.value}
                     </div>
                   </div>

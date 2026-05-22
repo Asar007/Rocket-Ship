@@ -19,11 +19,25 @@ export default function SectionHeading({
   // GSAP scroll-driven reveal: triggers as the heading enters the viewport.
   // The accent underline is *scrubbed* against scroll so it grows with the
   // user's progress through the heading.
+  // On mobile we skip the heavy reveal entirely — content stays visible — so
+  // the GSAP/ScrollTrigger load race never strands the heading off-screen
+  // (which manifested as huge empty patches above each section on phones).
   useScrollReveal(
     rootRef,
     ({ gsap, ScrollTrigger, el }) => {
-      if (reduce) {
-        gsap.set(el.querySelectorAll('[data-sh-item]'), { opacity: 1, y: 0 })
+      const isMobile =
+        typeof window !== 'undefined' && window.matchMedia('(max-width: 640px)').matches
+
+      if (reduce || isMobile) {
+        gsap.set(el.querySelectorAll('[data-sh-item]'), {
+          opacity: 1,
+          y: 0,
+          filter: 'blur(0px)',
+        })
+        const line = el.querySelector('[data-sh-line]')
+        const under = el.querySelector('[data-sh-underline]')
+        if (line) gsap.set(line, { scaleX: 1 })
+        if (under) gsap.set(under, { scaleX: 1, transformOrigin: 'left center' })
         return
       }
 
@@ -61,7 +75,16 @@ export default function SectionHeading({
         })
       }
 
+      // Safety net: if the trigger has not fired within 1.5s of mount (e.g.
+      // ScrollTrigger arrived late on a slow phone), reveal the heading so
+      // the user never sees an invisible patch.
+      const safety = setTimeout(() => {
+        gsap.set(items, { opacity: 1, y: 0, filter: 'blur(0px)' })
+        if (eyebrowLine) gsap.set(eyebrowLine, { scaleX: 1 })
+      }, 1500)
+
       return () => {
+        clearTimeout(safety)
         tl.scrollTrigger?.kill()
         tl.kill()
         scrubTrigger?.kill()
@@ -89,7 +112,7 @@ export default function SectionHeading({
     : title
 
   return (
-    <div ref={rootRef} className={`flex max-w-3xl flex-col gap-4 ${alignCls}`}>
+    <div ref={rootRef} className={`flex max-w-3xl flex-col gap-3 sm:gap-4 ${alignCls}`}>
       {eyebrow && (
         <div data-sh-item className="inline-flex items-center gap-2">
           <span data-sh-line className="h-px w-8 bg-gold-400/60" />
@@ -98,14 +121,16 @@ export default function SectionHeading({
       )}
       <h2
         data-sh-item
-        className="font-display text-3xl font-semibold leading-[1.1] tracking-tight text-white sm:text-4xl md:text-5xl"
+        className="font-display font-semibold leading-[1.1] tracking-tight text-white"
+        style={{ fontSize: 'clamp(1.65rem, 1.1rem + 2.4vw, 3rem)' }}
       >
         {renderedTitle}
       </h2>
       {subtitle && (
         <p
           data-sh-item
-          className="max-w-2xl text-base leading-relaxed text-white/65 sm:text-lg"
+          className="max-w-2xl leading-relaxed text-white/65"
+          style={{ fontSize: 'clamp(0.95rem, 0.88rem + 0.4vw, 1.125rem)' }}
         >
           {subtitle}
         </p>

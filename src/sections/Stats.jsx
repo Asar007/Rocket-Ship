@@ -18,10 +18,16 @@ export default function Stats() {
   const cardsWrapRef = useRef(null)
 
   // GSAP scroll scrub: stagger the counter cards in and draw each
-  // sparkline path against scroll progress.
+  // sparkline path against scroll progress. Mobile skips the reveal so
+  // the cards are visible immediately (avoids invisible-cards stranding
+  // if ScrollTrigger arrives late on a slow phone).
   useEffect(() => {
     let cancelled = false
     let triggers = []
+    let safetyTimer
+
+    const isMobile =
+      typeof window !== 'undefined' && window.matchMedia('(max-width: 640px)').matches
 
     ensureScrollTrigger().then((ScrollTrigger) => {
       if (cancelled || !cardsWrapRef.current || !ScrollTrigger) return
@@ -29,6 +35,16 @@ export default function Stats() {
       const wrap = cardsWrapRef.current
       const cards = wrap.querySelectorAll('[data-stat-card]')
       const paths = wrap.querySelectorAll('[data-spark]')
+
+      // On mobile draw sparklines as completed (no scrub) and skip the fade.
+      if (isMobile) {
+        gsap.set(cards, { opacity: 1, y: 0 })
+        paths.forEach((p) => {
+          p.style.strokeDasharray = ''
+          p.style.strokeDashoffset = ''
+        })
+        return
+      }
 
       gsap.set(cards, { opacity: 0, y: 36 })
       paths.forEach((p) => {
@@ -64,11 +80,17 @@ export default function Stats() {
         },
       })
 
+      // Safety net: if scrolltrigger never fires, reveal anyway.
+      safetyTimer = setTimeout(() => {
+        gsap.set(cards, { opacity: 1, y: 0 })
+      }, 1500)
+
       triggers.push(entryTl.scrollTrigger, scrubTrigger)
     })
 
     return () => {
       cancelled = true
+      if (safetyTimer) clearTimeout(safetyTimer)
       triggers.forEach((t) => t?.kill())
     }
   }, [])
@@ -83,7 +105,7 @@ export default function Stats() {
           subtitle="A snapshot of our work since 2009, across space, paper, sugar and petrochemical projects."
         />
 
-        <div className="mt-14">
+        <div className="mt-8 sm:mt-12">
           {/* Counters */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -94,7 +116,10 @@ export default function Stats() {
           >
             <div className="absolute -right-12 -top-12 h-44 w-44 rounded-full bg-electric-500/25 blur-3xl" />
             <span className="eyebrow">Quantified output</span>
-            <h3 className="mt-3 font-display text-2xl font-semibold text-white sm:text-3xl">
+            <h3
+              className="mt-3 font-display font-semibold text-white"
+              style={{ fontSize: 'clamp(1.35rem, 1rem + 1.4vw, 1.875rem)' }}
+            >
               Steel, hours, and reliability, in real numbers.
             </h3>
 
@@ -109,7 +134,7 @@ export default function Stats() {
                 gridRef.current = node
                 cardsWrapRef.current = node
               }}
-              className="mb-glow-section mt-8 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4"
+              className="mb-glow-section mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-6 lg:grid-cols-4"
             >
               {NUMBERS.map((n) => (
                 <ParticleCard
@@ -126,7 +151,10 @@ export default function Stats() {
                       {n.label}
                     </span>
                   </div>
-                  <div className="mt-3 font-display text-4xl font-semibold leading-none text-white sm:text-5xl">
+                  <div
+                    className="mt-3 font-display font-semibold leading-none text-white"
+                    style={{ fontSize: 'clamp(2rem, 1.2rem + 3.2vw, 3rem)' }}
+                  >
                     <AnimatedCounter value={n.value} suffix={n.suffix} />
                   </div>
                   {/* mini sparkline */}

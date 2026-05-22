@@ -58,7 +58,7 @@ export default function WhyChooseUs() {
         />
         <div
           ref={gridRef}
-          className="mb-glow-section mt-14 grid grid-cols-1 gap-6 md:grid-cols-3"
+          className="mb-glow-section mt-8 grid grid-cols-1 gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-6 md:grid-cols-3"
         >
           {CARDS.map((c, i) => (
             <motion.article
@@ -67,7 +67,7 @@ export default function WhyChooseUs() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-80px' }}
               transition={{ duration: 0.7, delay: i * 0.12, ease: [0.2, 0.7, 0.2, 1] }}
-              className="mb-glow-card glow-ring group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-7 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-white/20 hover:shadow-glow-blue"
+              className="mb-glow-card glow-ring group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-white/20 hover:shadow-glow-blue sm:p-6 md:p-7"
             >
               {/* Top accent line */}
               <div
@@ -87,12 +87,12 @@ export default function WhyChooseUs() {
                 </span>
               </div>
 
-              <h3 className="mt-8 font-display text-2xl font-semibold leading-tight text-white">
+              <h3 className="mt-6 font-display text-xl font-semibold leading-tight text-white sm:mt-8 sm:text-2xl">
                 {c.title}
               </h3>
-              <p className="mt-3 text-[15px] leading-relaxed text-white/65">{c.body}</p>
+              <p className="mt-3 text-[14.5px] leading-relaxed text-white/65 sm:text-[15px]">{c.body}</p>
 
-              <div className="mt-7 flex items-center justify-between border-t border-white/10 pt-5">
+              <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-4 sm:mt-7 sm:pt-5">
                 <span className="font-mono text-[11px] tracking-[0.2em] text-gold-400">
                   {c.metric}
                 </span>

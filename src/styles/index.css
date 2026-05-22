@@ -4,15 +4,34 @@
 
 :root {
   color-scheme: dark;
+  /* Fluid type ramp — referenced by .text-fluid-* utilities. */
+  --fs-xs: clamp(0.7rem, 0.66rem + 0.2vw, 0.78rem);
+  --fs-sm: clamp(0.8rem, 0.74rem + 0.3vw, 0.92rem);
+  --fs-base: clamp(0.92rem, 0.85rem + 0.4vw, 1.05rem);
+  --fs-lg: clamp(1.05rem, 0.95rem + 0.5vw, 1.2rem);
+  --fs-xl: clamp(1.2rem, 1rem + 0.9vw, 1.5rem);
+  --fs-2xl: clamp(1.4rem, 1.15rem + 1.2vw, 1.9rem);
+  --fs-3xl: clamp(1.7rem, 1.35rem + 1.7vw, 2.4rem);
+  --fs-4xl: clamp(2rem, 1.5rem + 2.4vw, 3rem);
+  --fs-5xl: clamp(2.4rem, 1.6rem + 4vw, 3.75rem);
+  --fs-hero: clamp(2.2rem, 1.4rem + 5vw, 3.5rem);
 }
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Anchor-jump offset so section headings clear the fixed navbar. */
 section[id] {
   scroll-margin-top: 6rem;
+}
+
+@media (max-width: 640px) {
+  section[id] {
+    scroll-margin-top: 5rem;
+  }
 }
 
 html,
@@ -30,6 +49,7 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  overscroll-behavior-x: none;
 }
 
 body {
@@ -37,6 +57,40 @@ body {
   color: rgba(255, 255, 255, 0.92);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Improve momentum scroll on iOS */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent any descendant from forcing horizontal scroll on the page. */
+#root {
+  overflow-x: clip;
+}
+
+/* Make all media responsive by default. */
+img,
+video,
+canvas,
+svg,
+picture {
+  max-width: 100%;
+  height: auto;
+}
+
+img,
+video {
+  display: block;
+}
+
+/* iOS auto-zoom prevention: inputs must be >=16px on mobile.
+   We bump font-size on inputs/textarea/select at the small breakpoint
+   without disturbing the desktop visual scale. */
+@media (max-width: 640px) {
+  input,
+  textarea,
+  select,
+  button {
+    font-size: 16px;
+  }
 }
 
 /* ===== Custom scrollbar ===== */
@@ -191,10 +245,38 @@ body {
 
   /* Section padding */
   .section-pad {
-    padding-top: clamp(4rem, 8vw, 7rem);
-    padding-bottom: clamp(4rem, 8vw, 7rem);
+    padding-top: clamp(3rem, 8vw, 7rem);
+    padding-bottom: clamp(3rem, 8vw, 7rem);
+  }
+
+  /* Tap-target helper — guarantees the 44x44 hit area Apple's HIG / WCAG
+     2.5.5 require, even when the visual chrome is smaller. Use on icon
+     buttons, social links, and small links inside dense lists. */
+  .tap-target {
+    position: relative;
+  }
+  .tap-target::after {
+    content: '';
+    position: absolute;
+    inset: 50% 50% 50% 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+    pointer-events: auto;
   }
 }
+
+/* ===== Fluid typography utilities — opt-in via class name ===== */
+.text-fluid-xs { font-size: var(--fs-xs); }
+.text-fluid-sm { font-size: var(--fs-sm); }
+.text-fluid-base { font-size: var(--fs-base); }
+.text-fluid-lg { font-size: var(--fs-lg); }
+.text-fluid-xl { font-size: var(--fs-xl); }
+.text-fluid-2xl { font-size: var(--fs-2xl); }
+.text-fluid-3xl { font-size: var(--fs-3xl); }
+.text-fluid-4xl { font-size: var(--fs-4xl); }
+.text-fluid-5xl { font-size: var(--fs-5xl); }
+.text-fluid-hero { font-size: var(--fs-hero); }
 
 /* Grid pattern for accent backgrounds */
 .bg-grid {
@@ -229,5 +311,66 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ====================================================================
+   Mobile-first refinements
+   --------------------------------------------------------------------
+   Tightens spacing, scales typography, lifts touch targets, and damps
+   heavy desktop effects below 640px. Desktop and tablet visuals are
+   left untouched.
+   ==================================================================== */
+@media (max-width: 640px) {
+  /* Ensure all interactive controls clear 44x44 */
+  button,
+  a[role='button'],
+  [role='button'] {
+    min-height: 44px;
+  }
+
+  /* CTAs use slightly fuller pill padding on mobile so the hit area is
+     comfortable for thumbs without changing the desktop look. */
+  .btn-primary,
+  .btn-ghost {
+    padding: 0.95rem 1.35rem;
+    font-size: 0.95rem;
+    min-height: 48px;
+  }
+
+  /* Damp the marquee speed — long marquees over 7s can feel jittery on
+     low-end Android GPUs. */
+  .marquee-track {
+    animation-duration: 60s !important;
+  }
+
+  /* Reduce expensive blur radius on glass surfaces — backdrop-filter
+     blur is the single most expensive paint op on mobile GPUs. */
+  .glass,
+  .glass-strong {
+    backdrop-filter: blur(14px) saturate(130%);
+    -webkit-backdrop-filter: blur(14px) saturate(130%);
+  }
+
+  /* Soften the bg-grid pattern density so it doesn't fight the copy. */
+  .bg-grid {
+    background-size: 36px 36px;
+  }
+}
+
+/* Slow / save-data connections: hide decorative-only glows that don't
+   carry meaning to keep mobile loading and scroll smoother. */
+@media (max-width: 640px) and (prefers-reduced-motion: no-preference) {
+  /* Slightly smaller blur on heavy radial washes for paint budget. */
+  [class*='blur-3xl'] {
+    filter: blur(36px);
+  }
+}
+
+/* Larger tablets — preserve roomy desktop feel but cap heading widths. */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .section-pad {
+    padding-top: clamp(3.5rem, 7vw, 5.5rem);
+    padding-bottom: clamp(3.5rem, 7vw, 5.5rem);
   }
 }

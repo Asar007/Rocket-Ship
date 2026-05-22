@@ -114,7 +114,9 @@ const CAM_DESKTOP = {
   fadeRange: 6.4,
 }
 const CAM_MOBILE = {
-  pos: [0, 1.6, 10.5],
+  // Lowered y from 1.6 → 0.9 so the band sits centred in the shorter
+  // mobile canvas instead of being pushed toward the bottom edge.
+  pos: [0, 0.9, 10.5],
   fov: 46,
   fadeNear: 9.5,
   fadeRange: 6.4,
@@ -391,7 +393,7 @@ export default function TicketBand3D() {
       ref={wrapperRef}
       // Low-tier devices: no drag handlers, no grab cursor, no touch-action
       // lock — so the band area scrolls naturally with the rest of the page.
-      className={`relative h-[360px] w-full sm:h-[460px] md:h-[560px] ${
+      className={`relative h-[320px] w-full sm:h-[460px] md:h-[560px] ${
         isLowTier ? '' : 'cursor-grab touch-none select-none active:cursor-grabbing'
       }`}
       onPointerDown={isLowTier ? undefined : onPointerDown}
