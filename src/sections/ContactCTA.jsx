@@ -85,7 +85,11 @@ export default function ContactCTA() {
               <span className="bg-gradient-to-br from-gold-400 via-gold-500 to-gold-600 bg-clip-text text-transparent">
                 Build
               </span>{' '}
-              Something Great Together.
+              Something{' '}
+              <span className="bg-gradient-to-br from-gold-400 via-gold-500 to-gold-600 bg-clip-text text-transparent">
+                Great
+              </span>{' '}
+              Together.
             </h2>
             <p
               className="mx-auto mt-5 max-w-xl leading-relaxed text-white/85"
