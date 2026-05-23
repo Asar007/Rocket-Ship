@@ -77,13 +77,8 @@ export default function ContactCTA() {
           <div className="pointer-events-none absolute inset-0 bg-grid opacity-20" />
 
           <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 backdrop-blur">
-              <span className="h-1.5 w-1.5 rounded-full bg-gold-400" />
-              <span className="eyebrow">Open for 2026 projects</span>
-            </div>
-
             <h2
-              className="mx-auto mt-5 max-w-3xl font-display font-semibold leading-[1.05] tracking-tight text-white sm:mt-6"
+              className="mx-auto max-w-3xl font-display font-semibold leading-[1.05] tracking-tight text-white"
               style={{ fontSize: 'clamp(1.85rem, 1.2rem + 3.4vw, 3.75rem)' }}
             >
               Let's Build Something{' '}
@@ -100,7 +95,7 @@ export default function ContactCTA() {
               engineer assigned to your conversation.
             </p>
 
-            <div className="mt-7 flex flex-col items-stretch justify-center gap-3 sm:mt-9 sm:flex-row sm:flex-wrap sm:items-center">
+            <div className="mt-7 flex justify-center sm:mt-9">
               <button
                 type="button"
                 onClick={openCallback}
@@ -109,10 +104,6 @@ export default function ContactCTA() {
                 Start a Conversation
                 <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </button>
-              <a href="tel:+919884148474" className="btn-ghost justify-center">
-                <Phone className="h-4 w-4 text-gold-400" />
-                +91 98841 48474
-              </a>
             </div>
 
             <div className="mt-8 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] sm:mt-12 sm:grid-cols-3">
