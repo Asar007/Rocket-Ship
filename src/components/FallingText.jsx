@@ -65,12 +65,15 @@ const FallingText = ({
   }, [trigger])
 
   // Physics simulation — fired once `effectStarted` flips true.
+  // Auto-resets after 5s so the paragraph returns to its readable flow
+  // layout and the user can re-trigger the effect.
   useEffect(() => {
     if (!effectStarted) return
     if (typeof window === 'undefined') return
 
     let cancelled = false
     let cleanup = () => {}
+    let resetTimer = 0
 
     import('matter-js').then((mod) => {
       if (cancelled || !containerRef.current || !canvasContainerRef.current) return
@@ -185,11 +188,29 @@ const FallingText = ({
         }
         World.clear(engine.world)
         Engine.clear(engine)
+        // Restore each word span to its natural inline-flow position so
+        // the paragraph reads normally again and the next hover can
+        // re-trigger the drop.
+        wordBodies.forEach(({ elem }) => {
+          elem.style.position = ''
+          elem.style.left = ''
+          elem.style.top = ''
+          elem.style.transform = ''
+        })
       }
+
+      // Auto-reset 5s after the physics actually kicks off (not from the
+      // moment the trigger fired — keeps the visible "fall time" honest
+      // even if matter-js takes a beat to lazy-load on slow networks).
+      resetTimer = window.setTimeout(() => {
+        if (cancelled) return
+        setEffectStarted(false)
+      }, 5000)
     })
 
     return () => {
       cancelled = true
+      if (resetTimer) window.clearTimeout(resetTimer)
       cleanup()
     }
   }, [effectStarted, gravity, wireframes, backgroundColor, mouseConstraintStiffness])
