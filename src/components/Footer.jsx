@@ -240,8 +240,28 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-6 border-t border-white/10 pt-4 text-[11px] text-white/50 sm:mt-12 sm:pt-6 sm:text-xs">
-          © {new Date().getFullYear()} Madras Swastic Engineers Pvt. Ltd.
+        <div className="mt-6 flex flex-col items-start justify-between gap-2 border-t border-white/10 pt-4 text-[11px] text-white/50 sm:mt-12 sm:flex-row sm:items-center sm:pt-6 sm:text-xs">
+          <span>© {new Date().getFullYear()} Madras Swastic Engineers Pvt. Ltd.</span>
+          <span>
+            The work of{' '}
+            <a
+              href="https://github.com/Asar007"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-white/75 underline-offset-4 transition-colors duration-300 hover:text-gold-400 hover:underline"
+            >
+              Asar007
+            </a>{' '}
+            &amp;{' '}
+            <a
+              href="https://github.com/CatOn60hz"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-white/75 underline-offset-4 transition-colors duration-300 hover:text-gold-400 hover:underline"
+            >
+              CatOn60hz
+            </a>
+          </span>
         </div>
       </div>
     </footer>
