@@ -81,14 +81,14 @@ export default function ContactCTA() {
               className="mx-auto max-w-3xl font-display font-semibold leading-[1.05] tracking-tight text-white"
               style={{ fontSize: 'clamp(1.85rem, 1.2rem + 3.4vw, 3.75rem)' }}
             >
-              Let's Build Something{' '}
+              Let's{' '}
               <span className="bg-gradient-to-br from-gold-400 via-gold-500 to-gold-600 bg-clip-text text-transparent">
-                Great
+                Build
               </span>{' '}
-              Together.
+              Something Great Together.
             </h2>
             <p
-              className="mx-auto mt-5 max-w-xl leading-relaxed text-white/70"
+              className="mx-auto mt-5 max-w-xl leading-relaxed text-white/85"
               style={{ fontSize: 'clamp(0.95rem, 0.88rem + 0.4vw, 1.125rem)' }}
             >
               Tell us about your site, drawings or RFQ. We'll respond inside 24 hours with a senior
