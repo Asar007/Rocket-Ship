@@ -221,13 +221,15 @@ export default function CapsuleSimulator({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       ctx.fillStyle = NAVY
       ctx.fillRect(0, 0, cw, ch)
-      // contain-fit on both: the exploded view spreads parts outward
-      // toward the frame edges, so cover-fitting on mobile (previous
-      // behaviour) cropped the outermost components at the apex. Contain
-      // keeps every part visible; a small zoom factor on mobile prevents
-      // the assembled capsule from feeling letterboxed.
+      // contain-fit baseline so the exploded apex never crops parts.
+      // Mobile gets a sizeable zoom factor (~1.45) — phones in portrait
+      // letterbox the frame heavily otherwise, making the capsule look
+      // tiny and lost. At 1.45 the assembled capsule fills the screen
+      // and the exploded parts still stay (mostly) within the canvas;
+      // any sliver of clipping at full apex is preferable to the small
+      // floating-in-space look at 1.08.
       const fit = Math.min(cw / img.width, ch / img.height)
-      const scale = isMobile ? fit * 1.08 : fit
+      const scale = isMobile ? fit * 1.45 : fit
       const w = img.width * scale
       const h = img.height * scale
       const x = (cw - w) / 2
