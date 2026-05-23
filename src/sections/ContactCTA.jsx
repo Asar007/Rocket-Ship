@@ -119,25 +119,44 @@ export default function ContactCTA() {
                   label: 'Head office',
                   value:
                     '21-C, 5th Cross St, Guindy Industrial Estate, Chennai 600032',
+                  // Google Maps universal link — opens the native Maps app
+                  // on iOS/Android and maps.google.com elsewhere.
+                  href: 'https://www.google.com/maps/search/?api=1&query=Madras+Swastic+Engineering+21-C+5th+Cross+St+Guindy+Industrial+Estate+Chennai+600032',
                 },
-              ].map((c) => (
-                <div
-                  key={c.label}
-                  className="flex items-center gap-3 bg-navy-950/30 px-4 py-4 text-left sm:px-5"
-                >
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.04]">
-                    <c.icon className="h-4 w-4 text-gold-400" />
-                  </span>
-                  <div className="min-w-0">
-                    <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/50">
-                      {c.label}
+              ].map((c) => {
+                const cardCls =
+                  'flex items-center gap-3 bg-navy-950/30 px-4 py-4 text-left sm:px-5'
+                const inner = (
+                  <>
+                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.04]">
+                      <c.icon className="h-4 w-4 text-gold-400" />
+                    </span>
+                    <div className="min-w-0">
+                      <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/50">
+                        {c.label}
+                      </div>
+                      <div className="font-body text-sm font-medium leading-snug tracking-wide text-white tabular-nums break-words">
+                        {c.value}
+                      </div>
                     </div>
-                    <div className="font-body text-sm font-medium leading-snug tracking-wide text-white tabular-nums break-words">
-                      {c.value}
-                    </div>
+                  </>
+                )
+                return c.href ? (
+                  <a
+                    key={c.label}
+                    href={c.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${cardCls} transition-colors hover:bg-navy-950/55 focus-visible:bg-navy-950/55 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-400/60`}
+                  >
+                    {inner}
+                  </a>
+                ) : (
+                  <div key={c.label} className={cardCls}>
+                    {inner}
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         </motion.div>
