@@ -1,7 +1,13 @@
+import { lazy, Suspense } from 'react'
 import { Mail, Phone, ArrowUp } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import logo from '../assets/logo.png'
 import TextPressure from './TextPressure'
+
+// matter.js physics is heavy — lazy-load the falling-text widget so it
+// doesn't bloat the initial bundle. Rendered only on tablet/desktop
+// (it needs real estate the mobile footer doesn't have).
+const FallingText = lazy(() => import('./FallingText.jsx'))
 
 const LINKS = [
   {
@@ -146,10 +152,31 @@ export default function Footer() {
                 </div>
               </div>
             </div>
-            <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/60">
-              A turnkey industrial engineering firm based in Chennai, delivering structural,
-              mechanical and piping work for India's energy and manufacturing sectors since 2009.
-            </p>
+            {/* Brand description — hover the paragraph to drop the words
+                into a matter.js physics world. The wrapper carries the
+                original paragraph classes (text-sm, leading-relaxed,
+                text-white/60) so the resting text is pixel-identical to
+                the old <p>; FallingText inherits all of them. */}
+            <div className="mt-5 h-44 max-w-sm text-sm leading-relaxed text-white/60">
+              <Suspense
+                fallback={
+                  <p>
+                    A turnkey industrial engineering firm based in Chennai, delivering
+                    structural, mechanical and piping work for India's energy and
+                    manufacturing sectors since 2009.
+                  </p>
+                }
+              >
+                <FallingText
+                  text="A turnkey industrial engineering firm based in Chennai, delivering structural, mechanical and piping work for India's energy and manufacturing sectors since 2009."
+                  trigger="hover"
+                  backgroundColor="transparent"
+                  wireframes={false}
+                  gravity={0.56}
+                  mouseConstraintStiffness={0.9}
+                />
+              </Suspense>
+            </div>
             <div className="mt-6 flex items-center gap-2">
               {[
                 { Icon: Mail, label: 'Email us', href: 'mailto:md@madrasswastic.com' },

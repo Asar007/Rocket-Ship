@@ -1,0 +1,41 @@
+.falling-text-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  text-align: left;
+}
+
+.falling-text-target {
+  display: inline-block;
+  /* Inherit every typography property from the wrapper so the resting
+     paragraph reads pixel-identical to whatever it replaced. */
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+}
+
+.falling-text-container .word {
+  display: inline-block;
+  /* No extra margin — the literal space character between spans gives
+     the same word-spacing as a normal paragraph. */
+  margin: 0;
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* Highlight defaults to no-op — opt in by overriding `.highlighted` in
+   the page that uses it. Keeps the falling-text effect visually
+   neutral wherever it's dropped in. */
+.falling-text-container .highlighted {
+  color: inherit;
+  font-weight: inherit;
+}
+
+.falling-text-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
