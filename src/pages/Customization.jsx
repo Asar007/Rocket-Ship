@@ -1,5 +1,6 @@
 import Seo from '../lib/seo.jsx'
 import Customization from '../sections/Customization.jsx'
+import CustomizationHero from '../sections/CustomizationHero.jsx'
 
 export function Component() {
   return (
@@ -9,6 +10,7 @@ export function Component() {
         description="Bespoke fabrication and engineering, built to your drawings, tolerances and timelines. Madras Swastic Engineers, Chennai."
         path="/customization"
       />
+      <CustomizationHero />
       <Customization />
     </div>
   )
