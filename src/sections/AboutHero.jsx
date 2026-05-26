@@ -28,6 +28,7 @@ export default function AboutHero() {
           className="absolute inset-0 h-full w-full object-cover"
           style={{ objectPosition: '50% 40%' }}
           loading="eager"
+          fetchpriority="high"
           decoding="async"
         />
       </picture>
