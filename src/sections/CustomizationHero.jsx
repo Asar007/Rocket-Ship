@@ -122,17 +122,6 @@ export default function CustomizationHero() {
               </g>
             </svg>
 
-            {/* Labels — sit on the line midpoints, masked by hero bg.
-                Side labels are hidden on small screens (tight viewport). */}
-            <span className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap bg-[#03061a] px-1.5 font-mono text-[9px] uppercase tracking-[0.24em] text-electric-300/70 sm:px-2 sm:text-[10px] sm:tracking-[0.28em]">
-              L · 6000 mm
-            </span>
-            <span className="absolute left-0 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 -rotate-90 whitespace-nowrap bg-[#03061a] px-2 font-mono text-[10px] uppercase tracking-[0.28em] text-electric-300/70 md:inline-block">
-              H · 2400 mm
-            </span>
-            <span className="absolute right-0 top-1/2 hidden translate-x-1/2 -translate-y-1/2 -rotate-90 whitespace-nowrap bg-[#03061a] px-2 font-mono text-[10px] uppercase tracking-[0.28em] text-electric-300/70 md:inline-block">
-              Ø 320 mm
-            </span>
           </div>
 
         <motion.div

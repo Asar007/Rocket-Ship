@@ -3,10 +3,6 @@ import {
   Activity,
   Boxes,
   Building2,
-  Cog,
-  Construction,
-  FileBox,
-  Hammer,
   Layers,
   ShieldCheck,
   Sparkles,
@@ -22,45 +18,6 @@ const SECTORS = [
   'Marine',
   'Power',
   'Heavy industry',
-]
-
-const PROCESS = [
-  {
-    id: 'brief',
-    title: 'Brief',
-    body: 'Site survey, loads, materials and statutory constraints captured by a senior engineer.',
-    icon: FileBox,
-  },
-  {
-    id: 'engineering',
-    title: 'Engineering',
-    body: 'Parametric CAD, FEA stress analysis, drawing pack reviewed and signed.',
-    icon: Cog,
-  },
-  {
-    id: 'sourcing',
-    title: 'Sourcing',
-    body: 'Mill-certified plates and sections sourced direct, traceable per heat number.',
-    icon: Boxes,
-  },
-  {
-    id: 'fab',
-    title: 'Fabrication',
-    body: 'CNC cutting, qualified welders, blast & paint, all in our Chennai works.',
-    icon: Hammer,
-  },
-  {
-    id: 'qa',
-    title: 'Inspection',
-    body: 'NDT, dimensional checks and third-party witness sign-off before despatch.',
-    icon: ShieldCheck,
-  },
-  {
-    id: 'erection',
-    title: 'Erection',
-    body: 'Certified rigging, site erection, commissioning and full handover pack.',
-    icon: Construction,
-  },
 ]
 
 const CAPABILITIES = [
@@ -148,40 +105,6 @@ export default function Customization() {
             ))}
           </div>
         </motion.div>
-
-        {/* === Process Timeline === */}
-        <div className="mt-14 sm:mt-20">
-          <SectionHeading
-            eyebrow="Build journey"
-            title="From sketch to commissioned asset."
-            accentWord="commissioned"
-            subtitle="A documented six-stage process keeps every project on time, on spec and audit-ready."
-            align="left"
-          />
-
-          <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-6">
-            {PROCESS.map((p, i) => (
-              <motion.div
-                key={p.id}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-60px' }}
-                transition={{ duration: 0.6, delay: i * 0.07, ease: [0.2, 0.7, 0.2, 1] }}
-                className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-md transition-all duration-500 hover:-translate-y-1 hover:border-white/25"
-              >
-                <div className="font-mono text-[10px] tracking-[0.3em] text-gold-400">
-                  STEP · {String(i + 1).padStart(2, '0')}
-                </div>
-                <p.icon className="mt-5 h-6 w-6 text-electric-400 transition-transform duration-500 group-hover:scale-110" />
-                <h4 className="mt-3 font-display text-lg font-semibold text-white">{p.title}</h4>
-                <p className="mt-1.5 text-[12.5px] leading-relaxed text-white/55">{p.body}</p>
-                {i < PROCESS.length - 1 && (
-                  <span className="absolute right-[-1px] top-1/2 hidden h-px w-3 bg-gradient-to-r from-white/30 to-transparent lg:block" />
-                )}
-              </motion.div>
-            ))}
-          </div>
-        </div>
 
         {/* === Capabilities mosaic === */}
         <div className="mt-14 sm:mt-20">
