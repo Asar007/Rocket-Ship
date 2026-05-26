@@ -85,18 +85,14 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (!id.includes('node_modules')) return
-          // Leave the heavy physics / post-processing libs in the default
-          // graph so they stay inside the lazy ConnectorsBackground async
-          // chunk (only loaded when that section scrolls into view).
-          if (
-            id.includes('@react-three/rapier') ||
-            id.includes('@react-three/postprocessing') ||
-            id.includes('postprocessing') ||
-            id.includes('node_modules/maath')
-          )
-            return
-          if (id.includes('@react-three')) return 'r3f' // fiber + drei
-          if (id.includes('node_modules/three')) return 'three'
+          // IMPORTANT: do NOT extract @react-three or three into named
+          // shared chunks. Vite hoists shared-by-multiple-lazy-chunks
+          // groups to a static import of the main bundle, which forced
+          // /about (and every non-3D route) to download 325 KB of three
+          // it never executes. Leaving them inline in each lazy chunk
+          // means /home pays the cost only when SpaceScene mounts,
+          // /contact only when ConnectorsBackground mounts, etc., and
+          // /about pays nothing.
           if (id.includes('framer-motion')) return 'motion'
         },
       },
