@@ -51,6 +51,21 @@ export default defineConfig({
   },
   build: {
     chunkSizeWarningLimit: 900,
+    // vite-react-ssg generates <link rel=modulepreload> for the entry's
+    // full dep graph, which means every page (e.g. /about) was preloading
+    // the three/r3f chunks even though they're only consumed inside
+    // React.lazy() boundaries on Home/Contact. Filter those out so they
+    // only download when the lazy boundary actually triggers.
+    modulePreload: {
+      polyfill: false,
+      resolveDependencies: (_filename, deps) =>
+        deps.filter(
+          (d) =>
+            !d.includes('/three-') &&
+            !d.includes('/r3f-') &&
+            !d.includes('ConnectorsBackground-'),
+        ),
+    },
     rollupOptions: {
       output: {
         manualChunks(id) {
