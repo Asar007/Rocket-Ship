@@ -32,18 +32,18 @@ const cardVariantsReduced = {
   show: { opacity: 1, transition: { duration: 0.4 } },
 }
 
-import crewModule from '../assets/projects/crew-module-mockup.png'
-import sslvCore from '../assets/projects/sslv-core-simulator.png'
-import sslvBase from '../assets/projects/sslv-base-structure.png'
-import platesA from '../assets/projects/connection-plates-a.png'
-import platesB from '../assets/projects/connection-plates-b.png'
-import domeErection from '../assets/projects/dome-erection.png'
-import latticeTower from '../assets/projects/lattice-tower.png'
-import spaceframe from '../assets/projects/spaceframe-fab.png'
-import precisionBracket from '../assets/projects/precision-bracket.png'
-import processVessel from '../assets/projects/process-vessel.png'
-import rotaryDrum from '../assets/projects/rotary-drum.png'
-import crewModuleInterior from '../assets/projects/crew-module-interior.png'
+import crewModule from '../assets/projects/crew-module-mockup.webp'
+import sslvCore from '../assets/projects/sslv-core-simulator.webp'
+import sslvBase from '../assets/projects/sslv-base-structure.webp'
+import platesA from '../assets/projects/connection-plates-a.webp'
+import platesB from '../assets/projects/connection-plates-b.webp'
+import domeErection from '../assets/projects/dome-erection.webp'
+import latticeTower from '../assets/projects/lattice-tower.webp'
+import spaceframe from '../assets/projects/spaceframe-fab.webp'
+import precisionBracket from '../assets/projects/precision-bracket.webp'
+import processVessel from '../assets/projects/process-vessel.webp'
+import rotaryDrum from '../assets/projects/rotary-drum.webp'
+import crewModuleInterior from '../assets/projects/crew-module-interior.webp'
 
 // NOTE: stories/locations/years are mock placeholders grouped by what the
 // photographs show — to be replaced with the client's real project copy.

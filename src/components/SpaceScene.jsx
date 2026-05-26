@@ -30,10 +30,10 @@ import {
 // turban/webgl-earth). Full 4K originals, served same-origin — no
 // third-party CDN dependency.
 const TEX = {
-  day: '/textures/2_no_clouds_4k.jpg',
-  bump: '/textures/elev_bump_4k.jpg',
-  water: '/textures/water_4k.png',
-  clouds: '/textures/fair_clouds_4k.png',
+  day: '/textures/2_no_clouds_4k.webp',
+  bump: '/textures/elev_bump_4k.webp',
+  water: '/textures/water_4k.webp',
+  clouds: '/textures/fair_clouds_4k.webp',
 }
 
 /* Mobile-only perf budget.  Evaluated once at module load so the desktop

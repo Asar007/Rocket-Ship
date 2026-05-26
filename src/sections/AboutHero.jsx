@@ -20,10 +20,10 @@ export default function AboutHero() {
       <picture>
         <source
           media="(min-width: 768px)"
-          srcSet="/about-hero.png"
+          srcSet="/about-hero.webp"
         />
         <img
-          src="/about-hero.png"
+          src="/about-hero.webp"
           alt="Madras Swastic Engineers shop floor — crew-module structural frame under fabrication"
           className="absolute inset-0 h-full w-full object-cover"
           style={{ objectPosition: '50% 40%' }}
