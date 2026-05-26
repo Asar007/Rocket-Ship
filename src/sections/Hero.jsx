@@ -30,10 +30,28 @@ const fadeUp = {
 
 export default function Hero() {
   // On slow / data-saver connections skip the ~MB three.js scene entirely
-  // and show the static glow. Evaluated client-side after mount.
+  // and show the static glow.
   const [skip3D, setSkip3D] = useState(false)
+  // Defer mounting SpaceScene until the browser is idle so the 3D
+  // setup (texture decode, sphere geometry, WebGL init -- ~26 s of
+  // simulated main-thread work on PageSpeed mobile) doesn't land
+  // inside the LCP window. Static glow renders first; the 3D scene
+  // swaps in once the page is interactive.
+  const [mount3D, setMount3D] = useState(false)
   useEffect(() => {
-    setSkip3D(isSlowConnection())
+    if (isSlowConnection()) {
+      setSkip3D(true)
+      return
+    }
+    if (typeof window === 'undefined') return
+    if ('requestIdleCallback' in window) {
+      const id = window.requestIdleCallback(() => setMount3D(true), {
+        timeout: 2500,
+      })
+      return () => window.cancelIdleCallback?.(id)
+    }
+    const t = setTimeout(() => setMount3D(true), 1500)
+    return () => clearTimeout(t)
   }, [])
 
   return (
@@ -166,7 +184,7 @@ export default function Hero() {
                 'radial-gradient(ellipse at center, black 58%, transparent 92%)',
             }}
           >
-            {skip3D ? (
+            {skip3D || !mount3D ? (
               <SceneGlow />
             ) : (
               <ErrorBoundary fallback={<SceneGlow />}>
