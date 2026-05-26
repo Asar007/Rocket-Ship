@@ -18,13 +18,16 @@ const gridVariants = {
   show: { transition: { staggerChildren: 0.09 } },
 }
 const cardVariants = {
-  hidden: { opacity: 0, y: 40, scale: 0.95, filter: 'blur(8px)' },
+  // NOTE: filter: blur(...) was removed -- it forces full-layer recomposite
+  // every frame and was dominating desktop TBT (~1.5 s on PageSpeed) when
+  // 12 cards reveal in a stagger. opacity + y + subtle scale is visually
+  // nearly identical and stays entirely on the GPU compositor.
+  hidden: { opacity: 0, y: 32, scale: 0.97 },
   show: {
     opacity: 1,
     y: 0,
     scale: 1,
-    filter: 'blur(0px)',
-    transition: { duration: 0.7, ease: [0.2, 0.7, 0.2, 1] },
+    transition: { duration: 0.5, ease: [0.2, 0.7, 0.2, 1] },
   },
 }
 const cardVariantsReduced = {
@@ -274,6 +277,8 @@ function renderCardBody(p) {
               <img
                 src={src}
                 alt={`${p.title} photo ${idx + 2}`}
+                width="64"
+                height="48"
                 loading="lazy"
                 decoding="async"
                 className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"
@@ -317,6 +322,8 @@ function StaticProjectCard({ project: p, onOpen }) {
         <img
           src={p.images[0]}
           alt={p.title}
+          width="1600"
+          height="1000"
           loading="lazy"
           decoding="async"
           className="absolute inset-0 h-full w-full scale-[1.18] object-cover"
@@ -397,6 +404,8 @@ function PointerProjectCard({ project: p, onOpen }) {
         <motion.img
           src={p.images[0]}
           alt={p.title}
+          width="1600"
+          height="1000"
           loading="lazy"
           decoding="async"
           style={reduce ? undefined : { y: parY, scale: 1.18 }}
