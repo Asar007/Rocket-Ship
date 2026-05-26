@@ -209,37 +209,32 @@ function TimelineStory({ project, story, scrollRef }) {
   )
 }
 
-/* ── 3. Full-screen cinematic steps ───────────────────────────── */
-function CinematicSlide({ image, text, index, scrollRef }) {
-  const reduce = useReducedMotion()
+/* ── 3. Full-screen cinematic steps — text-only points ────────── */
+function CinematicSlide({ text, index, scrollRef }) {
   const ref = useRef(null)
   const inView = useInView(ref, { root: scrollRef, amount: 0.5 })
   return (
     <section
       ref={ref}
-      className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-navy-950"
+      className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-navy-950 px-6 sm:px-12"
     >
-      <motion.img
-        src={image}
-        alt=""
-        initial={false}
-        animate={reduce ? {} : { scale: inView ? 1 : 1.06 }}
-        transition={{ duration: 1.1, ease: [0.2, 0.7, 0.2, 1] }}
-        className="max-h-[82vh] max-w-[92vw] object-contain"
+      {/* Soft ambient glow so the slide doesn't read flat */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_45%,rgba(240,198,116,0.10),transparent_70%)]"
       />
       <motion.div
-        animate={{ opacity: inView ? 1 : 0, y: inView ? 0 : 28 }}
-        transition={{ duration: 0.5, ease: [0.2, 0.7, 0.2, 1] }}
-        className="absolute inset-x-0 bottom-0 flex justify-center p-6 sm:p-10"
+        animate={{ opacity: inView ? 1 : 0, y: inView ? 0 : 36 }}
+        transition={{ duration: 0.6, ease: [0.2, 0.7, 0.2, 1] }}
+        className="relative mx-auto max-w-5xl text-center"
       >
-        <div className="max-w-2xl rounded-2xl bg-navy-950/75 px-7 py-5 text-center ring-1 ring-white/10 backdrop-blur-md">
-          <span className="font-mono text-sm tracking-[0.3em] text-gold-400">
-            {String(index + 1).padStart(2, '0')}
-          </span>
-          <p className="mt-2 font-display text-2xl font-semibold leading-snug text-white sm:text-4xl">
-            {text}
-          </p>
-        </div>
+        <span className="font-mono text-lg tracking-[0.42em] text-gold-400 sm:text-xl">
+          {String(index + 1).padStart(2, '0')}
+        </span>
+        <div className="mx-auto mt-6 h-px w-24 bg-gradient-to-r from-transparent via-gold-400/70 to-transparent" />
+        <p className="mt-8 font-display text-3xl font-semibold leading-[1.15] text-white sm:mt-10 sm:text-5xl lg:text-6xl">
+          {text}
+        </p>
       </motion.div>
     </section>
   )
@@ -262,10 +257,10 @@ function CinematicStory({ project, story, scrollRef }) {
           transition={{ duration: 0.8, ease: [0.2, 0.7, 0.2, 1] }}
           className="relative px-6 text-center"
         >
-          <span className="font-mono text-[11px] uppercase tracking-[0.4em] text-gold-400">
+          <span className="font-mono text-xs uppercase tracking-[0.42em] text-gold-400 sm:text-sm">
             {project.location} · {project.year}
           </span>
-          <h2 className="mx-auto mt-5 max-w-3xl font-display text-4xl font-semibold leading-tight text-white sm:text-6xl">
+          <h2 className="mx-auto mt-6 max-w-5xl font-display text-5xl font-semibold leading-[1.05] text-white sm:mt-8 sm:text-7xl lg:text-8xl">
             {project.storyTitle || project.title}
           </h2>
         </motion.div>
@@ -274,7 +269,6 @@ function CinematicStory({ project, story, scrollRef }) {
       {story.map((text, i) => (
         <CinematicSlide
           key={i}
-          image={project.images[i % project.images.length]}
           text={text}
           index={i}
           scrollRef={scrollRef}
@@ -365,7 +359,57 @@ function CapsuleStory({ project, story, scrollRef }) {
 
       {/* Continue scrolling into the mission story (header + timeline). */}
       <TimelineStory project={project} story={story} scrollRef={scrollRef} />
+
+      {/* Real photos from the floor — handover-grade evidence of the build. */}
+      <RealPhotosGallery project={project} />
     </div>
+  )
+}
+
+/* ── Real-photos gallery ─────────────────────────────────────────
+   Rendered at the END of the CTS modal so visitors get to see the
+   actual hardware (exterior + interior) after the 3D simulator and
+   timeline narrative. */
+function RealPhotosGallery({ project }) {
+  if (!project.images || project.images.length === 0) return null
+  return (
+    <section className="mx-auto max-w-5xl px-5 pb-24 sm:px-8">
+      <div className="flex items-center gap-3">
+        <span className="h-px w-8 bg-gold-400/60" />
+        <span className="font-mono text-[11px] uppercase tracking-[0.32em] text-gold-400">
+          Photographs · from the floor
+        </span>
+      </div>
+      <h3 className="mt-4 font-display text-2xl font-semibold leading-tight text-white sm:text-3xl">
+        The real hardware.
+      </h3>
+      <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-white/55">
+        Handover-grade photographs of the CTS as it left our floor — exterior shell
+        and the crew interior, in the configuration delivered to ISRO / HSFC.
+      </p>
+      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {project.images.map((src, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.6, delay: i * 0.08, ease: [0.2, 0.7, 0.2, 1] }}
+            className="overflow-hidden rounded-2xl border border-white/10 bg-navy-950"
+          >
+            <div className="flex aspect-[4/3] w-full items-center justify-center">
+              <img
+                src={src}
+                alt={`${project.title} photo ${i + 1}`}
+                loading="lazy"
+                decoding="async"
+                className="max-h-full max-w-full object-contain transition-transform duration-700 hover:scale-[1.03]"
+              />
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </section>
   )
 }
 

@@ -43,7 +43,7 @@ import spaceframe from '../assets/projects/spaceframe-fab.png'
 import precisionBracket from '../assets/projects/precision-bracket.png'
 import processVessel from '../assets/projects/process-vessel.png'
 import rotaryDrum from '../assets/projects/rotary-drum.png'
-import coolingTower from '../assets/projects/cooling-tower.png'
+import crewModuleInterior from '../assets/projects/crew-module-interior.png'
 
 // NOTE: stories/locations/years are mock placeholders grouped by what the
 // photographs show — to be replaced with the client's real project copy.
@@ -58,7 +58,7 @@ const PROJECTS = [
     storyStyle: 'capsule',
     blurb:
       'An exact replica of the Gaganyaan crew capsule, built and handed over to ISRO/HSFC within 90 days.',
-    images: [crewModule],
+    images: [crewModule, crewModuleInterior],
     story: [
       "Gaganyaan is the Indian Space Research Organisation's (ISRO) ambitious mission to send three humans per flight to Low Earth Orbit (LEO) for a three-day mission and back to Earth. The Crew Training Simulator (CTS) is an exact replica of the actual capsule in which the crew will be on board the GSLV rocket and return to Earth.",
       'The CTS houses crew seats, life-support equipment, mission-control computers and interfaces, sleeping pods, food, and life-support medicines.',
@@ -73,7 +73,7 @@ const PROJECTS = [
     location: 'Sriharikota · Chennai Works',
     year: '2024',
     tags: ['Aerospace', 'Simulators', 'Precision'],
-    storyStyle: 'timeline',
+    storyStyle: 'cinematic',
     blurb:
       'Flight-representative core and base simulators for ISRO’s Small Satellite Launch Vehicle (SSLV), engineered to mirror real interface envelopes for integration rehearsals, mass-property checks and crew training.',
     images: [sslvCore, sslvBase],
@@ -111,7 +111,7 @@ const PROJECTS = [
     location: 'VSSC · Chennai Works',
     year: '2024',
     tags: ['Aerospace', 'ISRO', 'PSLV'],
-    storyStyle: 'sticky',
+    storyStyle: 'cinematic',
     blurb:
       'Core base shroud assembly for ISRO’s PSLV — the launch vehicle that has put more than four hundred satellites into orbit. Rolled, seam-welded and lock-fitted in-house to flight-grade surface and dimensional tolerances.',
     images: [processVessel],
@@ -130,7 +130,7 @@ const PROJECTS = [
     location: 'VSSC · Chennai Works',
     year: '2024',
     tags: ['Aerospace', 'ISRO', 'VSSC'],
-    storyStyle: 'kenburns',
+    storyStyle: 'cinematic',
     blurb:
       'Large conical pressure chamber for the Vikram Sarabhai Space Centre — designed for repeated proof-pressure cycles and built on our heavy horizontal boring mill to keep concentricity inside microns end-to-end.',
     images: [rotaryDrum],
@@ -149,7 +149,7 @@ const PROJECTS = [
     location: 'VSSC · Chennai Works',
     year: '2024',
     tags: ['Aerospace', 'ISRO', 'PSLV'],
-    storyStyle: 'sticky',
+    storyStyle: 'cinematic',
     blurb:
       'Aluminium PSLV heat shield assembly — a ribbed monocoque framework that protects the payload through the worst of atmospheric flight, fabricated and finished at our Chennai works for ISRO.',
     images: [spaceframe],
@@ -168,7 +168,7 @@ const PROJECTS = [
     location: 'Guindy Works, Chennai',
     year: '2023',
     tags: ['Fabrication', 'CNC', 'Coated'],
-    storyStyle: 'timeline',
+    storyStyle: 'cinematic',
     blurb:
       'High-volume batch production of CNC-drilled, shot-blasted and epoxy-coated gusset and connection plates — engineered, marked and stacked in delivery order so they bolt up on site without a single field correction.',
     images: [platesA, platesB],
@@ -187,7 +187,7 @@ const PROJECTS = [
     location: 'Machine Shop, Chennai',
     year: '2025',
     tags: ['Machining', 'Tooling', 'Tight-tolerance'],
-    storyStyle: 'kenburns',
+    storyStyle: 'cinematic',
     blurb:
       'Multi-axis machined aluminium fixtures and load brackets for aerospace and instrumentation clients — surface finish, flatness and bolt-circle concentricity held inside microns so the parts they cradle stay true.',
     images: [precisionBracket],
@@ -197,26 +197,6 @@ const PROJECTS = [
       'Critical bores and locating pins are finished in a second setup against the same datums, holding concentricity to within a few microns.',
       'CMM inspection is done in-house, with each fixture leaving the shop accompanied by a dimensional report and a serial-marked location plan.',
       'Anodised to a hard-coat finish for wear life, the brackets and jigs go straight into integration cells with no rework on arrival.',
-    ],
-  },
-  {
-    id: 'p6',
-    title: 'Counter-Flow Cooling Tower',
-    storyTitle: 'One Tower, Built to Breathe',
-    location: 'Coimbatore, TN',
-    year: '2022',
-    tags: ['Mechanical', 'Tankage', 'Retrofit'],
-    storyStyle: 'kenburns',
-    blurb:
-      'Shop fabrication and assembly of an induced-draft counter-flow cooling tower shell and internals.',
-    images: [coolingTower],
-    story: [
-      'A single induced-draft, counter-flow tower: shell, fan deck and internals fabricated entirely in-house.',
-      'Heavy plate is rolled and seam-welded into the tapered shell, then stress-relieved before any fit-out begins.',
-      'Every FRP louvre and drift eliminator is fitted, aligned and water-tested before the unit leaves the shop.',
-      'The fan deck, gearbox and drive shaft are laser-aligned and trial-run under load to prove vibration limits.',
-      'Lifted in as a single module and commissioned on a live plant, with zero downtime to the existing line.',
-      'Handed over with full hydraulic and thermal performance reports, ahead of the contracted schedule.',
     ],
   },
 ]
