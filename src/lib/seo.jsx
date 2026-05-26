@@ -1,6 +1,6 @@
 import { Head } from 'vite-react-ssg'
 
-const SITE = 'https://rocket-ship-plum.vercel.app'
+const SITE = 'https://www.madrasswastic.com'
 
 /**
  * Per-page <head> tags, serialized into the prerendered HTML by

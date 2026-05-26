@@ -1,0 +1,9 @@
+# Madras Swastic Engineers — robots.txt
+User-agent: *
+Allow: /
+
+# Internal/preview routes — exclude from crawl
+Disallow: /space
+Disallow: /cts-render
+
+Sitemap: https://www.madrasswastic.com/sitemap.xml
