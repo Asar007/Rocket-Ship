@@ -160,16 +160,24 @@ const TextPressure = ({
     return () => cancelAnimationFrame(rafId)
   }, [width, weight, italic, alpha])
 
+  // Load the variable font via the FontFace API in useEffect rather than
+  // an inline @font-face in the SSG'd HTML. That keeps the font OFF the
+  // critical render path — PageSpeed was flagging this as a 791 ms
+  // network dependency. Fallback text (with font-display: swap behaviour)
+  // renders immediately; Compressa swaps in once loaded.
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.FontFace) return
+    if (Array.from(document.fonts || []).some((f) => f.family === fontFamily)) return
+    const face = new FontFace(fontFamily, `url(${fontUrl}) format('woff2')`, {
+      style: 'normal',
+      display: 'swap',
+    })
+    face.load().then((loaded) => document.fonts.add(loaded)).catch(() => {})
+  }, [fontFamily, fontUrl])
+
   const styleElement = useMemo(() => {
     return (
       <style>{`
-        @font-face {
-          font-family: '${fontFamily}';
-          src: url('${fontUrl}') format('woff2');
-          font-style: normal;
-          font-display: swap;
-        }
-
         .tp-flex {
           display: flex;
           justify-content: space-between;
@@ -195,7 +203,7 @@ const TextPressure = ({
         }
       `}</style>
     )
-  }, [fontFamily, fontUrl, textColor, strokeColor])
+  }, [textColor, strokeColor])
 
   const dynamicClassName = [className, flex ? 'tp-flex' : '', stroke ? 'tp-stroke' : '']
     .filter(Boolean)

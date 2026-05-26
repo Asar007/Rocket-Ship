@@ -7,7 +7,9 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      injectRegister: 'auto',
+      // Manual registration via deferred <script> in index.html so the
+      // SW install event's precache work runs AFTER LCP, not during it.
+      injectRegister: false,
       // We ship our own /site.webmanifest + <link> in index.html.
       manifest: false,
       workbox: {

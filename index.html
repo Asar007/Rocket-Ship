@@ -72,5 +72,17 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <!-- Deferred service-worker registration: runs 2 s after load so the
+         install-time precache doesn't compete with the critical render
+         path. PageSpeed used to count the precache fetches in the
+         first-visit waterfall, hurting the score for no real benefit. -->
+    <script>
+      window.addEventListener('load', function () {
+        if (!('serviceWorker' in navigator)) return
+        setTimeout(function () {
+          navigator.serviceWorker.register('/sw.js').catch(function () {})
+        }, 2000)
+      })
+    </script>
   </body>
 </html>
