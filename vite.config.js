@@ -15,7 +15,17 @@ export default defineConfig({
         // chunk and the large WebP textures are runtime-cached on demand
         // instead of bloating the precache on slow connections.
         globPatterns: ['**/*.{js,css,html,svg,woff2}'],
-        globIgnores: ['**/ConnectorsBackground-*.js'],
+        // Skip heavy 3D libraries from the install-time precache so
+        // routes that don't render them (e.g. /about, /projects) don't
+        // pay the bandwidth on first visit. They still get runtime-cached
+        // on first use by the rules further down.
+        globIgnores: [
+          '**/ConnectorsBackground-*.js',
+          '**/three-*.js',
+          '**/r3f-*.js',
+          '**/SpaceScene-*.js',
+          '**/SpaceshipGLB-*.js',
+        ],
         navigateFallback: null,
         runtimeCaching: [
           {
@@ -27,11 +37,14 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: /ConnectorsBackground-.*\.js$/,
+            // Heavy 3D chunks: runtime-cache after first use rather than
+            // shipping in the install precache (which would download them
+            // on every fresh visit to /about, /projects, etc.).
+            urlPattern: /\/(ConnectorsBackground|three|r3f|SpaceScene|SpaceshipGLB)-.*\.js$/,
             handler: 'CacheFirst',
             options: {
               cacheName: 'heavy-chunks',
-              expiration: { maxEntries: 4, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              expiration: { maxEntries: 8, maxAgeSeconds: 60 * 60 * 24 * 30 },
             },
           },
           {
