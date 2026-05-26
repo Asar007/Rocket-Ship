@@ -1,9 +1,46 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { CheckCircle2, Clock, PhoneCall, Send, ShieldCheck, X } from 'lucide-react'
+import { AlertCircle, CheckCircle2, Clock, Loader2, PhoneCall, Send, ShieldCheck, X } from 'lucide-react'
 
 const CALL_WINDOWS = ['Morning', 'Afternoon', 'Evening', 'Anytime']
+const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit'
+const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+// Allow +, digits, spaces, dashes, parens; require >= 7 digits total.
+const phoneDigits = (v) => (v || '').replace(/\D/g, '')
+
+function validate(form) {
+  const errors = {}
+  if (!form.name.trim()) errors.name = 'Please tell us your name.'
+  if (!form.phone.trim()) {
+    errors.phone = 'Phone is required so we can call you back.'
+  } else if (phoneDigits(form.phone).length < 7) {
+    errors.phone = 'That phone number looks too short.'
+  }
+  if (form.email.trim() && !EMAIL_RE.test(form.email.trim())) {
+    errors.email = 'That email address doesn’t look right.'
+  }
+  return errors
+}
+
+function buildMailto(form) {
+  const subject = `Callback request: ${form.company || form.name || 'New enquiry'}`
+  const body = [
+    `Name: ${form.name}`,
+    `Company: ${form.company}`,
+    `Phone: ${form.phone}`,
+    `Email: ${form.email || 'N/A'}`,
+    `Preferred call window: ${form.window}`,
+    '',
+    'Brief:',
+    form.brief?.trim() || '(no brief provided)',
+  ].join('\n')
+  return `mailto:md@madrasswastic.com?subject=${encodeURIComponent(
+    subject,
+  )}&body=${encodeURIComponent(body)}`
+}
 
 // Module-level opener. The dialog wires this up while mounted so any button
 // can imperatively call `openCallback()` without prop-drilling or context.
@@ -15,7 +52,9 @@ export function openCallback() {
 
 export default function CallbackDialog() {
   const [open, setOpen] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
+  const [status, setStatus] = useState('idle') // idle | submitting | success | error
+  const [submitError, setSubmitError] = useState('')
+  const [errors, setErrors] = useState({})
   const [form, setForm] = useState({
     name: '',
     company: '',
@@ -23,6 +62,7 @@ export default function CallbackDialog() {
     email: '',
     brief: '',
     window: 'Anytime',
+    botcheck: '', // honeypot — must stay empty
   })
   const firstInputRef = useRef(null)
   const cardRef = useRef(null)
@@ -30,7 +70,9 @@ export default function CallbackDialog() {
   useEffect(() => {
     openHandler = () => {
       setOpen(true)
-      setSubmitted(false)
+      setStatus('idle')
+      setSubmitError('')
+      setErrors({})
     }
     return () => {
       openHandler = () => {}
@@ -74,31 +116,82 @@ export default function CallbackDialog() {
     }
   }, [open])
 
-  const onField = (k) => (e) => setForm((s) => ({ ...s, [k]: e.target.value }))
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    const subject = `Callback request: ${form.company || form.name || 'New enquiry'}`
-    const body = [
-      `Name: ${form.name}`,
-      `Company: ${form.company}`,
-      `Phone: ${form.phone}`,
-      `Email: ${form.email || 'N/A'}`,
-      `Preferred call window: ${form.window}`,
-      '',
-      'Brief:',
-      form.brief?.trim() || '(no brief provided)',
-    ].join('\n')
-    window.location.href = `mailto:md@madrasswastic.com?subject=${encodeURIComponent(
-      subject,
-    )}&body=${encodeURIComponent(body)}`
-    setSubmitted(true)
+  const onField = (k) => (e) => {
+    const value = e.target.value
+    setForm((s) => ({ ...s, [k]: value }))
+    if (errors[k]) setErrors((prev) => ({ ...prev, [k]: undefined }))
   }
 
-  const inputCls =
-    'w-full rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-3 text-base text-white placeholder-white/35 outline-none transition-all focus:border-gold-400/50 focus:bg-white/[0.05] sm:py-2.5 sm:text-[13px]'
+  const fallbackToMailto = () => {
+    window.location.href = buildMailto(form)
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (status === 'submitting') return
+
+    // Honeypot: silently drop bot submissions.
+    if (form.botcheck) {
+      setStatus('success')
+      return
+    }
+
+    const v = validate(form)
+    setErrors(v)
+    if (Object.keys(v).length > 0) return
+
+    // No access key configured — degrade gracefully to mailto so a built site
+    // without env vars still gets the user to email rather than appear broken.
+    if (!WEB3FORMS_KEY) {
+      fallbackToMailto()
+      setStatus('success')
+      return
+    }
+
+    setStatus('submitting')
+    setSubmitError('')
+
+    try {
+      const res = await fetch(WEB3FORMS_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: `Callback request: ${form.company || form.name || 'New enquiry'}`,
+          from_name: form.name,
+          name: form.name,
+          company: form.company,
+          phone: form.phone,
+          email: form.email || 'not-provided@madrasswastic.com',
+          preferred_call_window: form.window,
+          brief: form.brief?.trim() || '(no brief provided)',
+          botcheck: form.botcheck,
+        }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (res.ok && data.success) {
+        setStatus('success')
+      } else {
+        setStatus('error')
+        setSubmitError(data.message || 'Submission failed. Please try again or email us directly.')
+      }
+    } catch (err) {
+      setStatus('error')
+      setSubmitError('Network error. Check your connection or email us directly.')
+    }
+  }
+
+  const inputBase =
+    'w-full rounded-xl border bg-white/[0.03] px-3.5 py-3 text-base text-white placeholder-white/35 outline-none transition-all focus:bg-white/[0.05] sm:py-2.5 sm:text-[13px]'
+  const inputOk = 'border-white/10 focus:border-gold-400/50'
+  const inputErr = 'border-rose-400/60 focus:border-rose-400/80'
+  const inputCls = (key) => `${inputBase} ${errors[key] ? inputErr : inputOk}`
   const labelCls =
     'mb-1.5 block font-mono text-[10.5px] uppercase tracking-[0.22em] text-white/55'
+  const errMsgCls = 'mt-1.5 flex items-center gap-1.5 text-[11.5px] text-rose-300'
 
   if (typeof document === 'undefined') return null
 
@@ -173,7 +266,7 @@ export default function CallbackDialog() {
               {/* Form */}
               <div className="p-5 sm:p-8 lg:col-span-7">
                 <AnimatePresence mode="wait">
-                  {submitted ? (
+                  {status === 'success' ? (
                     <motion.div
                       key="ok"
                       initial={{ opacity: 0, y: 10 }}
@@ -186,20 +279,30 @@ export default function CallbackDialog() {
                         <CheckCircle2 className="h-6 w-6 text-emerald-400" />
                       </div>
                       <h4 className="mt-5 font-display text-xl font-semibold text-white">
-                        Email ready to send
+                        {WEB3FORMS_KEY ? 'Request received' : 'Email ready to send'}
                       </h4>
                       <p className="mt-2 max-w-sm text-[13px] leading-relaxed text-white/65">
-                        We've opened your mail client with the brief filled in. If nothing
-                        happened, write to{' '}
-                        <span className="text-gold-300">md@madrasswastic.com</span>{' '}
-                        directly.
+                        {WEB3FORMS_KEY ? (
+                          <>
+                            Thanks — a senior engineer will call you back within a working day. If
+                            it's urgent, reach us on{' '}
+                            <span className="text-gold-300">+91 98841 48474</span>.
+                          </>
+                        ) : (
+                          <>
+                            We've opened your mail client with the brief filled in. If nothing
+                            happened, write to{' '}
+                            <span className="text-gold-300">md@madrasswastic.com</span>{' '}
+                            directly.
+                          </>
+                        )}
                       </p>
                       <button
                         type="button"
-                        onClick={() => setSubmitted(false)}
+                        onClick={() => setStatus('idle')}
                         className="mt-6 font-mono text-[10.5px] uppercase tracking-[0.25em] text-white/55 transition-colors hover:text-white"
                       >
-                        Edit and resend
+                        Send another
                       </button>
                     </motion.div>
                   ) : (
@@ -212,19 +315,47 @@ export default function CallbackDialog() {
                       onSubmit={handleSubmit}
                       className="space-y-4"
                     >
+                      {/* Honeypot: hidden from humans/AT, bots fill it; we drop those submissions. */}
+                      <div
+                        aria-hidden="true"
+                        style={{
+                          position: 'absolute',
+                          left: '-9999px',
+                          width: '1px',
+                          height: '1px',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        <label htmlFor="cb-botcheck">Leave this field empty</label>
+                        <input
+                          id="cb-botcheck"
+                          type="text"
+                          tabIndex={-1}
+                          autoComplete="off"
+                          value={form.botcheck}
+                          onChange={onField('botcheck')}
+                        />
+                      </div>
+
                       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
                           <label className={labelCls} htmlFor="cb-name">Name</label>
                           <input
                             id="cb-name"
                             ref={firstInputRef}
-                            required
                             value={form.name}
                             onChange={onField('name')}
                             placeholder="Your name"
                             autoComplete="name"
-                            className={inputCls}
+                            aria-invalid={!!errors.name}
+                            aria-describedby={errors.name ? 'cb-name-err' : undefined}
+                            className={inputCls('name')}
                           />
+                          {errors.name && (
+                            <p id="cb-name-err" className={errMsgCls}>
+                              <AlertCircle className="h-3 w-3" /> {errors.name}
+                            </p>
+                          )}
                         </div>
                         <div>
                           <label className={labelCls} htmlFor="cb-company">Company</label>
@@ -234,22 +365,28 @@ export default function CallbackDialog() {
                             onChange={onField('company')}
                             placeholder="Organisation"
                             autoComplete="organization"
-                            className={inputCls}
+                            className={inputCls('company')}
                           />
                         </div>
                         <div>
                           <label className={labelCls} htmlFor="cb-phone">Phone</label>
                           <input
                             id="cb-phone"
-                            required
                             type="tel"
                             inputMode="tel"
                             value={form.phone}
                             onChange={onField('phone')}
                             placeholder="+91 ..."
                             autoComplete="tel"
-                            className={inputCls}
+                            aria-invalid={!!errors.phone}
+                            aria-describedby={errors.phone ? 'cb-phone-err' : undefined}
+                            className={inputCls('phone')}
                           />
+                          {errors.phone && (
+                            <p id="cb-phone-err" className={errMsgCls}>
+                              <AlertCircle className="h-3 w-3" /> {errors.phone}
+                            </p>
+                          )}
                         </div>
                         <div>
                           <label className={labelCls} htmlFor="cb-email">Email</label>
@@ -261,8 +398,15 @@ export default function CallbackDialog() {
                             onChange={onField('email')}
                             placeholder="optional"
                             autoComplete="email"
-                            className={inputCls}
+                            aria-invalid={!!errors.email}
+                            aria-describedby={errors.email ? 'cb-email-err' : undefined}
+                            className={inputCls('email')}
                           />
+                          {errors.email && (
+                            <p id="cb-email-err" className={errMsgCls}>
+                              <AlertCircle className="h-3 w-3" /> {errors.email}
+                            </p>
+                          )}
                         </div>
                       </div>
 
@@ -274,7 +418,7 @@ export default function CallbackDialog() {
                           value={form.brief}
                           onChange={onField('brief')}
                           placeholder="A line, a paragraph, or a paste of your RFQ. Anything that helps us route you to the right engineer."
-                          className={`${inputCls} resize-none`}
+                          className={`${inputCls('brief')} resize-none`}
                         />
                       </div>
 
@@ -298,6 +442,26 @@ export default function CallbackDialog() {
                         </div>
                       </div>
 
+                      {status === 'error' && submitError && (
+                        <div
+                          role="alert"
+                          className="flex items-start gap-2 rounded-xl border border-rose-400/40 bg-rose-400/10 px-3.5 py-3 text-[12.5px] text-rose-100"
+                        >
+                          <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-rose-300" />
+                          <span>
+                            {submitError}{' '}
+                            <button
+                              type="button"
+                              onClick={fallbackToMailto}
+                              className="underline underline-offset-2 hover:text-white"
+                            >
+                              Open email instead
+                            </button>
+                            .
+                          </span>
+                        </div>
+                      )}
+
                       <div className="flex flex-col items-start justify-between gap-3 pt-2 sm:flex-row sm:items-center">
                         <p className="text-[11px] leading-relaxed text-white/40 sm:max-w-xs">
                           By requesting a callback you agree to be contacted about this enquiry.
@@ -305,10 +469,20 @@ export default function CallbackDialog() {
                         </p>
                         <button
                           type="submit"
-                          className="btn-primary w-full justify-center shrink-0 sm:w-auto"
+                          disabled={status === 'submitting'}
+                          className="btn-primary w-full justify-center shrink-0 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
                         >
-                          Request callback
-                          <Send className="h-4 w-4" />
+                          {status === 'submitting' ? (
+                            <>
+                              Sending
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            </>
+                          ) : (
+                            <>
+                              Request callback
+                              <Send className="h-4 w-4" />
+                            </>
+                          )}
                         </button>
                       </div>
                     </motion.form>
