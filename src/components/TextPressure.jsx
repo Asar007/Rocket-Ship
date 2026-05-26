@@ -165,8 +165,9 @@ const TextPressure = ({
       <style>{`
         @font-face {
           font-family: '${fontFamily}';
-          src: url('${fontUrl}');
+          src: url('${fontUrl}') format('woff2');
           font-style: normal;
+          font-display: swap;
         }
 
         .tp-flex {

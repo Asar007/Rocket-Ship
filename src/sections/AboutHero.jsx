@@ -19,14 +19,22 @@ export default function AboutHero() {
       */}
       <picture>
         <source
+          type="image/webp"
+          media="(min-width: 1280px)"
+          srcSet="/about-hero-2400.webp"
+        />
+        <source
+          type="image/webp"
           media="(min-width: 768px)"
-          srcSet="/about-hero.webp"
+          srcSet="/about-hero-1600.webp"
         />
         <img
-          src="/about-hero.webp"
+          src="/about-hero-1024.webp"
           alt="Madras Swastic Engineers shop floor — crew-module structural frame under fabrication"
           className="absolute inset-0 h-full w-full object-cover"
           style={{ objectPosition: '50% 40%' }}
+          width="3168"
+          height="1344"
           loading="eager"
           fetchpriority="high"
           decoding="async"
