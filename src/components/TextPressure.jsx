@@ -160,19 +160,41 @@ const TextPressure = ({
     return () => cancelAnimationFrame(rafId)
   }, [width, weight, italic, alpha])
 
-  // Load the variable font via the FontFace API in useEffect rather than
-  // an inline @font-face in the SSG'd HTML. That keeps the font OFF the
-  // critical render path — PageSpeed was flagging this as a 791 ms
-  // network dependency. Fallback text (with font-display: swap behaviour)
-  // renders immediately; Compressa swaps in once loaded.
+  // Load Compressa via FontFace API, deferred to browser idle time.
+  //
+  // Earlier we moved the @font-face out of the SSG'd HTML into a useEffect
+  // FontFace.load() call, but PageSpeed still flagged the font as the
+  // longest critical chain on /customization (689 ms) -- useEffect fires
+  // immediately after hydration, so the fetch landed inside the LCP
+  // window. requestIdleCallback pushes it to whenever the browser has
+  // spare cycles (typically after LCP), with a setTimeout fallback for
+  // Safari versions that don't support it.
   useEffect(() => {
     if (typeof window === 'undefined' || !window.FontFace) return
     if (Array.from(document.fonts || []).some((f) => f.family === fontFamily)) return
-    const face = new FontFace(fontFamily, `url(${fontUrl}) format('woff2')`, {
-      style: 'normal',
-      display: 'swap',
-    })
-    face.load().then((loaded) => document.fonts.add(loaded)).catch(() => {})
+
+    let cancelled = false
+    const loadFont = () => {
+      if (cancelled) return
+      const face = new FontFace(fontFamily, `url(${fontUrl}) format('woff2')`, {
+        style: 'normal',
+        display: 'swap',
+      })
+      face.load().then((loaded) => document.fonts.add(loaded)).catch(() => {})
+    }
+
+    if ('requestIdleCallback' in window) {
+      const id = window.requestIdleCallback(loadFont, { timeout: 3000 })
+      return () => {
+        cancelled = true
+        window.cancelIdleCallback?.(id)
+      }
+    }
+    const t = setTimeout(loadFont, 1500)
+    return () => {
+      cancelled = true
+      clearTimeout(t)
+    }
   }, [fontFamily, fontUrl])
 
   const styleElement = useMemo(() => {
