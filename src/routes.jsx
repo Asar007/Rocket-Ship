@@ -16,6 +16,11 @@ export const routes = [
         lazy: () => import('./pages/Customization.jsx'),
       },
       { path: 'contact', lazy: () => import('./pages/Contact.jsx') },
+      // Literal /404 route so vite-react-ssg emits dist/404.html at build
+      // time. Most hosts (Vercel, Netlify, GH Pages, Cloudflare Pages) auto
+      // serve 404.html with a real HTTP 404 status for unmatched paths.
+      { path: '404', lazy: () => import('./pages/NotFound.jsx') },
+      // SPA catch-all for client-side navigation to non-existent routes.
       { path: '*', lazy: () => import('./pages/NotFound.jsx') },
     ],
   },
