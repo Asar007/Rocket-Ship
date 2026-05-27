@@ -15,7 +15,7 @@ export function Component() {
   return (
     <>
       <Seo
-        title="Heavy Fabrication & Industrial Engineering in India"
+        title="Engineering Heavy Fabrication for Space, Energy & Industry"
         description="Heavy and precision metal fabrication firm in Chennai. ISRO Gaganyaan partner. Turnkey plants for paper, sugar and petrochemical sectors. Serving India and export markets since 2009."
         path="/"
       />
