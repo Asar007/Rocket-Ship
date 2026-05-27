@@ -9,7 +9,7 @@ const SITE = 'https://www.madrasswastic.com'
  */
 export default function Seo({ title, description, path = '/' }) {
   const url = `${SITE}${path}`
-  const full = `${title} · Madras Swastic Engineers`
+  const full = `Madras Swastic Engineers · ${title}`
   return (
     <Head>
       <title>{full}</title>
