@@ -66,7 +66,7 @@ export default function AboutManifesto() {
 
           <p className="max-w-md text-sm leading-relaxed text-white/55 sm:text-base">
             From the Bay of Bengal to low Earth orbit. Engineering India's
-            hardest builds since 2009 — rockets, refineries, pulp plants,
+            hardest builds since 2009: rockets, refineries, pulp plants,
             clean water.
           </p>
         </div>

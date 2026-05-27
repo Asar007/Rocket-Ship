@@ -133,10 +133,11 @@ export default function Hero() {
             custom={2}
             className="mt-5 max-w-xl text-base leading-relaxed text-white/65 sm:mt-7 sm:text-lg"
           >
-            Founded in 2009, Madras Swastic Engineers fabricates across the full scale of
-            industry, from the smallest precision connection to complete rocket test systems and
-            space capsule handling for ISRO. Turnkey engineering for the space, paper, sugar and
-            petrochemical sectors across India.
+            Founded in 2009, Madras Swastic Engineers is a Chennai-based heavy and precision
+            metal fabrication firm, building anything from the smallest precision connection
+            to complete rocket test systems and space capsule handling for ISRO. Turnkey
+            engineering for the space, paper, sugar and petrochemical sectors across India
+            and export markets.
           </motion.p>
 
           {/* Trust strip */}

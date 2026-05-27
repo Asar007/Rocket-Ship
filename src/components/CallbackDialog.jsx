@@ -284,7 +284,7 @@ export default function CallbackDialog() {
                       <p className="mt-2 max-w-sm text-[13px] leading-relaxed text-white/65">
                         {WEB3FORMS_KEY ? (
                           <>
-                            Thanks — a senior engineer will call you back within a working day. If
+                            Thanks. A senior engineer will call you back within a working day. If
                             it's urgent, reach us on{' '}
                             <span className="text-gold-300">+91 98841 48474</span>.
                           </>

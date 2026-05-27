@@ -5,8 +5,8 @@ export function Component() {
   return (
     <div className="pt-24 sm:pt-28">
       <Seo
-        title="Contact Us"
-        description="Tell us about your site, drawings or RFQ. We'll respond within a working day with a senior engineer assigned. md@madrasswastic.com · +91 98841 48474."
+        title="Contact: Request a Heavy Fabrication Quote"
+        description="Send drawings or an RFQ for heavy fabrication, structural or turnkey work. Senior engineer assigned within a working day. India and export enquiries welcome. md@madrasswastic.com · +91 98841 48474."
         path="/contact"
       />
       <ContactCTA />

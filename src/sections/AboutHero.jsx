@@ -30,7 +30,7 @@ export default function AboutHero() {
         />
         <img
           src="/about-hero-1024.webp"
-          alt="Madras Swastic Engineers shop floor — crew-module structural frame under fabrication"
+          alt="Madras Swastic Engineers shop floor with crew-module structural frame under fabrication"
           className="absolute inset-0 h-full w-full object-cover"
           style={{ objectPosition: '50% 40%' }}
           width="3168"

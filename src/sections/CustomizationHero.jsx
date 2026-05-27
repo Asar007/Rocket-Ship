@@ -5,7 +5,7 @@ const SPECS = [
   { k: 'Tolerance', v: '±0.05 mm' },
   { k: 'Load', v: '250 t SWL' },
   { k: 'Cert', v: 'ISO 9001' },
-  { k: 'Lead time', v: '4–12 wks' },
+  { k: 'Lead time', v: '4 to 12 wks' },
 ]
 
 export default function CustomizationHero() {
@@ -162,7 +162,7 @@ export default function CustomizationHero() {
           transition={{ duration: 0.85, ease: 'easeOut', delay: 0.16 }}
           className="mx-auto mt-5 max-w-xl font-body text-[15px] leading-relaxed text-white/85 sm:mt-6 sm:text-lg"
         >
-          Bespoke fabrication and engineering — from a refinery stair tower to
+          Bespoke fabrication and engineering, from a refinery stair tower to
           flight-class structural hardware. Every brief begins with a blank page
           and a chartered engineer.
         </motion.p>

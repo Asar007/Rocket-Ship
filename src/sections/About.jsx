@@ -45,7 +45,7 @@ export default function About() {
           eyebrow="About the firm"
           title="Engineering for Space. Built for Industry."
           accentWord="Space"
-          subtitle="Founded in 2009, Madras Swastik Engineers provides service and engineering support to ISRO and to the paper, sugar and petrochemical industries, from rocket test systems to turnkey treatment plants."
+          subtitle="Founded in 2009, Madras Swastic Engineers provides service and engineering support to ISRO and to the paper, sugar and petrochemical industries, from rocket test systems to turnkey treatment plants."
         />
 
         <GlobalSpotlight
@@ -77,12 +77,21 @@ export default function About() {
               Supporting India&rsquo;s space programme and core industries since 2009.
             </h3>
             <p className="mt-5 text-[15px] leading-relaxed text-white/70">
-              Madras Swastic Engineers was started in 2009 to provide service and
-              engineering support to the ISRO group, paper, sugar and petrochemical
-              industries, and water-treatment equipment. For ISRO&rsquo;s PSLV, GSLV,
-              GSLV Mk III and Gaganyaan missions our role spans the design, development,
-              manufacture and installation of rocket vibration-simulation systems, zero-G
-              testing, rocket equipment handling and ground systems for launch.
+              Madras Swastic Engineers is a heavy and precision metal
+              fabrication firm founded in 2009 in Chennai, India, delivering
+              turnkey industrial engineering that designs, fabricates, installs
+              and commissions precision systems for the Indian Space Research
+              Organisation (ISRO), covering the PSLV, GSLV, GSLV Mk III and
+              Gaganyaan crewed-spaceflight programmes, including rocket
+              vibration-simulation rigs, zero-G test systems, rocket equipment
+              handling and ground systems for launch. The firm also delivers
+              turnkey plants for the paper, sugar and petrochemical sectors,
+              including Milk-of-Lime equipment, raw-water systems and effluent
+              treatment plants. Madras Swastic Engineers handed over the
+              Gaganyaan Crew Training Simulator (CTS), an exact replica of the
+              crew capsule, to ISRO/HSFC within 90 days, with the unit
+              officially inaugurated by Prime Minister Narendra Modi at the
+              Vikram Sarabhai Space Centre (VSSC) in Trivandrum.
             </p>
 
             <div className="mt-6 grid grid-cols-2 gap-3 text-sm">

@@ -9,8 +9,8 @@ export function Component() {
   return (
     <div className="pt-24 sm:pt-28">
       <Seo
-        title="About Us"
-        description="Madras Swastic Engineers — a turnkey industrial engineering firm in Chennai since 2009. Fabrication partner on ISRO's Gaganyaan crew-module programme, with delivery across paper, sugar and petrochemical sectors."
+        title="About: Heavy Fabrication Company in Chennai"
+        description="Founded 2009 in Chennai. ISRO Gaganyaan partner. Heavy and precision metal fabrication, structural assemblies and turnkey plants delivered across India and export markets."
         path="/about"
       />
       <AboutHero />

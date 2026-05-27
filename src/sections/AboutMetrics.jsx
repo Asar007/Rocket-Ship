@@ -41,7 +41,7 @@ export default function AboutMetrics() {
               </h2>
             </div>
             <p className="max-w-md text-sm leading-relaxed text-white/55">
-              Numbers that frame what we've done — and what we're trusted to do
+              Numbers that frame what we've done and what we're trusted to do
               next.
             </p>
           </div>

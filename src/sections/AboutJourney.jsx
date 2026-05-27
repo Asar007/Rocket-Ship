@@ -18,7 +18,7 @@ const CHAPTERS = [
     eyebrow: 'Heavy industry',
     title: 'Plants for paper, sugar, petrochem.',
     body:
-      'Turnkey delivery of Milk-of-Lime equipment, raw-water and effluent treatment plants — engineered, fabricated, installed, commissioned. The four-sector industrial backbone takes shape.',
+      'Turnkey delivery of Milk-of-Lime equipment, raw-water and effluent treatment plants, engineered, fabricated, installed and commissioned. The four-sector industrial backbone takes shape.',
     icon: Factory,
   },
   {
@@ -36,7 +36,7 @@ const CHAPTERS = [
     eyebrow: 'Gaganyaan',
     title: 'Carrying India to orbit.',
     body:
-      'Fabrication partner on the Gaganyaan crew-module programme — India\'s first crewed spaceflight. Every weld, ring and panel held to flight standard.',
+      'Fabrication partner on the Gaganyaan crew-module programme, India\'s first crewed spaceflight. Every weld, ring and panel held to flight standard.',
     icon: Orbit,
   },
 ]

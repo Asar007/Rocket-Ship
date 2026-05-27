@@ -1,0 +1,24 @@
+# Madras Swastic Engineers
+> Turnkey industrial engineering firm in Chennai, India. Fabrication partner on ISRO's Gaganyaan crew-module programme. Serves space, paper, sugar and petrochemical sectors. Founded 2009.
+
+## Main pages
+- [Home](https://www.madrasswastic.com/): Overview of capabilities across space and industrial sectors
+- [About](https://www.madrasswastic.com/about): Founded 2009; ISRO partnership since 2016; Gaganyaan fabrication partner
+- [Projects](https://www.madrasswastic.com/projects): Crew Training Simulator, SSLV core/base simulators, structural and process work
+- [Customization](https://www.madrasswastic.com/customization): Bespoke fabrication to client drawings, tolerances and timelines
+- [Contact](https://www.madrasswastic.com/contact): md@madrasswastic.com - +91 98841 48474
+
+## Key facts
+- Founded: 2009
+- Headquarters: 21-C, 5th Cross Street, South Phase, Guindy Industrial Estate, Guindy, Chennai 600032, Tamil Nadu, India
+- Sectors served: Space (ISRO), paper, sugar, petrochemical
+- ISRO programmes: PSLV, GSLV, GSLV Mk III, Gaganyaan
+- Capabilities: rocket vibration-simulation systems, zero-G test rigs, equipment handling, ground systems for launch, Milk-of-Lime equipment, raw-water and effluent treatment plants
+- Notable delivery: Gaganyaan Crew Training Simulator (CTS) handed over to ISRO/HSFC within 90 days, inaugurated by Prime Minister Narendra Modi at the Vikram Sarabhai Space Centre (VSSC), Trivandrum
+- Delivery model: turnkey (design, development, manufacture, installation, commissioning)
+- Area served: India
+
+## Contact
+- Email: md@madrasswastic.com
+- Phone: +91 98841 48474
+- Sitemap: https://www.madrasswastic.com/sitemap.xml

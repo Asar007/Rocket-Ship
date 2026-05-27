@@ -101,10 +101,10 @@ const PROJECTS = [
     images: [domeErection, latticeTower],
     story: [
       'A 5.4-metre heat shield cannot rest on its own skin. The fixture exists so the shield can be lifted, rotated and worked on without a millimetre of deformation.',
-      'Every node is CNC-cut from heavy section and welded under a master jig — load paths verified by FEA before a single arc is struck.',
+      'Every node is CNC-cut from heavy section and welded under a master jig, with load paths verified by FEA before a single arc is struck.',
       'Trial-erected on a dust-blown pad at our Chennai works, the cage is dimensionally checked by total station against the flight geometry it has to protect.',
       'Crawler cranes pick it from three points, exactly as ISRO will, so the lifting plan is proved on our floor before it ever leaves the shop.',
-      'Dispatched to VSSC with full QA dossier, weld maps and load-test reports — ready to cradle the heat shield through integration.',
+      'Dispatched to VSSC with full QA dossier, weld maps and load-test reports, ready to cradle the heat shield through integration.',
     ],
   },
   {
@@ -116,7 +116,7 @@ const PROJECTS = [
     tags: ['Aerospace', 'ISRO', 'PSLV'],
     storyStyle: 'cinematic',
     blurb:
-      'Core base shroud assembly for ISRO’s PSLV — the launch vehicle that has put more than four hundred satellites into orbit. Rolled, seam-welded and lock-fitted in-house to flight-grade surface and dimensional tolerances.',
+      'Core base shroud assembly for ISRO’s PSLV, the launch vehicle that has put more than four hundred satellites into orbit. Rolled, seam-welded and lock-fitted in-house to flight-grade surface and dimensional tolerances.',
     images: [processVessel],
     story: [
       'The PSLV is India’s most prolific launcher, and every flight starts with a base shroud that has to seat perfectly on the core stage.',
@@ -135,7 +135,7 @@ const PROJECTS = [
     tags: ['Aerospace', 'ISRO', 'VSSC'],
     storyStyle: 'cinematic',
     blurb:
-      'Large conical pressure chamber for the Vikram Sarabhai Space Centre — designed for repeated proof-pressure cycles and built on our heavy horizontal boring mill to keep concentricity inside microns end-to-end.',
+      'Large conical pressure chamber for the Vikram Sarabhai Space Centre, designed for repeated proof-pressure cycles and built on our heavy horizontal boring mill to keep concentricity inside microns end-to-end.',
     images: [rotaryDrum],
     story: [
       'A conical pressure chamber for VSSC, rolled from heavy plate and finished as a single concentric body.',
@@ -154,7 +154,7 @@ const PROJECTS = [
     tags: ['Aerospace', 'ISRO', 'PSLV'],
     storyStyle: 'cinematic',
     blurb:
-      'Aluminium PSLV heat shield assembly — a ribbed monocoque framework that protects the payload through the worst of atmospheric flight, fabricated and finished at our Chennai works for ISRO.',
+      'Aluminium PSLV heat shield assembly: a ribbed monocoque framework that protects the payload through the worst of atmospheric flight, fabricated and finished at our Chennai works for ISRO.',
     images: [spaceframe],
     story: [
       'The PSLV heat shield is what stands between the satellite and the violence of atmospheric flight. Every rib has to be light, true, and exact.',
@@ -173,14 +173,14 @@ const PROJECTS = [
     tags: ['Fabrication', 'CNC', 'Coated'],
     storyStyle: 'cinematic',
     blurb:
-      'High-volume batch production of CNC-drilled, shot-blasted and epoxy-coated gusset and connection plates — engineered, marked and stacked in delivery order so they bolt up on site without a single field correction.',
+      'High-volume batch production of CNC-drilled, shot-blasted and epoxy-coated gusset and connection plates, engineered, marked and stacked in delivery order so they bolt up on site without a single field correction.',
     images: [platesA, platesB],
     story: [
       'A large structural steel package is only as fast as its connection plates. Get those wrong on a thousand pieces and the whole site stalls.',
       'Plates are nested on a CNC plasma bed for minimum scrap, then transferred to a beam-line drill for hole groups that match the bolt-up drawing exactly.',
       'Every plate is shot-blasted to Sa 2½ and primed within the same shift, so the surface is fresh when the epoxy top-coat is applied.',
       'Quality control samples one in twenty plates for hole position, diameter and edge prep before the batch is bundled and labelled by erection sequence.',
-      'Stacked and shrink-wrapped in the order they will be picked on site, the plates ship out ready to bolt — no re-drilling, no field cutting.',
+      'Stacked and shrink-wrapped in the order they will be picked on site, the plates ship out ready to bolt, with no re-drilling and no field cutting.',
     ],
   },
   {
@@ -192,7 +192,7 @@ const PROJECTS = [
     tags: ['Machining', 'Tooling', 'Tight-tolerance'],
     storyStyle: 'cinematic',
     blurb:
-      'Multi-axis machined aluminium fixtures and load brackets for aerospace and instrumentation clients — surface finish, flatness and bolt-circle concentricity held inside microns so the parts they cradle stay true.',
+      'Multi-axis machined aluminium fixtures and load brackets for aerospace and instrumentation clients, with surface finish, flatness and bolt-circle concentricity held inside microns so the parts they cradle stay true.',
     images: [precisionBracket],
     story: [
       'A fixture is only worth what it holds. Ours hold flight hardware, so every surface gets treated like the part it will support.',
@@ -466,6 +466,26 @@ export default function Projects() {
             <ProjectCard key={p.id} project={p} onOpen={setActive} />
           ))}
         </motion.div>
+
+        {/* Screen-reader / AI-crawler accessible long-form case studies.
+            The visible story prose lives inside ProjectModal (opened on
+            click). Mirroring it here as sr-only keeps the rich narrative
+            in the prerendered HTML so it reaches AI search systems and
+            assistive tech without ever requiring a modal open. */}
+        <div className="sr-only" aria-label="Project case studies">
+          {PROJECTS.map((p) => (
+            <article key={`narr-${p.id}`}>
+              <h3>{p.storyTitle || p.title}</h3>
+              <p>
+                {p.location} &middot; {p.year} &middot; {p.tags.join(', ')}
+              </p>
+              <p>{p.blurb}</p>
+              {p.story?.map((para, i) => (
+                <p key={i}>{para}</p>
+              ))}
+            </article>
+          ))}
+        </div>
       </div>
 
       {active && (

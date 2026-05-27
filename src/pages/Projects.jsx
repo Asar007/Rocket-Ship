@@ -5,8 +5,8 @@ export function Component() {
   return (
     <div className="pt-24 sm:pt-28">
       <Seo
-        title="Our Projects"
-        description="Selected structural fabrication, mechanical erection and turnkey delivery projects for energy, refinery and manufacturing clients across India."
+        title="Fabrication Projects: Aerospace, Structural and Process Plant"
+        description="Selected heavy fabrication projects: Gaganyaan Crew Training Simulator, SSLV simulators, structural erection and process plants delivered across India and export markets."
         path="/projects"
       />
       <Projects />
