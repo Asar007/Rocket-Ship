@@ -95,9 +95,10 @@ export default function Hero() {
               className="font-display font-semibold leading-[1.05] tracking-tight text-white"
               style={{ fontSize: 'clamp(2rem, 5.5vw + 1rem, 3.5rem)' }}
             >
+              Engineering{' '}
               <span className="relative inline-block">
                 <span className="bg-gradient-to-br from-gold-400 via-gold-500 to-gold-600 bg-clip-text text-transparent">
-                  Metal Fabrication
+                  Precision
                 </span>
                 <svg
                   className="absolute -bottom-2 left-0 w-full"
@@ -132,10 +133,11 @@ export default function Hero() {
             custom={2}
             className="mt-5 max-w-xl text-base leading-relaxed text-white/65 sm:mt-7 sm:text-lg"
           >
-            Metal fabrication firm based in Chennai, founded in 2009. From the smallest
-            precision connection to complete rocket test systems and space capsule handling
-            for ISRO — Madras Swastic Engineers delivers turnkey engineering for the space,
-            paper, sugar and petrochemical sectors across India and export markets.
+            Founded in 2009, Madras Swastic Engineers is a Chennai-based heavy and precision
+            metal fabrication firm, building anything from the smallest precision connection
+            to complete rocket test systems and space capsule handling for ISRO. Turnkey
+            engineering for the space, paper, sugar and petrochemical sectors across India
+            and export markets.
           </motion.p>
 
           {/* Trust strip */}
