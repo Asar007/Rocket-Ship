@@ -9,3 +9,7 @@ dev-dist
 .DS_Store
 *.log
 .claude/
+
+# Client proposals — contain PII, never commit
+docs/proposal-*.html
+docs/proposal-*.pdf
