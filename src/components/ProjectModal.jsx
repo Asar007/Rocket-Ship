@@ -216,9 +216,6 @@ function TimelineStory({ project, story, scrollRef }) {
                   decoding="async"
                 />
               </AnimatePresence>
-              <div className="pointer-events-none absolute left-4 top-4 rounded-full border border-white/15 bg-navy-950/60 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.32em] text-white/80 backdrop-blur">
-                {project.location}
-              </div>
             </div>
 
             {/* Copy column */}
@@ -254,9 +251,6 @@ function TimelineStory({ project, story, scrollRef }) {
                   {story[active]}
                 </motion.p>
               </AnimatePresence>
-              <p className="mt-8 hidden font-mono text-[11px] uppercase tracking-[0.32em] text-white/35 sm:block">
-                Scroll to advance ↓
-              </p>
             </div>
           </div>
         </div>
