@@ -47,37 +47,47 @@ export default function Footer() {
     >
       <div className="hairline-gold absolute inset-x-0 top-0 z-30" />
 
-      {/* MSE watermark — clipped inside the footer, sits behind all content.
-          Mobile opacity dialled down so it doesn't fight the link columns. */}
+      {/* MSE watermark — desktop only. There isn't enough vertical real
+          estate inside the mobile footer for a 100px+ wordmark to sit
+          behind content without visually overlapping the link grid /
+          CTA. On lg+ it lives behind the brand column where it stays
+          out of the link area. */}
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-[72px] z-0 flex select-none justify-center opacity-[0.06] sm:bottom-[55px] sm:opacity-[0.10] lg:bottom-[41px] lg:opacity-[0.12]"
+        className="pointer-events-none absolute inset-y-0 left-0 right-0 z-0 hidden select-none items-center justify-center opacity-[0.10] lg:flex lg:opacity-[0.12]"
         aria-hidden="true"
       >
-        <div className="flex h-[160px] w-[92%] max-w-[1100px] items-center justify-center sm:h-[320px] sm:w-[88%] lg:h-[440px] lg:w-[85%]">
-          <span className="font-body text-[160px] font-black uppercase leading-none tracking-[0.18em] text-white sm:text-[320px] lg:text-[440px]">
-            MSE
-          </span>
-        </div>
+        <span
+          className="font-body font-black uppercase leading-none text-white"
+          style={{
+            fontSize: 'clamp(280px, 32vw, 440px)',
+            letterSpacing: '0.08em',
+          }}
+        >
+          MSE
+        </span>
       </div>
 
       <div className="relative z-20 mx-auto max-w-7xl px-5 pb-5 pt-9 sm:px-6 sm:pb-6 sm:pt-10">
-        {/* ───── MOBILE / TABLET LAYOUT (< lg) ───── */}
-        <div className="lg:hidden">
-          {/* Brand row */}
+        {/* ───── MOBILE / TABLET LAYOUT (< lg) ─────
+            Single space-y container so each child auto-flows with
+            consistent rhythm. No section-specific margins, no chance
+            of double-spacing or overlap. */}
+        <div className="flex flex-col gap-7 lg:hidden">
+          {/* 1. Brand row */}
           <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <span className="grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-white/[0.04]">
+            <div className="flex min-w-0 items-center gap-3">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.04]">
                 <img
                   src={logo}
                   alt="Madras Swastic Engineers"
                   className="h-7 w-7 object-contain"
                 />
               </span>
-              <div className="leading-tight">
-                <div className="font-display text-sm font-semibold tracking-[0.16em] text-white">
+              <div className="min-w-0 leading-tight">
+                <div className="truncate font-display text-sm font-semibold tracking-[0.16em] text-white">
                   MADRAS SWASTIC
                 </div>
-                <div className="font-mono text-[10px] tracking-[0.32em] text-gold-400">
+                <div className="truncate font-mono text-[10px] tracking-[0.32em] text-gold-400">
                   ENGINEERS
                 </div>
               </div>
@@ -91,55 +101,53 @@ export default function Footer() {
             </button>
           </div>
 
-          {/* Tagline — small, sets the tone before the link grid */}
-          <p className="mt-5 max-w-md text-[13.5px] leading-relaxed text-white/60">
+          {/* 2. Tagline */}
+          <p className="max-w-md text-[13.5px] leading-relaxed text-white/60">
             A turnkey industrial engineering firm based in Chennai —
             structural, mechanical and piping work for India&rsquo;s energy and
             manufacturing sectors since 2009.
           </p>
 
-          {/* Primary CTA + contact pills */}
-          <div className="mt-5 flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-3">
+          {/* 3. Primary CTA + contact pills — wraps cleanly via flex-wrap
+              when the row gets tight, so chips never overflow or overlap. */}
+          <div className="flex flex-wrap items-center gap-2.5">
             <button
               type="button"
               onClick={openCallback}
-              className="group inline-flex h-11 min-h-[44px] items-center justify-center gap-2 rounded-full bg-gradient-to-r from-gold-400 via-gold-500 to-gold-600 px-4 font-display text-[14px] font-semibold text-navy-950 shadow-[0_10px_24px_-12px_rgba(212,162,76,0.7)] transition-transform duration-300 hover:-translate-y-0.5 active:translate-y-0"
+              className="group inline-flex h-11 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-gold-400 via-gold-500 to-gold-600 px-4 font-display text-[14px] font-semibold text-navy-950 shadow-[0_10px_24px_-12px_rgba(212,162,76,0.7)] transition-transform duration-300 hover:-translate-y-0.5 active:translate-y-0"
             >
               <PhoneCall className="h-4 w-4" strokeWidth={2.2} />
               Schedule a callback
               <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </button>
-
-            <div className="flex items-center gap-2.5">
-              {[
-                {
-                  Icon: Mail,
-                  label: 'Email',
-                  aria: 'Email us',
-                  href: 'mailto:md@madrasswastic.com',
-                },
-                {
-                  Icon: Phone,
-                  label: 'Call',
-                  aria: 'Call us',
-                  href: 'tel:+919884148474',
-                },
-              ].map(({ Icon, label, aria, href }) => (
-                <a
-                  key={label}
-                  href={href}
-                  aria-label={aria}
-                  className="inline-flex h-11 min-h-[44px] items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 text-[13px] font-medium text-white/75 transition-all duration-300 hover:border-gold-400/40 hover:text-gold-400 active:bg-white/[0.08]"
-                >
-                  <Icon className="h-4 w-4" />
-                  {label}
-                </a>
-              ))}
-            </div>
+            {[
+              {
+                Icon: Mail,
+                label: 'Email',
+                aria: 'Email us',
+                href: 'mailto:md@madrasswastic.com',
+              },
+              {
+                Icon: Phone,
+                label: 'Call',
+                aria: 'Call us',
+                href: 'tel:+919884148474',
+              },
+            ].map(({ Icon, label, aria, href }) => (
+              <a
+                key={label}
+                href={href}
+                aria-label={aria}
+                className="inline-flex h-11 items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 text-[13px] font-medium text-white/75 transition-all duration-300 hover:border-gold-400/40 hover:text-gold-400 active:bg-white/[0.08]"
+              >
+                <Icon className="h-4 w-4" />
+                {label}
+              </a>
+            ))}
           </div>
 
-          {/* Link grid — Company column + Reach us column, side-by-side */}
-          <div className="mt-9 grid grid-cols-2 gap-x-5 gap-y-6 sm:gap-x-10">
+          {/* 4. Link grid */}
+          <div className="grid grid-cols-2 gap-x-5 gap-y-6 sm:gap-x-10">
             <div>
               <div className="font-mono text-[11px] tracking-[0.25em] uppercase text-gold-400">
                 Company
@@ -158,7 +166,7 @@ export default function Footer() {
               </ul>
             </div>
 
-            <div>
+            <div className="min-w-0">
               <div className="font-mono text-[11px] tracking-[0.25em] uppercase text-gold-400">
                 Reach us
               </div>
