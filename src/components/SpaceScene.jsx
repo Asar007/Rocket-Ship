@@ -896,6 +896,10 @@ export default function SpaceScene() {
   }, [])
   useEffect(() => {
     if (!introDone) return
+    // Skip the auto-reveal on mobile — the tooltip card is sized for
+    // desktop and lands directly over the capsule on narrow viewports.
+    // Touch users still get it on tap via the click-toggle path.
+    if (IS_MOBILE) return
     setAutoShow(true)
     const off = setTimeout(() => setAutoShow(false), 15000)
     return () => clearTimeout(off)
@@ -974,6 +978,7 @@ const tooltipCss = `
   text-align: center;
   gap: 7px;
   padding: 20px 30px 18px;
+  max-width: 78vw;
   background: linear-gradient(
     180deg,
     rgba(14, 19, 32, 0.92) 0%,
@@ -990,13 +995,27 @@ const tooltipCss = `
     0 14px 40px rgba(0, 0, 0, 0.55),
     0 0 0 1px rgba(255, 255, 255, 0.03) inset,
     0 0 26px rgba(240, 198, 116, 0.14);
-  white-space: nowrap;
+  white-space: normal;
   overflow: hidden;
   pointer-events: none;
   opacity: 0;
   transform: translateY(8px) scale(0.96);
   animation: mseTooltipIn 260ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
   user-select: none;
+}
+@media (max-width: 640px) {
+  .mse-capsule-tooltip {
+    padding: 14px 18px 12px;
+    gap: 5px;
+    border-radius: 12px;
+  }
+  .mse-tooltip-name {
+    font-size: 16px !important;
+  }
+  .mse-tooltip-mission {
+    font-size: 10.5px !important;
+    letter-spacing: 0.04em !important;
+  }
 }
 .mse-tooltip-tri {
   position: absolute;

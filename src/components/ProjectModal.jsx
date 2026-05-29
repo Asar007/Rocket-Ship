@@ -252,10 +252,11 @@ function TimelineStory({ project, story, scrollRef }) {
         style={{ height: `${story.length * 100}svh` }}
         aria-label={`${project.title} timeline`}
       >
-        <div className="h-svh sticky top-0 flex items-center overflow-hidden">
-          <div className="mx-auto grid w-full max-w-6xl items-center gap-8 px-5 sm:px-8 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
-            {/* Visual */}
-            <div className="relative order-2 flex h-[42vh] w-full items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-navy-900 p-4 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)] sm:h-[50vh] lg:order-1 lg:h-[72vh]">
+        <div className="h-svh sticky top-0 flex items-start overflow-hidden pt-20 lg:items-center lg:pt-0">
+          <div className="mx-auto grid w-full max-w-6xl gap-5 px-5 sm:gap-8 sm:px-8 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-14">
+            {/* Visual — shorter on mobile so the copy column + image fit
+                inside the sticky pin without clipping. */}
+            <div className="relative order-2 flex h-[28svh] w-full items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-navy-900 p-3 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)] sm:h-[42svh] sm:p-4 lg:order-1 lg:h-[72svh]">
               <AnimatePresence mode="wait">
                 <motion.img
                   key={`${active}-${currentImage}`}
@@ -314,7 +315,7 @@ function TimelineStory({ project, story, scrollRef }) {
                   </button>
                 </div>
               </div>
-              <span className="mt-6 block font-mono text-xs tracking-[0.32em] text-gold-400 sm:text-sm">
+              <span className="mt-4 block font-mono text-[11px] tracking-[0.32em] text-gold-400 sm:mt-6 sm:text-sm">
                 STAGE {String(active + 1).padStart(2, '0')}
                 <span className="text-white/35"> / {String(story.length).padStart(2, '0')}</span>
               </span>
@@ -325,7 +326,7 @@ function TimelineStory({ project, story, scrollRef }) {
                   animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
                   exit={reduce ? { opacity: 0 } : { opacity: 0, y: -12 }}
                   transition={{ duration: 0.5, ease: [0.2, 0.7, 0.2, 1] }}
-                  className="mt-5 font-display text-xl leading-relaxed text-white/85 sm:text-2xl"
+                  className="mt-3 font-display text-[15.5px] leading-relaxed text-white/85 sm:mt-5 sm:text-2xl"
                 >
                   {story[active]}
                 </motion.p>
@@ -338,7 +339,7 @@ function TimelineStory({ project, story, scrollRef }) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
                     transition={{ duration: 0.4, ease: [0.2, 0.7, 0.2, 1] }}
-                    className="mt-8 flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.32em] text-white/45"
+                    className="mt-5 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.28em] text-white/45 sm:mt-8 sm:text-[11px] sm:tracking-[0.32em]"
                   >
                     <span>Scroll to view more</span>
                     <motion.span
