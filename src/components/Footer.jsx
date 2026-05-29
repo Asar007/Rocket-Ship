@@ -36,19 +36,20 @@ export default function Footer() {
     >
       <div className="hairline-gold absolute inset-x-0 top-0 z-30" />
 
-      {/* MSE watermark — clipped inside the footer, sits behind all content */}
+      {/* MSE watermark — clipped inside the footer, sits behind all content.
+          Mobile opacity dialled down so it doesn't fight the link columns. */}
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-[65px] z-0 flex select-none justify-center opacity-[0.10] sm:bottom-[55px] sm:opacity-[0.12] lg:bottom-[41px]"
+        className="pointer-events-none absolute inset-x-0 bottom-[72px] z-0 flex select-none justify-center opacity-[0.06] sm:bottom-[55px] sm:opacity-[0.10] lg:bottom-[41px] lg:opacity-[0.12]"
         aria-hidden="true"
       >
-        <div className="flex h-[180px] w-[92%] max-w-[1100px] items-center justify-center sm:h-[320px] sm:w-[88%] lg:h-[440px] lg:w-[85%]">
-          <span className="font-body text-[180px] font-black uppercase leading-none tracking-[0.18em] text-white sm:text-[320px] lg:text-[440px]">
+        <div className="flex h-[160px] w-[92%] max-w-[1100px] items-center justify-center sm:h-[320px] sm:w-[88%] lg:h-[440px] lg:w-[85%]">
+          <span className="font-body text-[160px] font-black uppercase leading-none tracking-[0.18em] text-white sm:text-[320px] lg:text-[440px]">
             MSE
           </span>
         </div>
       </div>
 
-      <div className="relative z-20 mx-auto max-w-7xl px-4 pb-4 pt-6 sm:px-6 sm:pb-5 sm:pt-10">
+      <div className="relative z-20 mx-auto max-w-7xl px-5 pb-5 pt-8 sm:px-6 sm:pb-6 sm:pt-10">
         {/* Top row — mobile: logo block on the left, back-to-top on the right.
             Desktop hides the inline back-to-top (rendered as its own col below). */}
         <div className="flex items-center justify-between gap-3 lg:hidden">
@@ -67,7 +68,7 @@ export default function Footer() {
           </div>
           <button
             onClick={onTop}
-            className="group inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/70 transition-all duration-300 hover:border-gold-400/40 hover:text-gold-400"
+            className="group inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/70 transition-all duration-300 hover:border-gold-400/40 hover:text-gold-400 active:bg-white/[0.08]"
             aria-label="Back to top"
           >
             <ArrowUp className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5" />
@@ -75,7 +76,7 @@ export default function Footer() {
         </div>
 
         {/* Mobile contact chips, sit just under the brand row. */}
-        <div className="mt-5 flex items-center gap-2 lg:hidden">
+        <div className="mt-5 flex items-center gap-2.5 lg:hidden">
           {[
             { Icon: Mail, label: 'Email us', href: 'mailto:md@madrasswastic.com' },
             { Icon: Phone, label: 'Call us', href: 'tel:+919884148474' },
@@ -84,7 +85,7 @@ export default function Footer() {
               key={label}
               href={href}
               aria-label={label}
-              className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-white/70 transition-all duration-300 hover:border-gold-400/40 hover:text-gold-400"
+              className="grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-white/70 transition-all duration-300 hover:border-gold-400/40 hover:text-gold-400 active:bg-white/[0.08]"
             >
               <Icon className="h-4 w-4" />
             </a>
@@ -232,7 +233,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-5 flex flex-col items-start justify-between gap-2 border-t border-white/10 pt-3 text-[11px] text-white/50 sm:mt-6 sm:flex-row sm:items-center sm:pt-4 sm:text-xs">
+        <div className="mt-6 flex flex-col items-start justify-between gap-2 border-t border-white/10 pt-4 text-[11.5px] text-white/55 sm:mt-8 sm:flex-row sm:items-center sm:pt-5 sm:text-xs">
           <span>© {new Date().getFullYear()} Madras Swastic Engineers Pvt. Ltd.</span>
           <span>
             The work of{' '}
