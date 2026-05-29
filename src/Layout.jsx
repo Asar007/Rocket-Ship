@@ -78,7 +78,7 @@ function ScrollToTop() {
 
 export default function Layout() {
   return (
-    <div className="relative min-h-screen w-full bg-navy-950">
+    <div className="relative min-h-svh w-full bg-navy-950">
       <ScrollToTop />
       <ScrollProgress />
       <Navbar />

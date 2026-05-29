@@ -14,10 +14,10 @@ export function Component() {
 
   return (
     <div
+      className="h-svh"
       style={{
         position: 'relative',
         width: '100vw',
-        height: '100vh',
         background:
           'radial-gradient(120% 90% at 50% 45%, #0a1130 0%, #000533 55%, #00020d 100%)',
         overflow: 'hidden',

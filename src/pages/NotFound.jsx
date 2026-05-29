@@ -32,7 +32,7 @@ const DESTINATIONS = [
 
 export function Component() {
   return (
-    <div className="relative min-h-screen overflow-hidden pt-24 sm:pt-28">
+    <div className="relative min-h-svh overflow-hidden pt-24 sm:pt-28">
       <Seo
         title="Page not found (404)"
         description="The page you are looking for does not exist. Browse Madras Swastic Engineers heavy fabrication, projects, custom work and contact."

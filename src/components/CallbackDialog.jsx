@@ -204,7 +204,12 @@ export default function CallbackDialog() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25 }}
-          className="fixed inset-0 z-[100] flex items-end justify-center bg-navy-950/80 px-3 backdrop-blur-md sm:items-center sm:p-6"
+          className="fixed inset-0 z-[100] flex items-end justify-center overflow-y-auto bg-navy-950/80 px-3 backdrop-blur-md sm:items-center sm:p-6"
+          style={{
+            paddingBottom: 'env(safe-area-inset-bottom)',
+            paddingLeft: 'max(0.75rem, env(safe-area-inset-left))',
+            paddingRight: 'max(0.75rem, env(safe-area-inset-right))',
+          }}
           role="dialog"
           aria-modal="true"
           aria-labelledby="callback-title"
@@ -217,7 +222,7 @@ export default function CallbackDialog() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.97 }}
             transition={{ duration: 0.35, ease: [0.2, 0.7, 0.2, 1] }}
-            className="glass-strong relative w-full max-w-3xl overflow-hidden rounded-t-[28px] border border-white/12 sm:rounded-[28px]"
+            className="glass-strong relative max-h-[calc(100svh-env(safe-area-inset-top)-env(safe-area-inset-bottom)-1rem)] w-full max-w-3xl overflow-y-auto rounded-t-[28px] border border-white/12 sm:max-h-[90svh] sm:rounded-[28px]"
             onClick={(e) => e.stopPropagation()}
           >
             <button

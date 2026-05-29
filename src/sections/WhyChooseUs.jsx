@@ -103,6 +103,7 @@ export default function WhyChooseUs() {
             </motion.article>
           ))}
         </div>
+
       </div>
     </section>
   )

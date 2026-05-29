@@ -31,7 +31,9 @@ const LINKS = [
 export default function Footer() {
   const onTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
   return (
-    <footer className="relative isolate mt-12 overflow-hidden border-t border-white/10 bg-navy-950/70 backdrop-blur-xl">
+    <footer
+      className="safe-bottom relative isolate mt-12 overflow-hidden border-t border-white/10 bg-navy-950/70 backdrop-blur-xl"
+    >
       <div className="hairline-gold absolute inset-x-0 top-0 z-30" />
 
       {/* MSE watermark — clipped inside the footer, sits behind all content */}

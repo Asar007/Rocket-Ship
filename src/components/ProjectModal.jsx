@@ -145,7 +145,7 @@ function StickyStory({ project, story, scrollRef }) {
    get a cinematic opener instead of dropping straight into the timeline. */
 function HeroTitleSlide({ project }) {
   return (
-    <section className="relative flex h-screen w-full items-center justify-center overflow-hidden">
+    <section className="h-svh relative flex w-full items-center justify-center overflow-hidden">
       <img
         src={project.images[0]}
         alt={project.title}
@@ -249,10 +249,10 @@ function TimelineStory({ project, story, scrollRef }) {
       <section
         ref={sectionRef}
         className="relative"
-        style={{ height: `${story.length * 100}vh` }}
+        style={{ height: `${story.length * 100}svh` }}
         aria-label={`${project.title} timeline`}
       >
-        <div className="sticky top-0 flex h-screen items-center overflow-hidden">
+        <div className="h-svh sticky top-0 flex items-center overflow-hidden">
           <div className="mx-auto grid w-full max-w-6xl items-center gap-8 px-5 sm:px-8 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
             {/* Visual */}
             <div className="relative order-2 flex h-[42vh] w-full items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-navy-900 p-4 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)] sm:h-[50vh] lg:order-1 lg:h-[72vh]">
@@ -371,7 +371,7 @@ function CinematicSlide({ text, index, scrollRef }) {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-navy-950 px-6 sm:px-12"
+      className="min-h-svh relative flex w-full items-center justify-center overflow-hidden bg-navy-950 px-6 sm:px-12"
     >
       {/* Soft ambient glow so the slide doesn't read flat */}
       <div
@@ -399,7 +399,7 @@ function CinematicStory({ project, story, scrollRef }) {
   return (
     <>
       {/* Title slide */}
-      <section className="relative flex h-screen w-full items-center justify-center overflow-hidden">
+      <section className="h-svh relative flex w-full items-center justify-center overflow-hidden">
         <img
           src={project.images[0]}
           alt={project.title}
@@ -440,7 +440,7 @@ function KenBurnsCaption({ index, text, scrollRef }) {
   return (
     <section
       ref={ref}
-      className="relative z-10 flex h-screen items-center justify-center px-6"
+      className="h-svh relative z-10 flex items-center justify-center px-6"
     >
       <motion.div
         animate={{ opacity: inView ? 1 : 0, y: inView ? 0 : 30 }}
@@ -467,8 +467,8 @@ function KenBurnsStory({ project, story, scrollRef }) {
           the caption screens overlay it. Self-contained Ken Burns loop
           (not scroll-linked, so it never gets stuck). */}
       <div
-        className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden"
-        style={{ marginBottom: '-100vh' }}
+        className="h-svh sticky top-0 flex w-full items-center justify-center overflow-hidden"
+        style={{ marginBottom: '-100svh' }}
       >
         <motion.img
           src={project.images[0]}

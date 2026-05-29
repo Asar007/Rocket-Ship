@@ -5,6 +5,7 @@ import WhyChooseUs from '../sections/WhyChooseUs.jsx'
 import Stats from '../sections/Stats.jsx'
 import Clients from '../sections/Clients.jsx'
 import ContactCTA from '../sections/ContactCTA.jsx'
+import StoryVideo from '../components/StoryVideo.jsx'
 
 // Hybrid: a full long-scroll narrative for first-time visitors, while
 // /about /projects /customization /contact remain focused, indexable,
@@ -21,6 +22,14 @@ export function Component() {
       />
       <Hero />
       <About />
+      <section className="section-pad relative">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <StoryVideo
+            title="Inside the Madras Swastic shop floor."
+            meta="2:33 · Gaganyaan crew module"
+          />
+        </div>
+      </section>
       <WhyChooseUs />
       <Stats />
       <Clients />

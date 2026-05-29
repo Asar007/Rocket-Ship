@@ -21,6 +21,23 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
+  /* iOS Safari: keep the layout viewport stable when the URL bar grows /
+     shrinks. Without this, fixed positions and 100svh measurements jitter
+     by the chrome height on every scroll-direction change. */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Touch-action manipulation removes the legacy 300ms tap delay on Android
+   Chrome / WebView for tappable controls without disabling pinch-zoom. */
+a,
+button,
+[role='button'],
+input[type='button'],
+input[type='submit'],
+input[type='reset'],
+label[for],
+summary {
+  touch-action: manipulation;
 }
 
 /* Anchor-jump offset so section headings clear the fixed navbar. */
@@ -263,6 +280,37 @@ video {
     height: 44px;
     transform: translate(-50%, -50%);
     pointer-events: auto;
+  }
+
+  /* iPhone notch / Android status-bar gutter — used by the fixed navbar so
+     it never sits underneath the rounded corner / camera cut-out.
+     env(safe-area-inset-*) is 0 on devices without insets. */
+  .safe-top {
+    padding-top: max(env(safe-area-inset-top), 0px);
+  }
+  .safe-bottom {
+    padding-bottom: max(env(safe-area-inset-bottom), 0px);
+  }
+  .safe-x {
+    padding-left: max(env(safe-area-inset-left), 0px);
+    padding-right: max(env(safe-area-inset-right), 0px);
+  }
+
+  /* Small-viewport-height helper. On mobile Safari + Android Chrome the
+     URL bar grows / shrinks; classic 100vh measures the *largest* layout
+     and pushes content under the bar. svh / dvh fix this on modern
+     browsers; older WebKit gracefully falls back to vh. */
+  .h-svh {
+    height: 100vh; /* fallback */
+    height: 100svh;
+  }
+  .min-h-svh {
+    min-height: 100vh; /* fallback */
+    min-height: 100svh;
+  }
+  .h-dvh {
+    height: 100vh; /* fallback */
+    height: 100dvh;
   }
 }
 

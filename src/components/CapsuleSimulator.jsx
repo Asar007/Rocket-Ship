@@ -338,7 +338,7 @@ export default function CapsuleSimulator({
             isMobile
             ? 'relative h-[150dvh] w-full'
             : 'relative h-[210dvh] w-full'
-          : 'relative left-1/2 mt-16 h-[210vh] w-screen -translate-x-1/2'
+          : 'relative left-1/2 mt-16 h-[210svh] w-screen -translate-x-1/2'
       }
       style={{ background: NAVY }}
       aria-label="Interactive reusable crew capsule simulator"
@@ -348,7 +348,7 @@ export default function CapsuleSimulator({
         className={
           embedded
             ? 'sticky top-0 flex h-[100dvh] w-full items-center justify-center overflow-hidden'
-            : 'sticky top-24 flex h-[calc(100vh-6rem)] w-full items-center justify-center overflow-hidden sm:top-28 sm:h-[calc(100vh-7rem)]'
+            : 'sticky top-24 flex h-[calc(100svh-6rem)] w-full items-center justify-center overflow-hidden sm:top-28 sm:h-[calc(100svh-7rem)]'
         }
         style={{ background: NAVY }}
       >

@@ -47,6 +47,11 @@ export default function Navbar() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, ease: [0.2, 0.7, 0.2, 1] }}
       className="fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-3 sm:px-6 sm:pt-5"
+      style={{
+        paddingTop: 'max(0.75rem, env(safe-area-inset-top))',
+        paddingLeft: 'max(0.75rem, env(safe-area-inset-left))',
+        paddingRight: 'max(0.75rem, env(safe-area-inset-right))',
+      }}
     >
       <nav
         className={`flex w-full min-w-0 max-w-[min(100%,80rem)] items-center justify-between rounded-full border px-3 py-2 transition-all duration-500 sm:px-4 ${
@@ -151,7 +156,10 @@ export default function Navbar() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -12, scale: 0.98 }}
               transition={{ duration: 0.28, ease: [0.2, 0.7, 0.2, 1] }}
-              className="absolute left-3 right-3 top-[72px] rounded-3xl border border-white/10 bg-navy-950/90 p-4 backdrop-blur-2xl shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] lg:hidden"
+              className="absolute left-3 right-3 top-[72px] max-h-[calc(100svh-96px)] overflow-y-auto rounded-3xl border border-white/10 bg-navy-950/90 p-4 backdrop-blur-2xl shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] lg:hidden"
+              style={{
+                paddingBottom: 'max(1rem, env(safe-area-inset-bottom))',
+              }}
             >
               <ul className="flex flex-col gap-1">
                 {NAV_ITEMS.map((item, idx) => (

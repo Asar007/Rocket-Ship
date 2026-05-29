@@ -4,6 +4,7 @@ import AboutHero from '../sections/AboutHero.jsx'
 import AboutJourney from '../sections/AboutJourney.jsx'
 import AboutMetrics from '../sections/AboutMetrics.jsx'
 import WhyChooseUs from '../sections/WhyChooseUs.jsx'
+import StoryVideo from '../components/StoryVideo.jsx'
 
 export function Component() {
   return (
@@ -14,6 +15,14 @@ export function Component() {
         path="/about"
       />
       <AboutHero />
+      <section className="section-pad relative">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <StoryVideo
+            title="Inside the Madras Swastic shop floor."
+            meta="2:33 · Gaganyaan crew module"
+          />
+        </div>
+      </section>
       <AboutJourney />
       <AboutMetrics />
       <About />

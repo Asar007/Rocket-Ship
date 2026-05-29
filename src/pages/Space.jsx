@@ -5,7 +5,7 @@ const SpaceScene = lazy(() => import('../components/SpaceScene.jsx'))
 
 export function Component() {
   return (
-    <div style={{ width: '100vw', height: '100vh', background: '#000' }}>
+    <div className="h-svh" style={{ width: '100vw', background: '#000' }}>
       <ErrorBoundary fallback={null}>
         <Suspense fallback={null}>
           <SpaceScene />
