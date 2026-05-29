@@ -50,6 +50,9 @@ import crewModuleInterior from '../assets/projects/crew-module-interior.webp'
 import ctsInside from '../assets/projects/cts/inside.jpeg'
 import ctsNewsPaper from '../assets/projects/cts/news-paper.jpeg'
 import ctsModi from '../assets/projects/cts/modi.jpeg'
+import basOutside1 from '../assets/projects/bas/outside-1.jpeg'
+import basOutside2 from '../assets/projects/bas/outside-2.jpeg'
+import basInside from '../assets/projects/bas/inside.jpeg'
 
 // NOTE: stories/locations/years are mock placeholders grouped by what the
 // photographs show — to be replaced with the client's real project copy.
@@ -71,6 +74,25 @@ const PROJECTS = [
       'The CTS houses crew seats, life-support equipment, mission-control computers and interfaces, sleeping pods, food, and life-support medicines.',
       'A CTS was manufactured within a 90-day period and successfully handed over to ISRO/HSFC Director, Shri M. Mohan. The handover video shows immense satisfaction and happiness from the customer.',
       'The CTS was officially inaugurated by Shri Narendra Modi, Prime Minister of India, at the space summit held at VSSC, Trivandrum.',
+    ],
+  },
+  {
+    id: 'bas',
+    title: 'Bharatiya Antariksh Station (BAS)',
+    storyTitle: "India's first space station, taking shape",
+    location: 'ISRO · HSFC · Chennai Works',
+    year: '2035',
+    tags: ['Aerospace', 'ISRO', 'Space Station'],
+    storyStyle: 'timeline',
+    blurb:
+      "India's planned indigenous, modular space station — a permanently crewed microgravity research outpost in low Earth orbit, targeted to be fully operational by 2035.",
+    images: [basOutside1, basInside, basOutside2],
+    timelineImages: [basOutside1, basOutside2, basInside, basOutside1],
+    story: [
+      'The Bharatiya Antariksh Station (BAS) is India’s planned indigenous, modular space station, conceived as the country’s first long-duration human outpost in orbit and targeted to be fully operational by 2035. It places India in a small group of nations operating their own permanent presence in space.',
+      'Developed by ISRO and the Human Space Flight Centre (HSFC), the station is assembled from a sequence of pressurised and unpressurised modules launched by India’s heavy-lift vehicles. Once mated on orbit it will form a habitable backbone for crews staying weeks to months at a time.',
+      'BAS will fly at an altitude of approximately 400 to 450 kilometres above Earth, on an inclination chosen to be reached cleanly by Indian launch sites. Regular crew rotations, cargo resupply and visiting vehicles are baselined into the operating concept.',
+      'On orbit, the facility becomes an advanced microgravity research laboratory — supporting life-sciences, materials, fluid physics and human spaceflight endurance studies, and serving as a testbed for the technologies that will carry India’s future crewed missions beyond Earth orbit.',
     ],
   },
   {
@@ -271,26 +293,6 @@ function renderCardBody(p) {
         {p.title}
       </h4>
       <p className="mt-2 text-[13px] leading-relaxed text-white/55">{p.blurb}</p>
-      {p.images.length > 1 && (
-        <div className="mt-4 flex gap-2">
-          {p.images.slice(1).map((src, idx) => (
-            <div
-              key={idx}
-              className="h-12 w-16 overflow-hidden rounded-lg border border-white/10"
-            >
-              <img
-                src={src}
-                alt={`${p.title} photo ${idx + 2}`}
-                width="64"
-                height="48"
-                loading="lazy"
-                decoding="async"
-                className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"
-              />
-            </div>
-          ))}
-        </div>
-      )}
       <div className="mt-4 flex flex-wrap gap-2">
         {p.tags.map((t) => (
           <span

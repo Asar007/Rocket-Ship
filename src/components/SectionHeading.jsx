@@ -129,8 +129,8 @@ export default function SectionHeading({
       {subtitle && (
         <p
           data-sh-item
-          className="max-w-2xl leading-relaxed text-white/65"
-          style={{ fontSize: 'clamp(0.95rem, 0.88rem + 0.4vw, 1.125rem)' }}
+          className="max-w-2xl leading-relaxed text-white/70"
+          style={{ fontSize: 'clamp(1.05rem, 0.95rem + 0.55vw, 1.25rem)' }}
         >
           {subtitle}
         </p>

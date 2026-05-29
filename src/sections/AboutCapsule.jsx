@@ -72,11 +72,12 @@ export default function AboutCapsule() {
           {inView && (
             <Suspense fallback={null}>
               <SpaceshipGLB
-                spin={false}
+                spin
                 float
                 tilt={-0.14}
                 controls={false}
                 variant="dark"
+                scale={1.85}
               />
             </Suspense>
           )}

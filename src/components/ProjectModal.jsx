@@ -7,7 +7,7 @@ import {
   useInView,
   useReducedMotion,
 } from 'framer-motion'
-import { X, MapPin } from 'lucide-react'
+import { X, MapPin, ChevronLeft, ChevronRight } from 'lucide-react'
 import CapsuleSimulator from './CapsuleSimulator.jsx'
 
 /* ── Shared header ─────────────────────────────────────────────── */
@@ -140,6 +140,35 @@ function StickyStory({ project, story, scrollRef }) {
   )
 }
 
+/* ── Hero title slide — full-screen lead image + title.
+   Re-used by CinematicStory and TimelineStory so timeline-style projects
+   get a cinematic opener instead of dropping straight into the timeline. */
+function HeroTitleSlide({ project }) {
+  return (
+    <section className="relative flex h-screen w-full items-center justify-center overflow-hidden">
+      <img
+        src={project.images[0]}
+        alt={project.title}
+        className="absolute inset-0 h-full w-full scale-105 object-cover"
+      />
+      <div className="absolute inset-0 bg-navy-950/65" />
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: [0.2, 0.7, 0.2, 1] }}
+        className="relative px-6 text-center"
+      >
+        <span className="font-mono text-xs uppercase tracking-[0.42em] text-gold-400 sm:text-sm">
+          {project.location} · {project.year}
+        </span>
+        <h2 className="mx-auto mt-6 max-w-5xl font-display text-5xl font-semibold leading-[1.05] text-white sm:mt-8 sm:text-7xl lg:text-8xl">
+          {project.storyTitle || project.title}
+        </h2>
+      </motion.div>
+    </section>
+  )
+}
+
 /* ── 2b. Mission timeline ─────────────────────────────────────────
    Pinned scrollytelling: the section is `story.length * 100vh` tall
    and a sticky 100vh panel stays fixed in the viewport while the
@@ -189,6 +218,31 @@ function TimelineStory({ project, story, scrollRef }) {
     (images && images[0]) ||
     project.images[0]
 
+  // Jump the modal scroll container to the start of a stage. Mirrors
+  // the math the scroll listener uses: each stage occupies an equal
+  // slice of the pin span, so target = sectionTopInScroller + i * slice.
+  const scrollToStage = (i) => {
+    const section = sectionRef.current
+    const scroller =
+      scrollRef && scrollRef.current ? scrollRef.current : null
+    if (!section || !scroller) return
+    const target = Math.max(0, Math.min(story.length - 1, i))
+    const vh = scroller.clientHeight
+    const span = section.offsetHeight - vh
+    if (span <= 0) return
+    const sectionTopInScroller =
+      section.getBoundingClientRect().top -
+      scroller.getBoundingClientRect().top +
+      scroller.scrollTop
+    const slice = span / story.length
+    // nudge a hair past the threshold so Math.floor lands on `target`
+    const top = sectionTopInScroller + target * slice + 2
+    scroller.scrollTo({ top, behavior: 'smooth' })
+  }
+
+  const atFirst = active === 0
+  const atLast = active === story.length - 1
+
   return (
     <>
       <StoryHeader project={project} />
@@ -220,20 +274,45 @@ function TimelineStory({ project, story, scrollRef }) {
 
             {/* Copy column */}
             <div className="order-1 lg:order-2">
-              {/* Step dots / progress */}
-              <div className="flex items-center gap-1.5">
-                {story.map((_, i) => (
-                  <span
-                    key={i}
-                    className={`h-1.5 rounded-full transition-all duration-500 ${
-                      i === active
-                        ? 'w-10 bg-gold-400'
-                        : i < active
-                          ? 'w-6 bg-gold-400/55'
-                          : 'w-3 bg-white/15'
-                    }`}
-                  />
-                ))}
+              {/* Step dots + prev/next arrows */}
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1.5">
+                  {story.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => scrollToStage(i)}
+                      aria-label={`Go to stage ${i + 1}`}
+                      className={`h-1.5 rounded-full transition-all duration-500 ${
+                        i === active
+                          ? 'w-10 bg-gold-400'
+                          : i < active
+                            ? 'w-6 bg-gold-400/55 hover:bg-gold-400/80'
+                            : 'w-3 bg-white/15 hover:bg-white/35'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <div className="ml-auto flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => scrollToStage(active - 1)}
+                    disabled={atFirst}
+                    aria-label="Previous stage"
+                    className="grid h-10 w-10 place-items-center rounded-full border border-white/15 bg-navy-950/60 text-white/80 backdrop-blur transition-all duration-300 hover:border-gold-400/50 hover:text-gold-400 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/15 disabled:hover:text-white/80"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scrollToStage(active + 1)}
+                    disabled={atLast}
+                    aria-label="Next stage"
+                    className="grid h-10 w-10 place-items-center rounded-full border border-gold-400/30 bg-gold-400/10 text-gold-400 backdrop-blur transition-all duration-300 hover:border-gold-400/70 hover:bg-gold-400/20 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-gold-400/30 disabled:hover:bg-gold-400/10"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
               <span className="mt-6 block font-mono text-xs tracking-[0.32em] text-gold-400 sm:text-sm">
                 STAGE {String(active + 1).padStart(2, '0')}
@@ -250,6 +329,32 @@ function TimelineStory({ project, story, scrollRef }) {
                 >
                   {story[active]}
                 </motion.p>
+              </AnimatePresence>
+              <AnimatePresence>
+                {active === 0 && (
+                  <motion.div
+                    key="scroll-hint"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.4, ease: [0.2, 0.7, 0.2, 1] }}
+                    className="mt-8 flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.32em] text-white/45"
+                  >
+                    <span>Scroll to view more</span>
+                    <motion.span
+                      aria-hidden
+                      animate={reduce ? {} : { y: [0, 4, 0] }}
+                      transition={{
+                        duration: 1.6,
+                        repeat: Infinity,
+                        ease: 'easeInOut',
+                      }}
+                      className="text-gold-400"
+                    >
+                      ↓
+                    </motion.span>
+                  </motion.div>
+                )}
               </AnimatePresence>
             </div>
           </div>
@@ -480,11 +585,14 @@ export default function ProjectModal({ project, onClose }) {
             />
           )}
           {style === 'timeline' && (
-            <TimelineStory
-              project={project}
-              story={story}
-              scrollRef={scrollRef}
-            />
+            <>
+              <HeroTitleSlide project={project} />
+              <TimelineStory
+                project={project}
+                story={story}
+                scrollRef={scrollRef}
+              />
+            </>
           )}
           {style === 'cinematic' && (
             <CinematicStory

@@ -12,13 +12,13 @@ import {
 const MODEL = '/spaceship/base.opt.glb'
 useGLTF.preload(MODEL)
 
-function Ship({ spin, float, tilt }) {
+function Ship({ spin, float, tilt, scale = 1 }) {
   const ref = useRef(null)
   const { scene } = useGLTF(MODEL)
 
   useFrame((state, dt) => {
     if (!ref.current) return
-    if (spin) ref.current.rotation.y += dt * 0.1
+    if (spin) ref.current.rotation.y += dt * 0.45
     if (float) {
       const t = state.clock.getElapsedTime()
       ref.current.position.y = Math.sin(t * 0.9) * 0.08
@@ -27,7 +27,7 @@ function Ship({ spin, float, tilt }) {
   })
 
   return (
-    <group ref={ref} rotation={[0, 0, tilt]}>
+    <group ref={ref} rotation={[0, 0, tilt]} scale={scale}>
       <Center>
         <primitive object={scene} />
       </Center>
@@ -60,6 +60,7 @@ export default function SpaceshipGLB({
   tilt = 0,
   controls = true,
   variant = 'dark',
+  scale = 1,
 }) {
   const isLight = variant === 'light'
   return (
@@ -108,7 +109,7 @@ export default function SpaceshipGLB({
       />
 
       <Suspense fallback={null}>
-        <Ship spin={spin} float={float} tilt={tilt} />
+        <Ship spin={spin} float={float} tilt={tilt} scale={scale} />
       </Suspense>
 
       <ContactShadows

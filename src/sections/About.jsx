@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Rocket, Factory, Droplets, FlaskConical } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading.jsx'
 import { GlobalSpotlight } from '../components/MagicBento.jsx'
+import modiPhoto from '../assets/projects/cts/modi.jpeg'
 
 const CAPABILITIES = [
   {
@@ -48,6 +49,32 @@ export default function About() {
           subtitle="Founded in 2009, Madras Swastic Engineers provides service and engineering support to ISRO and to the paper, sugar and petrochemical industries, from rocket test systems to turnkey treatment plants."
         />
 
+        {/* Inauguration photo — sits above the Our story panel */}
+        <motion.figure
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.7, ease: [0.2, 0.7, 0.2, 1] }}
+          className="mt-8 overflow-hidden rounded-3xl border border-white/10 bg-navy-900 sm:mt-12"
+        >
+          <div className="flex max-h-[70vh] w-full items-center justify-center">
+            <img
+              src={modiPhoto}
+              alt="Inauguration ceremony at VSSC, Trivandrum"
+              loading="lazy"
+              decoding="async"
+              className="max-h-[70vh] w-auto max-w-full object-contain"
+            />
+          </div>
+          <figcaption className="flex items-center gap-3 border-t border-white/10 px-5 py-3 sm:px-6 sm:py-4">
+            <span className="font-mono text-[10px] uppercase tracking-[0.32em] text-gold-400 sm:text-[11px]">
+              VSSC · Trivandrum
+            </span>
+            <span className="h-px flex-1 bg-white/10" />
+            <span className="text-xs text-white/55 sm:text-sm">Handover &amp; inauguration</span>
+          </figcaption>
+        </motion.figure>
+
         <GlobalSpotlight
           gridRef={gridRef}
           sectionSelector=".mb-glow-section"
@@ -76,22 +103,15 @@ export default function About() {
             >
               Supporting India&rsquo;s space programme and core industries since 2009.
             </h3>
-            <p className="mt-5 text-[15px] leading-relaxed text-white/70">
-              Madras Swastic Engineers is a heavy and precision metal
-              fabrication firm founded in 2009 in Chennai, India, delivering
-              turnkey industrial engineering that designs, fabricates, installs
-              and commissions precision systems for the Indian Space Research
-              Organisation (ISRO), covering the PSLV, GSLV, GSLV Mk III and
-              Gaganyaan crewed-spaceflight programmes, including rocket
-              vibration-simulation rigs, zero-G test systems, rocket equipment
-              handling and ground systems for launch. The firm also delivers
-              turnkey plants for the paper, sugar and petrochemical sectors,
-              including Milk-of-Lime equipment, raw-water systems and effluent
-              treatment plants. Madras Swastic Engineers handed over the
-              Gaganyaan Crew Training Simulator (CTS), an exact replica of the
-              crew capsule, to ISRO/HSFC within 90 days, with the unit
-              officially inaugurated by Prime Minister Narendra Modi at the
-              Vikram Sarabhai Space Centre (VSSC) in Trivandrum.
+            <p className="mt-5 text-lg leading-relaxed text-white/75 sm:text-xl">
+              Founded in 2009, Madras Swastic Engineers is a Chennai-based
+              heavy and precision metal fabrication firm delivering turnkey
+              industrial engineering in-house, covering design, fabrication,
+              installation and commissioning. The firm serves space and
+              aerospace programmes alongside the paper, sugar and petrochemical
+              sectors, supplying everything from flight-grade precision
+              assemblies and launch-vehicle handling systems to full process
+              and treatment plants across India and export markets.
             </p>
 
             <div className="mt-6 grid grid-cols-2 gap-3 text-sm">
@@ -132,17 +152,17 @@ export default function About() {
                     <m.icon className="h-3.5 w-3.5 text-gold-400" />
                   </span>
 
-                  <div className="mb-glow-card relative glass group rounded-2xl p-5 transition-all duration-500 hover:border-white/20 hover:shadow-glow-blue">
+                  <div className="mb-glow-card relative glass group rounded-2xl p-6 transition-all duration-500 hover:border-white/20 hover:shadow-glow-blue sm:p-7">
                     <div className="flex items-baseline gap-3">
-                      <span className="font-mono text-xs tracking-[0.25em] text-gold-400">
+                      <span className="font-mono text-sm tracking-[0.25em] text-gold-400">
                         {m.tag}
                       </span>
                       <span className="h-px flex-1 bg-white/10" />
                     </div>
-                    <h4 className="mt-2 font-display text-lg font-semibold text-white">
+                    <h4 className="mt-3 font-display text-2xl font-semibold text-white sm:text-3xl">
                       {m.title}
                     </h4>
-                    <p className="mt-1 text-sm leading-relaxed text-white/65">{m.body}</p>
+                    <p className="mt-2 text-base leading-relaxed text-white/70 sm:text-lg">{m.body}</p>
                   </div>
                 </motion.li>
               ))}

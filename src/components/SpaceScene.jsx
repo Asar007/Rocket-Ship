@@ -259,6 +259,15 @@ function makeHeatShieldDiffuse() {
  *  Positioned at [2.2, 1.4, 0.5] with heat shield angled toward Earth.
  *  No plasma / decals / hover yet — those come in later steps. */
 function Capsule({ active, setHovered, toggleClick }) {
+  // Slow auto-spin on the capsule's local Y axis. Lives on an inner
+  // group so the outer tilt + position + hover proxy + tooltip stay
+  // static (otherwise the callout would orbit with the capsule).
+  const spinRef = useRef(null)
+  useFrame((_, dt) => {
+    if (!spinRef.current || active) return
+    spinRef.current.rotation.y += dt * 0.45
+  })
+
   // Procedural canvas textures — memoised so they're created once.
   const bodyMap = useMemo(() => {
     const t = new THREE.CanvasTexture(makeBodyDiffuse())
@@ -540,10 +549,11 @@ function Capsule({ active, setHovered, toggleClick }) {
 
   return (
     <group
-      // Pushed further from Earth (distance from origin ≈ 3.85) and scaled
-      // down 30% so the capsule reads as a smaller, more distant orbiter.
+      // Pushed further from Earth (distance from origin ≈ 3.85). Scale
+      // bumped well above the original 0.7 so the capsule reads as the
+      // hero element over Earth, not a small distant orbiter.
       position={[0.58, 0.23, 3.78]}
-      scale={0.7}
+      scale={1.85}
       // 45° pitch down + 60° roll to the left.
       rotation={[
         THREE.MathUtils.degToRad(45),
@@ -567,6 +577,11 @@ function Capsule({ active, setHovered, toggleClick }) {
       <mesh visible={false}>
         <sphereGeometry args={[0.7, 16, 12]} />
       </mesh>
+
+      {/* All capsule hardware sits in this inner spinning group. The
+          outer group keeps the position, tilt and pointer handlers static
+          so the hover tooltip stays world-aligned. */}
+      <group ref={spinRef}>
 
       {/* Crew module — truncated cone, wide end down in local frame.
           Slightly higher segment count for smoother specular highlights. */}
@@ -640,6 +655,38 @@ function Capsule({ active, setHovered, toggleClick }) {
         <planeGeometry args={[0.08, 0.053]} />
       </mesh>
 
+      {/* Ultra-realistic portholes.
+          - Outer body: short cylinder sunk into the cone, dark interior
+          - Glass disc: mirror-grade PBR with high envMapIntensity
+          - Bezel ring: brushed metal frame around the glass */}
+      {windows.map(({ pos, ry }, i) => (
+        <group
+          key={`win-${i}`}
+          position={pos}
+          rotation={[-Math.atan((0.18 - 0.08) / 0.22), ry, 0]}
+        >
+          {/* Recessed barrel behind the glass — gives the window depth */}
+          <mesh material={dark} position={[0, 0, -0.005]} rotation={[Math.PI / 2, 0, 0]}>
+            <cylinderGeometry args={[0.0145, 0.0145, 0.012, 24, 1, true]} />
+          </mesh>
+          {/* Glass disc — slightly proud of the cone surface */}
+          <mesh material={windowGlass} position={[0, 0, 0.003]}>
+            <circleGeometry args={[0.0145, 32]} />
+          </mesh>
+          {/* Inner bezel — thin reflective frame */}
+          <mesh material={windowFrame} position={[0, 0, 0.0035]}>
+            <torusGeometry args={[0.0155, 0.0018, 12, 32]} />
+          </mesh>
+          {/* Outer bezel — thicker outer ring for the porthole housing */}
+          <mesh material={windowFrame} position={[0, 0, 0.001]}>
+            <torusGeometry args={[0.019, 0.003, 14, 36]} />
+          </mesh>
+        </group>
+      ))}
+
+      </group>
+      {/* /spin group — everything below stays world-aligned. */}
+
       {/* Hover/tap highlight — wireframe halo around the capsule + leader
           line up to the tooltip card.  Only rendered while active. */}
       {active && (
@@ -671,11 +718,13 @@ function Capsule({ active, setHovered, toggleClick }) {
             ]}
           >
             {/* Leader line — halo edge → tooltip anchor, running left.
-                Drawn on top so it's always visible over the capsule. */}
+                Drawn on top so it's always visible over the capsule.
+                Positions scaled to compensate for the outer group's larger
+                scale (1.85) so the tooltip stays inside the viewport. */}
             <Line
               points={[
                 [-0.32, 0, 0],
-                [-1.45, 0.06, 0],
+                [-0.593, 0.019, 0],
               ]}
               color="#a8e3ff"
               lineWidth={1.6}
@@ -686,7 +735,7 @@ function Capsule({ active, setHovered, toggleClick }) {
             />
             {/* Small dot where the line meets the tooltip */}
             <mesh
-              position={[-1.45, 0.06, 0]}
+              position={[-0.593, 0.019, 0]}
               raycast={() => null}
               renderOrder={11}
             >
@@ -698,11 +747,11 @@ function Capsule({ active, setHovered, toggleClick }) {
                 depthTest={false}
               />
             </mesh>
-            {/* Tooltip card — sits to the left, clear of the capsule. */}
+            {/* Tooltip card — sits ~8px off the capsule edge. */}
             <Html
-              position={[-1.62, 0.06, 0]}
+              position={[-0.633, 0.019, 0]}
               center
-              distanceFactor={1.9}
+              distanceFactor={2.6}
               zIndexRange={[100, 0]}
               pointerEvents="none"
             >
@@ -717,35 +766,6 @@ function Capsule({ active, setHovered, toggleClick }) {
           </group>
         </>
       )}
-
-      {/* Ultra-realistic portholes.
-          - Outer body: short cylinder sunk into the cone, dark interior
-          - Glass disc: mirror-grade PBR with high envMapIntensity
-          - Bezel ring: brushed metal frame around the glass */}
-      {windows.map(({ pos, ry }, i) => (
-        <group
-          key={`win-${i}`}
-          position={pos}
-          rotation={[-Math.atan((0.18 - 0.08) / 0.22), ry, 0]}
-        >
-          {/* Recessed barrel behind the glass — gives the window depth */}
-          <mesh material={dark} position={[0, 0, -0.005]} rotation={[Math.PI / 2, 0, 0]}>
-            <cylinderGeometry args={[0.0145, 0.0145, 0.012, 24, 1, true]} />
-          </mesh>
-          {/* Glass disc — slightly proud of the cone surface */}
-          <mesh material={windowGlass} position={[0, 0, 0.003]}>
-            <circleGeometry args={[0.0145, 32]} />
-          </mesh>
-          {/* Inner bezel — thin reflective frame */}
-          <mesh material={windowFrame} position={[0, 0, 0.0035]}>
-            <torusGeometry args={[0.0155, 0.0018, 12, 32]} />
-          </mesh>
-          {/* Outer bezel — thicker outer ring for the porthole housing */}
-          <mesh material={windowFrame} position={[0, 0, 0.001]}>
-            <torusGeometry args={[0.019, 0.003, 14, 36]} />
-          </mesh>
-        </group>
-      ))}
     </group>
   )
 }

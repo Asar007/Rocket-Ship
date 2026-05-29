@@ -2,7 +2,6 @@ import { lazy, Suspense } from 'react'
 import { Mail, Phone, ArrowUp } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import logo from '../assets/logo.png'
-import TextPressure from './TextPressure'
 
 // matter.js physics is heavy — lazy-load the falling-text widget so it
 // doesn't bloat the initial bundle. Rendered only on tablet/desktop
@@ -37,26 +36,17 @@ export default function Footer() {
 
       {/* MSE watermark — clipped inside the footer, sits behind all content */}
       <div
-        className="pointer-events-none absolute inset-x-0 -top-[36px] z-0 flex select-none justify-center opacity-[0.10] sm:-top-[72px] sm:opacity-[0.12] lg:-top-[96px]"
+        className="pointer-events-none absolute inset-x-0 bottom-[65px] z-0 flex select-none justify-center opacity-[0.10] sm:bottom-[55px] sm:opacity-[0.12] lg:bottom-[41px]"
         aria-hidden="true"
       >
-        <div className="h-[140px] w-[86%] max-w-[820px] sm:h-[240px] sm:w-[78%] lg:h-[310px] lg:w-[75%]">
-          <TextPressure
-            text="MSE"
-            flex={false}
-            alpha={false}
-            stroke={false}
-            width={true}
-            weight={true}
-            italic={true}
-            textColor="#FFFFFF"
-            strokeColor="#D4AF37"
-            minFontSize={48}
-          />
+        <div className="flex h-[180px] w-[92%] max-w-[1100px] items-center justify-center sm:h-[320px] sm:w-[88%] lg:h-[440px] lg:w-[85%]">
+          <span className="font-body text-[180px] font-black uppercase leading-none tracking-[0.18em] text-white sm:text-[320px] lg:text-[440px]">
+            MSE
+          </span>
         </div>
       </div>
 
-      <div className="relative z-20 mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-14">
+      <div className="relative z-20 mx-auto max-w-7xl px-4 pb-4 pt-6 sm:px-6 sm:pb-5 sm:pt-10">
         {/* Top row — mobile: logo block on the left, back-to-top on the right.
             Desktop hides the inline back-to-top (rendered as its own col below). */}
         <div className="flex items-center justify-between gap-3 lg:hidden">
@@ -157,7 +147,7 @@ export default function Footer() {
                 original paragraph classes (text-sm, leading-relaxed,
                 text-white/60) so the resting text is pixel-identical to
                 the old <p>; FallingText inherits all of them. */}
-            <div className="mt-5 h-44 max-w-sm text-sm leading-relaxed text-white/60">
+            <div className="mt-5 h-28 max-w-sm text-sm leading-relaxed text-white/60">
               <Suspense
                 fallback={
                   <p>
@@ -240,7 +230,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-6 flex flex-col items-start justify-between gap-2 border-t border-white/10 pt-4 text-[11px] text-white/50 sm:mt-12 sm:flex-row sm:items-center sm:pt-6 sm:text-xs">
+        <div className="mt-5 flex flex-col items-start justify-between gap-2 border-t border-white/10 pt-3 text-[11px] text-white/50 sm:mt-6 sm:flex-row sm:items-center sm:pt-4 sm:text-xs">
           <span>© {new Date().getFullYear()} Madras Swastic Engineers Pvt. Ltd.</span>
           <span>
             The work of{' '}

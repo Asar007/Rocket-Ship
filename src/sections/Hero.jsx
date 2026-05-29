@@ -122,7 +122,7 @@ export default function Hero() {
                 </svg>
               </span>{' '}
               for Space <br className="hidden sm:block" />
-              <span className="text-white/90">&amp; Industry.</span>
+              <span className="text-white/90">&amp; Aerospace.</span>
             </h1>
           </motion.div>
 
@@ -131,13 +131,13 @@ export default function Hero() {
             animate="show"
             variants={fadeUp}
             custom={2}
-            className="mt-5 max-w-xl text-base leading-relaxed text-white/65 sm:mt-7 sm:text-lg"
+            className="mt-5 max-w-xl text-lg leading-relaxed text-white/70 sm:mt-7 sm:text-xl"
           >
             Founded in 2009, Madras Swastic Engineers is a Chennai-based heavy and precision
-            metal fabrication firm, building anything from the smallest precision connection
-            to complete rocket test systems and space capsule handling for ISRO. Turnkey
-            engineering for the space, paper, sugar and petrochemical sectors across India
-            and export markets.
+            metal fabrication firm engineering for space and aerospace — from the smallest
+            flight-grade connection to complete rocket test systems, crew capsule simulators
+            and launch-vehicle handling structures delivered to ISRO and India&rsquo;s leading
+            aerospace programmes.
           </motion.p>
 
           {/* Trust strip */}
