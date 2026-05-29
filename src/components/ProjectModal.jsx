@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import {
   motion,
@@ -140,71 +140,127 @@ function StickyStory({ project, story, scrollRef }) {
   )
 }
 
-/* ── 2b. Mission timeline ─────────────────────────────────────── */
-function TimelineStep({ index, text, scrollRef, last }) {
-  const ref = useRef(null)
-  const inView = useInView(ref, { root: scrollRef, amount: 0.55 })
-  return (
-    <div
-      ref={ref}
-      className={`relative pl-10 ${last ? '' : 'pb-2'} flex min-h-[42vh] flex-col justify-center`}
-    >
-      {/* Node */}
-      <span
-        className={`absolute left-0 top-1/2 grid h-5 w-5 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border transition-all duration-500 ${
-          inView
-            ? 'border-gold-400 bg-gold-400 shadow-[0_0_18px_-2px_rgba(240,198,116,0.7)]'
-            : 'border-white/30 bg-navy-950'
-        }`}
-      >
-        <span
-          className={`h-1.5 w-1.5 rounded-full transition-colors duration-500 ${
-            inView ? 'bg-navy-950' : 'bg-white/40'
-          }`}
-        />
-      </span>
-      <motion.div
-        // Fully hidden until you scroll this stage into view — the next
-        // paragraph only reveals once you reach it, not shown dim ahead.
-        animate={{
-          opacity: inView ? 1 : 0,
-          y: inView ? 0 : 28,
-          filter: inView ? 'blur(0px)' : 'blur(6px)',
-        }}
-        transition={{ duration: 0.5, ease: [0.2, 0.7, 0.2, 1] }}
-      >
-        <span className="font-mono text-sm tracking-[0.3em] text-gold-400">
-          STAGE {String(index + 1).padStart(2, '0')}
-        </span>
-        <p className="mt-3 text-xl leading-relaxed text-white/80 sm:text-2xl">
-          {text}
-        </p>
-      </motion.div>
-    </div>
-  )
-}
-
+/* ── 2b. Mission timeline ─────────────────────────────────────────
+   Pinned scrollytelling: the section is `story.length * 100vh` tall
+   and a sticky 100vh panel stays fixed in the viewport while the
+   user scrolls. The side image and stage copy swap as the scroll
+   progress advances through each stage zone — so the timeline reads
+   like an "in-place" scroll instead of the whole modal scrolling
+   through tall paragraphs. */
 function TimelineStory({ project, story, scrollRef }) {
+  const images = project.timelineImages
+  const reduce = useReducedMotion()
+  const sectionRef = useRef(null)
+  const [active, setActive] = useState(0)
+
+  // Same pattern as CapsuleSimulator: a manual scroll listener on the
+  // modal scroll container. useScroll({ container }) was unreliable
+  // inside the modal — the listener below mirrors what CapsuleSimulator
+  // does and tracks rect.top against the scroll viewport directly.
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const section = sectionRef.current
+    if (!section) return
+    const scroller =
+      scrollRef && scrollRef.current ? scrollRef.current : null
+
+    const onScroll = () => {
+      const rect = section.getBoundingClientRect()
+      const vh = scroller ? scroller.clientHeight : window.innerHeight
+      const span = section.offsetHeight - vh
+      if (span <= 0) return
+      const raw = -rect.top / span
+      const p = Math.max(0, Math.min(0.9999, raw))
+      const step = Math.floor(p * story.length)
+      setActive((prev) => (prev === step ? prev : step))
+    }
+    onScroll()
+    const target = scroller || window
+    target.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      target.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+  }, [story.length, scrollRef])
+
+  const currentImage =
+    (images && images[active]) ||
+    (images && images[0]) ||
+    project.images[0]
+
   return (
     <>
       <StoryHeader project={project} />
-      <div className="mx-auto max-w-3xl px-5 pb-[15vh] sm:px-8">
-        {/* Single centered timeline column — the capsule simulator above
-            already carries the visual, so no sticky image here. */}
-        <div className="relative mt-10 pl-3">
-          {/* Spine */}
-          <span className="absolute bottom-[6%] left-0 top-[6%] w-[6px] -translate-x-1/2 rounded-full bg-gradient-to-b from-gold-400/25 via-gold-400/70 to-gold-400/25" />
-          {story.map((p, i) => (
-            <TimelineStep
-              key={i}
-              index={i}
-              text={p}
-              scrollRef={scrollRef}
-              last={i === story.length - 1}
-            />
-          ))}
+      <section
+        ref={sectionRef}
+        className="relative"
+        style={{ height: `${story.length * 100}vh` }}
+        aria-label={`${project.title} timeline`}
+      >
+        <div className="sticky top-0 flex h-screen items-center overflow-hidden">
+          <div className="mx-auto grid w-full max-w-6xl items-center gap-8 px-5 sm:px-8 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
+            {/* Visual */}
+            <div className="relative order-2 flex h-[42vh] w-full items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-navy-900 p-4 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)] sm:h-[50vh] lg:order-1 lg:h-[72vh]">
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={`${active}-${currentImage}`}
+                  src={currentImage}
+                  alt={`${project.title} — stage ${active + 1}`}
+                  initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 1.04 }}
+                  animate={reduce ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+                  exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.7, ease: [0.2, 0.7, 0.2, 1] }}
+                  className="max-h-full max-w-full object-contain"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </AnimatePresence>
+              <div className="pointer-events-none absolute left-4 top-4 rounded-full border border-white/15 bg-navy-950/60 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.32em] text-white/80 backdrop-blur">
+                {project.location}
+              </div>
+            </div>
+
+            {/* Copy column */}
+            <div className="order-1 lg:order-2">
+              {/* Step dots / progress */}
+              <div className="flex items-center gap-1.5">
+                {story.map((_, i) => (
+                  <span
+                    key={i}
+                    className={`h-1.5 rounded-full transition-all duration-500 ${
+                      i === active
+                        ? 'w-10 bg-gold-400'
+                        : i < active
+                          ? 'w-6 bg-gold-400/55'
+                          : 'w-3 bg-white/15'
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="mt-6 block font-mono text-xs tracking-[0.32em] text-gold-400 sm:text-sm">
+                STAGE {String(active + 1).padStart(2, '0')}
+                <span className="text-white/35"> / {String(story.length).padStart(2, '0')}</span>
+              </span>
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={active}
+                  initial={reduce ? { opacity: 0 } : { opacity: 0, y: 18 }}
+                  animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
+                  exit={reduce ? { opacity: 0 } : { opacity: 0, y: -12 }}
+                  transition={{ duration: 0.5, ease: [0.2, 0.7, 0.2, 1] }}
+                  className="mt-5 font-display text-xl leading-relaxed text-white/85 sm:text-2xl"
+                >
+                  {story[active]}
+                </motion.p>
+              </AnimatePresence>
+              <p className="mt-8 hidden font-mono text-[11px] uppercase tracking-[0.32em] text-white/35 sm:block">
+                Scroll to advance ↓
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
     </>
   )
 }
@@ -359,57 +415,7 @@ function CapsuleStory({ project, story, scrollRef }) {
 
       {/* Continue scrolling into the mission story (header + timeline). */}
       <TimelineStory project={project} story={story} scrollRef={scrollRef} />
-
-      {/* Real photos from the floor — handover-grade evidence of the build. */}
-      <RealPhotosGallery project={project} />
     </div>
-  )
-}
-
-/* ── Real-photos gallery ─────────────────────────────────────────
-   Rendered at the END of the CTS modal so visitors get to see the
-   actual hardware (exterior + interior) after the 3D simulator and
-   timeline narrative. */
-function RealPhotosGallery({ project }) {
-  if (!project.images || project.images.length === 0) return null
-  return (
-    <section className="mx-auto max-w-5xl px-5 pb-24 sm:px-8">
-      <div className="flex items-center gap-3">
-        <span className="h-px w-8 bg-gold-400/60" />
-        <span className="font-mono text-[11px] uppercase tracking-[0.32em] text-gold-400">
-          Photographs · from the floor
-        </span>
-      </div>
-      <h3 className="mt-4 font-display text-2xl font-semibold leading-tight text-white sm:text-3xl">
-        The real hardware.
-      </h3>
-      <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-white/55">
-        Handover-grade photographs of the CTS as it left our floor, exterior shell
-        and the crew interior, in the configuration delivered to ISRO / HSFC.
-      </p>
-      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {project.images.map((src, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 0.6, delay: i * 0.08, ease: [0.2, 0.7, 0.2, 1] }}
-            className="overflow-hidden rounded-2xl border border-white/10 bg-navy-950"
-          >
-            <div className="flex aspect-[4/3] w-full items-center justify-center">
-              <img
-                src={src}
-                alt={`${project.title} photo ${i + 1}`}
-                loading="lazy"
-                decoding="async"
-                className="max-h-full max-w-full object-contain transition-transform duration-700 hover:scale-[1.03]"
-              />
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </section>
   )
 }
 

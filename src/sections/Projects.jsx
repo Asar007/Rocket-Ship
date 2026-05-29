@@ -47,6 +47,9 @@ import precisionBracket from '../assets/projects/precision-bracket.webp'
 import processVessel from '../assets/projects/process-vessel.webp'
 import rotaryDrum from '../assets/projects/rotary-drum.webp'
 import crewModuleInterior from '../assets/projects/crew-module-interior.webp'
+import ctsInside from '../assets/projects/cts/inside.jpeg'
+import ctsNewsPaper from '../assets/projects/cts/news-paper.jpeg'
+import ctsModi from '../assets/projects/cts/modi.jpeg'
 
 // NOTE: stories/locations/years are mock placeholders grouped by what the
 // photographs show — to be replaced with the client's real project copy.
@@ -62,6 +65,7 @@ const PROJECTS = [
     blurb:
       'An exact replica of the Gaganyaan crew capsule, built and handed over to ISRO/HSFC within 90 days.',
     images: [crewModule, crewModuleInterior],
+    timelineImages: [crewModule, ctsInside, ctsNewsPaper, ctsModi],
     story: [
       "Gaganyaan is the Indian Space Research Organisation's (ISRO) ambitious mission to send three humans per flight to Low Earth Orbit (LEO) for a three-day mission and back to Earth. The Crew Training Simulator (CTS) is an exact replica of the actual capsule in which the crew will be on board the GSLV rocket and return to Earth.",
       'The CTS houses crew seats, life-support equipment, mission-control computers and interfaces, sleeping pods, food, and life-support medicines.',
