@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { Sparkles, Factory, Rocket, Orbit } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Sparkles, Factory, Rocket, Orbit, Satellite } from 'lucide-react'
+import logo from '../assets/logo.png'
+import imgHeavy from '../assets/projects/process-vessel.webp'
+import imgGaganyaan from '../assets/projects/crew-module-mockup.webp'
+import imgSimulator from '../assets/projects/sslv-core-simulator.webp'
+import imgStation from '../assets/projects/bas/outside-1.jpeg'
 
 const CHAPTERS = [
   {
@@ -11,6 +16,11 @@ const CHAPTERS = [
     body:
       'Madras Swastic Engineers begins life as a precision fabrication and turnkey engineering firm in Guindy Industrial Estate, taking on what no one else in the corridor would attempt.',
     icon: Sparkles,
+    image: logo,
+    // logo is a transparent emblem, not a photo — contain + pad it instead
+    // of cropping edge-to-edge like the fabrication shots.
+    contain: true,
+    padded: true,
   },
   {
     no: '02',
@@ -20,6 +30,7 @@ const CHAPTERS = [
     body:
       'Turnkey delivery of Milk-of-Lime equipment, raw-water and effluent treatment plants, engineered, fabricated, installed and commissioned. The four-sector industrial backbone takes shape.',
     icon: Factory,
+    image: imgHeavy,
   },
   {
     no: '03',
@@ -29,6 +40,7 @@ const CHAPTERS = [
     body:
       'Selected to design and manufacture rocket vibration-simulation systems, zero-G test rigs, equipment handling and ground systems across PSLV, GSLV and GSLV Mk III.',
     icon: Rocket,
+    image: imgSimulator,
   },
   {
     no: '04',
@@ -38,6 +50,19 @@ const CHAPTERS = [
     body:
       'Fabrication partner on the Gaganyaan crew-module programme, India\'s first crewed spaceflight. Every weld, ring and panel held to flight standard.',
     icon: Orbit,
+    image: imgGaganyaan,
+  },
+  {
+    no: '05',
+    year: 'Next',
+    eyebrow: 'Space station',
+    title: 'Modules for India\'s space station.',
+    body:
+      'Fabrication partner on the Bharatiya Antariksh Station — India\'s own crewed orbital outpost — carrying two decades of flight-standard work into a permanent human presence in space.',
+    icon: Satellite,
+    image: imgStation,
+    // show the full space-station render — don't crop it edge-to-edge.
+    contain: true,
   },
 ]
 
@@ -64,15 +89,7 @@ export default function AboutJourney() {
     return () => io.disconnect()
   }, [])
 
-  // Background rotation tied to overall scroll progress for the orbit ring.
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start end', 'end start'],
-  })
-  const ringRotate = useTransform(scrollYProgress, [0, 1], [0, 360])
-
   const active = CHAPTERS[activeIdx]
-  const ActiveIcon = active.icon
 
   return (
     <section
@@ -101,34 +118,27 @@ export default function AboutJourney() {
           <div className="hidden lg:col-span-5 lg:block">
             <div className="sticky top-28">
               <div className="glass relative aspect-square w-full overflow-hidden rounded-3xl border border-white/10 p-8">
-                {/* Rotating orbit ring */}
-                <motion.div
-                  style={{ rotate: ringRotate }}
-                  className="absolute inset-6 rounded-full border border-gold-400/15"
-                >
-                  <span className="absolute -top-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rounded-full bg-gold-400 shadow-[0_0_18px_rgba(240,198,116,0.7)]" />
-                </motion.div>
-
-                {/* Inner concentric rings */}
-                <div className="absolute inset-16 rounded-full border border-white/10" />
-                <div className="absolute inset-24 rounded-full border border-white/5" />
-
-                {/* Volumetric glow behind icon */}
-                <div className="pointer-events-none absolute left-1/2 top-1/2 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full bg-electric-500/25 blur-3xl" />
-                <div className="pointer-events-none absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-500/25 blur-2xl" />
-
-                {/* Active chapter icon — crossfades */}
-                <div className="absolute inset-0 grid place-items-center">
-                  <motion.div
-                    key={active.no}
-                    initial={{ opacity: 0, scale: 0.8, filter: 'blur(8px)' }}
-                    animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-                    transition={{ duration: 0.7, ease: [0.2, 0.7, 0.2, 1] }}
-                    className="grid h-24 w-24 place-items-center rounded-full border border-gold-400/40 bg-navy-900/70 backdrop-blur-xl sm:h-28 sm:w-28"
-                  >
-                    <ActiveIcon className="h-10 w-10 text-gold-300 sm:h-12 sm:w-12" />
-                  </motion.div>
-                </div>
+                {/* Active chapter visual — fills the card and crossfades as the
+                    reader scrolls between chapters. Photos crop edge-to-edge;
+                    the chapter-01 logo is contained and padded. */}
+                <motion.img
+                  key={`${active.no}-img`}
+                  src={active.image}
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  initial={{ opacity: 0, scale: active.contain ? 0.94 : 1.08 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.9, ease: [0.2, 0.7, 0.2, 1] }}
+                  className={`absolute inset-0 h-full w-full ${
+                    active.contain
+                      ? `object-contain ${active.padded ? 'p-14 sm:p-16' : ''}`
+                      : 'object-cover'
+                  }`}
+                />
+                {/* Bottom-only fade — keeps the chapter/year legend readable
+                    while leaving the photo at full brightness above it. */}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/25 to-transparent" />
 
                 {/* Bottom legend */}
                 <div className="absolute inset-x-6 bottom-6 flex items-end justify-between">
