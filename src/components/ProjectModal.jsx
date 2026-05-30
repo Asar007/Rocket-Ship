@@ -146,6 +146,15 @@ function StickyStory({ project, story, scrollRef }) {
 function HeroTitleSlide({ project }) {
   return (
     <section className="h-svh relative flex w-full items-center justify-center overflow-hidden">
+      {/* Blurred backdrop fills the portrait frame on mobile, where the main
+          image is contain-fit — turns the dead "letterbox band" into a soft
+          extension of the photo. Hidden on sm+ (there the image covers). */}
+      <img
+        src={project.images[0]}
+        alt=""
+        aria-hidden
+        className="absolute inset-0 h-full w-full scale-110 object-cover blur-2xl sm:hidden"
+      />
       <img
         src={project.images[0]}
         alt={project.title}
@@ -506,6 +515,15 @@ function CinematicStory({ project, story, scrollRef }) {
     <>
       {/* Title slide */}
       <section className="h-svh relative flex w-full items-center justify-center overflow-hidden">
+        {/* Blurred backdrop fills the portrait frame on mobile, where the
+            main image is contain-fit — turns the dead "letterbox band" into
+            a soft extension of the photo. Hidden on sm+ (image covers). */}
+        <img
+          src={project.images[0]}
+          alt=""
+          aria-hidden
+          className="absolute inset-0 h-full w-full scale-110 object-cover blur-2xl sm:hidden"
+        />
         <img
           src={project.images[0]}
           alt={project.title}

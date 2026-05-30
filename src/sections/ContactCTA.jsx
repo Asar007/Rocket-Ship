@@ -44,8 +44,24 @@ export default function ContactCTA() {
   const sceneRef = useRef(null)
   const shouldRender = useShouldRenderConnectors(sceneRef)
 
+  // mailto:/tel: only make sense on phones & tablets — on desktop they pop
+  // an unwanted mail client / do nothing, so those rows stay plain text
+  // there. The map link works everywhere.
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const mq = window.matchMedia('(max-width: 1023px)')
+    const apply = () => setIsMobile(mq.matches)
+    apply()
+    mq.addEventListener('change', apply)
+    return () => mq.removeEventListener('change', apply)
+  }, [])
+
   return (
-    <section id="contact" className="section-pad relative">
+    <section
+      id="contact"
+      className="section-pad relative pt-2 sm:pt-[clamp(3rem,8vw,7rem)]"
+    >
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <motion.div
           ref={sceneRef}
@@ -112,8 +128,20 @@ export default function ContactCTA() {
 
             <div className="mt-8 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] sm:mt-12 sm:grid-cols-3">
               {[
-                { icon: Mail, label: 'Email us', value: 'md@madrasswastic.com' },
-                { icon: Phone, label: 'Call directly', value: '+91 98841 48474' },
+                {
+                  icon: Mail,
+                  label: 'Email us',
+                  value: 'md@madrasswastic.com',
+                  href: 'mailto:md@madrasswastic.com',
+                  mobileOnly: true,
+                },
+                {
+                  icon: Phone,
+                  label: 'Call directly',
+                  value: '+91 98841 48474',
+                  href: 'tel:+919884148474',
+                  mobileOnly: true,
+                },
                 {
                   icon: MapPin,
                   label: 'Head office',
@@ -122,6 +150,7 @@ export default function ContactCTA() {
                   // Google Maps universal link — opens the native Maps app
                   // on iOS/Android and maps.google.com elsewhere.
                   href: 'https://www.google.com/maps/search/?api=1&query=Madras+Swastic+Engineering+21-C+5th+Cross+St+Guindy+Industrial+Estate+Chennai+600032',
+                  external: true,
                 },
               ].map((c) => {
                 const cardCls =
@@ -141,12 +170,16 @@ export default function ContactCTA() {
                     </div>
                   </>
                 )
-                return c.href ? (
+                // Email/phone are mobile-only links; the map link is always
+                // active. Everything else renders as plain (non-clickable) text.
+                const linkActive = c.href && (!c.mobileOnly || isMobile)
+                return linkActive ? (
                   <a
                     key={c.label}
                     href={c.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    {...(c.external
+                      ? { target: '_blank', rel: 'noopener noreferrer' }
+                      : {})}
                     className={`${cardCls} transition-colors hover:bg-navy-950/55 focus-visible:bg-navy-950/55 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-400/60`}
                   >
                     {inner}

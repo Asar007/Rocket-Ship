@@ -14,7 +14,10 @@ const BandFallback = () => (
 
 export default function Clients() {
   return (
-    <section id="clients" className="section-pad relative">
+    <section
+      id="clients"
+      className="section-pad relative pb-2 sm:pb-[clamp(3rem,8vw,7rem)]"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="Our clients"
