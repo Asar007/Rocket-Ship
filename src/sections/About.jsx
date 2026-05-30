@@ -36,7 +36,7 @@ const CAPABILITIES = [
   },
 ]
 
-export default function About() {
+export default function About({ mediaSlot = null }) {
   const gridRef = useRef(null)
 
   return (
@@ -74,6 +74,9 @@ export default function About() {
             <span className="text-xs text-white/55 sm:text-sm">Handover &amp; inauguration</span>
           </figcaption>
         </motion.figure>
+
+        {/* Optional media (e.g. shop-floor video) rendered directly below the inauguration photo */}
+        {mediaSlot && <div className="mt-8 sm:mt-12">{mediaSlot}</div>}
 
         <GlobalSpotlight
           gridRef={gridRef}

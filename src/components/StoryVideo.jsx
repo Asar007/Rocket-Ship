@@ -29,7 +29,7 @@ export default function StoryVideo({
       transition={{ duration: 0.7, ease: [0.2, 0.7, 0.2, 1] }}
       className="group relative mt-10 overflow-hidden rounded-3xl border border-white/10 bg-navy-900 shadow-glow-blue sm:mt-14"
     >
-      <div className="relative aspect-video w-full">
+      <div className="relative aspect-[4/3] w-full sm:aspect-video">
         {!started && (
           <button
             type="button"
@@ -74,7 +74,7 @@ export default function StoryVideo({
 
             {/* Centered play button */}
             <div className="absolute inset-0 grid place-items-center">
-              <span className="relative grid h-20 w-20 place-items-center rounded-full bg-gold-400 text-navy-950 shadow-[0_8px_40px_rgba(240,198,116,0.55)] transition-transform duration-500 group-hover:scale-110 sm:h-24 sm:w-24">
+              <span className="relative grid h-14 w-14 place-items-center rounded-full bg-gold-400 text-navy-950 shadow-[0_8px_40px_rgba(240,198,116,0.55)] transition-transform duration-500 group-hover:scale-110 sm:h-24 sm:w-24">
                 {/* Halo rings */}
                 <span
                   aria-hidden
@@ -89,7 +89,7 @@ export default function StoryVideo({
                   className="absolute -inset-6 rounded-full border border-gold-400/10 transition-all duration-700 group-hover:-inset-8"
                 />
                 <Play
-                  className="relative ml-1 h-7 w-7 fill-current sm:h-8 sm:w-8"
+                  className="relative ml-0.5 h-5 w-5 fill-current sm:ml-1 sm:h-8 sm:w-8"
                   strokeWidth={0}
                 />
               </span>

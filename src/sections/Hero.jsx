@@ -173,7 +173,7 @@ export default function Hero() {
           initial={{ opacity: 0, scale: 0.96, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 1, ease: [0.2, 0.7, 0.2, 1], delay: 0.2 }}
-          className="relative flex items-center justify-center lg:col-span-5"
+          className="relative flex flex-col items-center justify-center lg:col-span-5"
         >
           <div
             aria-hidden
@@ -194,6 +194,25 @@ export default function Hero() {
                 </Suspense>
               </ErrorBoundary>
             )}
+          </div>
+
+          {/* Mobile-only attribution. On phones the in-scene 3D tooltip is
+              large relative to the small capsule and covers it, so the
+              mission plate is shown here as a caption rectangle beneath the
+              globe instead (the 3D tooltip is suppressed on mobile). */}
+          <div className="mt-5 w-full max-w-sm overflow-hidden rounded-2xl border border-gold-400/25 bg-navy-950/70 backdrop-blur sm:hidden">
+            <div className="h-1 w-full bg-gradient-to-r from-[#ff9933] via-white to-[#138808]" />
+            <div className="px-5 py-4 text-center">
+              <div className="font-mono text-[10px] uppercase tracking-[0.28em] text-gold-400">
+                ◆ Fabricated by
+              </div>
+              <div className="mt-1.5 font-display text-lg font-semibold text-white">
+                Madras Swastic Engineers
+              </div>
+              <div className="mt-1 font-mono text-[11px] uppercase tracking-[0.12em] text-white/55">
+                Gaganyaan Crew Module · ISRO
+              </div>
+            </div>
           </div>
         </motion.div>
       </div>

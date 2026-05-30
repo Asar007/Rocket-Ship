@@ -42,8 +42,14 @@ export default function Footer() {
         className="pointer-events-none absolute inset-x-0 bottom-[72px] z-0 flex select-none justify-center opacity-[0.06] sm:bottom-[55px] sm:opacity-[0.10] lg:bottom-[41px] lg:opacity-[0.12]"
         aria-hidden="true"
       >
-        <div className="flex h-[160px] w-[92%] max-w-[1100px] items-center justify-center sm:h-[320px] sm:w-[88%] lg:h-[440px] lg:w-[85%]">
-          <span className="font-body text-[160px] font-black uppercase leading-none tracking-[0.18em] text-white sm:text-[320px] lg:text-[440px]">
+        {/* Fluid wordmark: scales with viewport width between a min and max
+            boundary so it auto-fills the footer at every size instead of
+            jumping between fixed px sizes (which read too small on phones). */}
+        <div className="flex w-[92%] max-w-[1100px] items-center justify-center sm:w-[90%] lg:w-[88%]">
+          <span
+            className="font-body font-black uppercase leading-none text-white"
+            style={{ fontSize: 'clamp(110px, 36vw, 440px)', letterSpacing: '0.04em' }}
+          >
             MSE
           </span>
         </div>

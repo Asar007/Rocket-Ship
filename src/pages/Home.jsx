@@ -21,15 +21,14 @@ export function Component() {
         path="/"
       />
       <Hero />
-      <About />
-      <section className="section-pad relative">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+      <About
+        mediaSlot={
           <StoryVideo
             title="Inside the Madras Swastic shop floor."
             meta="2:33 · Gaganyaan crew module"
           />
-        </div>
-      </section>
+        }
+      />
       <WhyChooseUs />
       <Stats />
       <Clients />

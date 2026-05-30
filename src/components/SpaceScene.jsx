@@ -708,7 +708,12 @@ function Capsule({ active, setHovered, toggleClick }) {
               cancels the capsule's 45°/60° tilt, so their axes are
               world/screen-aligned.  That lets us point the callout cleanly
               to the LEFT of the capsule (world -X ≈ screen-left) instead
-              of along the capsule's tilted local "up". */}
+              of along the capsule's tilted local "up".
+              Desktop only — on phones the floating card is large relative
+              to the small capsule and covers it, so the attribution is
+              rendered as a caption rectangle beneath the scene (see Hero)
+              instead of this 3D-anchored tooltip. */}
+          {!IS_MOBILE && (
           <group
             rotation={[
               THREE.MathUtils.degToRad(-45),
@@ -764,6 +769,7 @@ function Capsule({ active, setHovered, toggleClick }) {
               </div>
             </Html>
           </group>
+          )}
         </>
       )}
     </group>

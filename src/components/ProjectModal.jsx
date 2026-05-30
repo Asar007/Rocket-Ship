@@ -149,7 +149,7 @@ function HeroTitleSlide({ project }) {
       <img
         src={project.images[0]}
         alt={project.title}
-        className="absolute inset-0 h-full w-full scale-105 object-cover"
+        className="absolute inset-0 h-full w-full object-contain sm:scale-105 sm:object-cover"
       />
       <div className="absolute inset-0 bg-navy-950/65" />
       <motion.div
@@ -182,12 +182,27 @@ function TimelineStory({ project, story, scrollRef }) {
   const sectionRef = useRef(null)
   const [active, setActive] = useState(0)
 
+  // Mobile / tablet (< lg) drops the scroll-driven scrollytelling for a
+  // self-contained swipe + arrow carousel — phones found the tall pinned
+  // scroll fiddly, so stages there advance only via the arrows, the dots
+  // or a horizontal swipe. Desktop keeps the pinned scroll experience.
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const mq = window.matchMedia('(max-width: 1023px)')
+    const apply = () => setIsMobile(mq.matches)
+    apply()
+    mq.addEventListener('change', apply)
+    return () => mq.removeEventListener('change', apply)
+  }, [])
+
   // Same pattern as CapsuleSimulator: a manual scroll listener on the
   // modal scroll container. useScroll({ container }) was unreliable
   // inside the modal — the listener below mirrors what CapsuleSimulator
   // does and tracks rect.top against the scroll viewport directly.
+  // Disabled on mobile/tablet, where the carousel drives `active` instead.
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined' || isMobile) return
     const section = sectionRef.current
     if (!section) return
     const scroller =
@@ -211,7 +226,7 @@ function TimelineStory({ project, story, scrollRef }) {
       target.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onScroll)
     }
-  }, [story.length, scrollRef])
+  }, [story.length, scrollRef, isMobile])
 
   const currentImage =
     (images && images[active]) ||
@@ -240,8 +255,137 @@ function TimelineStory({ project, story, scrollRef }) {
     scroller.scrollTo({ top, behavior: 'smooth' })
   }
 
+  // Unified stage navigation used by the dots and arrows. On mobile the
+  // carousel sets state directly; on desktop it drives the scroll pin.
+  const goTo = (i) => {
+    const t = Math.max(0, Math.min(story.length - 1, i))
+    if (isMobile) setActive(t)
+    else scrollToStage(t)
+  }
+
+  // Horizontal swipe → prev/next stage (mobile carousel only).
+  const touchX = useRef(null)
+  const onTouchStart = (e) => {
+    touchX.current = e.touches[0].clientX
+  }
+  const onTouchEnd = (e) => {
+    if (touchX.current == null) return
+    const dx = e.changedTouches[0].clientX - touchX.current
+    touchX.current = null
+    if (Math.abs(dx) < 40) return
+    goTo(active + (dx < 0 ? 1 : -1))
+  }
+
   const atFirst = active === 0
   const atLast = active === story.length - 1
+
+  // Shared step-dots + prev/next arrow cluster (used by both layouts).
+  const navControls = (
+    <div className="flex items-center gap-4">
+      <div className="flex items-center gap-1.5">
+        {story.map((_, i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => goTo(i)}
+            aria-label={`Go to stage ${i + 1}`}
+            className={`h-1.5 rounded-full transition-all duration-500 ${
+              i === active
+                ? 'w-10 bg-gold-400'
+                : i < active
+                  ? 'w-6 bg-gold-400/55 hover:bg-gold-400/80'
+                  : 'w-3 bg-white/15 hover:bg-white/35'
+            }`}
+          />
+        ))}
+      </div>
+      <div className="ml-auto flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => goTo(active - 1)}
+          disabled={atFirst}
+          aria-label="Previous stage"
+          className="grid h-10 w-10 place-items-center rounded-full border border-white/15 bg-navy-950/60 text-white/80 backdrop-blur transition-all duration-300 hover:border-gold-400/50 hover:text-gold-400 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/15 disabled:hover:text-white/80"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+        <button
+          type="button"
+          onClick={() => goTo(active + 1)}
+          disabled={atLast}
+          aria-label="Next stage"
+          className="grid h-10 w-10 place-items-center rounded-full border border-gold-400/30 bg-gold-400/10 text-gold-400 backdrop-blur transition-all duration-300 hover:border-gold-400/70 hover:bg-gold-400/20 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-gold-400/30 disabled:hover:bg-gold-400/10"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </button>
+      </div>
+    </div>
+  )
+
+  // ── Mobile / tablet: swipe + arrow carousel (no scroll-driven stages) ──
+  if (isMobile) {
+    return (
+      <>
+        <StoryHeader project={project} />
+        <section
+          className="relative px-5 pb-20 pt-2 sm:px-8"
+          aria-label={`${project.title} timeline`}
+          aria-roledescription="carousel"
+        >
+          <div
+            className="mx-auto max-w-2xl"
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+          >
+            {/* Visual */}
+            <div className="relative flex h-[44vh] w-full items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-navy-900 p-3 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)]">
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={`${active}-${currentImage}`}
+                  src={currentImage}
+                  alt={`${project.title} — stage ${active + 1}`}
+                  initial={reduce ? { opacity: 0 } : { opacity: 0, x: 28 }}
+                  animate={reduce ? { opacity: 1 } : { opacity: 1, x: 0 }}
+                  exit={reduce ? { opacity: 0 } : { opacity: 0, x: -28 }}
+                  transition={{ duration: 0.45, ease: [0.2, 0.7, 0.2, 1] }}
+                  className="max-h-full max-w-full object-contain"
+                  loading="lazy"
+                  decoding="async"
+                  draggable={false}
+                />
+              </AnimatePresence>
+            </div>
+
+            {/* Controls */}
+            <div className="mt-6">{navControls}</div>
+
+            <span className="mt-6 block font-mono text-xs tracking-[0.32em] text-gold-400">
+              STAGE {String(active + 1).padStart(2, '0')}
+              <span className="text-white/35"> / {String(story.length).padStart(2, '0')}</span>
+            </span>
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={active}
+                initial={reduce ? { opacity: 0 } : { opacity: 0, y: 16 }}
+                animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
+                exit={reduce ? { opacity: 0 } : { opacity: 0, y: -10 }}
+                transition={{ duration: 0.4, ease: [0.2, 0.7, 0.2, 1] }}
+                className="mt-4 font-display text-xl leading-relaxed text-white/85"
+              >
+                {story[active]}
+              </motion.p>
+            </AnimatePresence>
+
+            {active === 0 && (
+              <div className="mt-7 flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.32em] text-white/45">
+                <span>Swipe or tap the arrows</span>
+              </div>
+            )}
+          </div>
+        </section>
+      </>
+    )
+  }
 
   return (
     <>
@@ -252,7 +396,7 @@ function TimelineStory({ project, story, scrollRef }) {
         style={{ height: `${story.length * 100}svh` }}
         aria-label={`${project.title} timeline`}
       >
-        <div className="h-svh sticky top-0 flex items-center overflow-hidden">
+        <div className="h-svh sticky top-0 flex items-start overflow-hidden pt-20 sm:items-center sm:pt-0">
           <div className="mx-auto grid w-full max-w-6xl items-center gap-8 px-5 sm:px-8 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
             {/* Visual */}
             <div className="relative order-2 flex h-[42vh] w-full items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-navy-900 p-4 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)] sm:h-[50vh] lg:order-1 lg:h-[72vh]">
@@ -275,45 +419,7 @@ function TimelineStory({ project, story, scrollRef }) {
             {/* Copy column */}
             <div className="order-1 lg:order-2">
               {/* Step dots + prev/next arrows */}
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1.5">
-                  {story.map((_, i) => (
-                    <button
-                      key={i}
-                      type="button"
-                      onClick={() => scrollToStage(i)}
-                      aria-label={`Go to stage ${i + 1}`}
-                      className={`h-1.5 rounded-full transition-all duration-500 ${
-                        i === active
-                          ? 'w-10 bg-gold-400'
-                          : i < active
-                            ? 'w-6 bg-gold-400/55 hover:bg-gold-400/80'
-                            : 'w-3 bg-white/15 hover:bg-white/35'
-                      }`}
-                    />
-                  ))}
-                </div>
-                <div className="ml-auto flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => scrollToStage(active - 1)}
-                    disabled={atFirst}
-                    aria-label="Previous stage"
-                    className="grid h-10 w-10 place-items-center rounded-full border border-white/15 bg-navy-950/60 text-white/80 backdrop-blur transition-all duration-300 hover:border-gold-400/50 hover:text-gold-400 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/15 disabled:hover:text-white/80"
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => scrollToStage(active + 1)}
-                    disabled={atLast}
-                    aria-label="Next stage"
-                    className="grid h-10 w-10 place-items-center rounded-full border border-gold-400/30 bg-gold-400/10 text-gold-400 backdrop-blur transition-all duration-300 hover:border-gold-400/70 hover:bg-gold-400/20 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-gold-400/30 disabled:hover:bg-gold-400/10"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
+              {navControls}
               <span className="mt-6 block font-mono text-xs tracking-[0.32em] text-gold-400 sm:text-sm">
                 STAGE {String(active + 1).padStart(2, '0')}
                 <span className="text-white/35"> / {String(story.length).padStart(2, '0')}</span>
@@ -403,7 +509,7 @@ function CinematicStory({ project, story, scrollRef }) {
         <img
           src={project.images[0]}
           alt={project.title}
-          className="absolute inset-0 h-full w-full scale-105 object-cover"
+          className="absolute inset-0 h-full w-full object-contain sm:scale-105 sm:object-cover"
         />
         <div className="absolute inset-0 bg-navy-950/65" />
         <motion.div
