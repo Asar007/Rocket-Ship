@@ -14,17 +14,17 @@ export default function ScrollProgress() {
 
       gsap.set(barRef.current, { scaleX: 0, transformOrigin: 'left center' })
 
+      // quickTo reuses a single tween instead of allocating a new gsap.to()
+      // on every scroll frame (~60×/s). Same smooth easing, much less CPU.
+      const setScale = gsap.quickTo(barRef.current, 'scaleX', {
+        duration: 0.15,
+        ease: 'power2.out',
+      })
+
       trigger = ScrollTrigger.create({
         start: 0,
         end: 'max',
-        onUpdate: (self) => {
-          gsap.to(barRef.current, {
-            scaleX: self.progress,
-            duration: 0.15,
-            ease: 'power2.out',
-            overwrite: true,
-          })
-        },
+        onUpdate: (self) => setScale(self.progress),
       })
     })
 

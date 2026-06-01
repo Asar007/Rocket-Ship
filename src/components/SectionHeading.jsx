@@ -61,17 +61,22 @@ export default function SectionHeading({
       if (eyebrowLine) tl.to(eyebrowLine, { scaleX: 1, duration: 0.6 }, 0)
       tl.to(items, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.7, stagger: 0.1 }, 0.05)
 
-      // Underline scrubs against scroll progress for an active feel
+      // Underline scrubs against scroll progress for an active feel.
+      // quickTo reuses ONE tween instead of allocating a fresh gsap.to()
+      // on every scroll frame (this onUpdate fires ~60×/s, and there's a
+      // SectionHeading on every section) — identical motion, far less CPU.
       let scrubTrigger
       if (underline) {
+        const setUnderline = gsap.quickTo(underline, 'scaleX', {
+          duration: 0.1,
+          overwrite: true,
+        })
         scrubTrigger = ScrollTrigger.create({
           trigger: el,
           start: 'top 70%',
           end: 'top 30%',
           scrub: 0.6,
-          onUpdate: (self) => {
-            gsap.to(underline, { scaleX: self.progress, duration: 0.1, overwrite: true })
-          },
+          onUpdate: (self) => setUnderline(self.progress),
         })
       }
 
