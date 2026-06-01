@@ -54,6 +54,35 @@ import basOutside1 from '../assets/projects/bas/outside-1.jpeg'
 import basOutside2 from '../assets/projects/bas/outside-2.jpeg'
 import basInside from '../assets/projects/bas/inside.jpeg'
 
+// Responsive srcset variants for the card cover image (the only project
+// image shown in the always-visible grid). Each source is resized to 400w
+// + 800w WebP at build time; phones pull ~400w instead of the full asset,
+// while retina/desktop get 800w. The full-size imports above are still
+// used inside the modal. `sizes` mirrors the grid: 1-col (mobile) → 2-col
+// (md) → 3-col ~400px (lg).
+const COVER_SIZES = '(min-width: 1024px) 400px, (min-width: 768px) 50vw, 100vw'
+import crewModuleSet from '../assets/projects/crew-module-mockup.webp?w=400;800&format=webp&as=srcset'
+import sslvCoreSet from '../assets/projects/sslv-core-simulator.webp?w=400;800&format=webp&as=srcset'
+import domeErectionSet from '../assets/projects/dome-erection.webp?w=400;800&format=webp&as=srcset'
+import processVesselSet from '../assets/projects/process-vessel.webp?w=400;800&format=webp&as=srcset'
+import rotaryDrumSet from '../assets/projects/rotary-drum.webp?w=400;800&format=webp&as=srcset'
+import spaceframeSet from '../assets/projects/spaceframe-fab.webp?w=400;800&format=webp&as=srcset'
+import platesASet from '../assets/projects/connection-plates-a.webp?w=400;800&format=webp&as=srcset'
+import precisionBracketSet from '../assets/projects/precision-bracket.webp?w=400;800&format=webp&as=srcset'
+import basOutside1Set from '../assets/projects/bas/outside-1.jpeg?w=400;800&format=webp&as=srcset'
+
+const COVER_SRCSET = new Map([
+  [crewModule, crewModuleSet],
+  [sslvCore, sslvCoreSet],
+  [domeErection, domeErectionSet],
+  [processVessel, processVesselSet],
+  [rotaryDrum, rotaryDrumSet],
+  [spaceframe, spaceframeSet],
+  [platesA, platesASet],
+  [precisionBracket, precisionBracketSet],
+  [basOutside1, basOutside1Set],
+])
+
 // NOTE: stories/locations/years are mock placeholders grouped by what the
 // photographs show — to be replaced with the client's real project copy.
 const PROJECTS = [
@@ -327,6 +356,8 @@ function StaticProjectCard({ project: p, onOpen }) {
       <div className="relative aspect-[16/10] overflow-hidden bg-navy-900">
         <img
           src={p.images[0]}
+          srcSet={COVER_SRCSET.get(p.images[0])}
+          sizes={COVER_SIZES}
           alt={p.title}
           width="1600"
           height="1000"
@@ -409,6 +440,8 @@ function PointerProjectCard({ project: p, onOpen }) {
       <div className="relative aspect-[16/10] overflow-hidden bg-navy-900">
         <motion.img
           src={p.images[0]}
+          srcSet={COVER_SRCSET.get(p.images[0])}
+          sizes={COVER_SIZES}
           alt={p.title}
           width="1600"
           height="1000"

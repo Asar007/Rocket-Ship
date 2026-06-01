@@ -4,6 +4,7 @@ import Navbar from './components/Navbar.jsx'
 import Footer from './components/Footer.jsx'
 import CallbackDialog from './components/CallbackDialog.jsx'
 import ScrollProgress from './components/ScrollProgress.jsx'
+import { reportWebVitals } from './lib/vitals.js'
 
 // useLayoutEffect on the client, useEffect during SSR (no DOM).
 const useIsoLayoutEffect =
@@ -77,6 +78,11 @@ function ScrollToTop() {
 }
 
 export default function Layout() {
+  // Start streaming real-user Core Web Vitals to GA4 once, on the client.
+  useEffect(() => {
+    reportWebVitals()
+  }, [])
+
   return (
     <div className="relative min-h-svh w-full bg-navy-950">
       <ScrollToTop />

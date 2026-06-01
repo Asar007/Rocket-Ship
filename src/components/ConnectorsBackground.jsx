@@ -13,7 +13,6 @@ import { useRef, useReducer, useMemo } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useGLTF, MeshTransmissionMaterial, Environment, Lightformer } from '@react-three/drei'
 import { CuboidCollider, BallCollider, Physics, RigidBody } from '@react-three/rapier'
-import { EffectComposer, N8AO } from '@react-three/postprocessing'
 import { easing } from 'maath'
 
 const C_MODEL = '/c-transformed.glb'
@@ -63,9 +62,10 @@ export default function Scene(props) {
           </Model>
         </Connector>
       </Physics>
-      <EffectComposer disableNormalPass multisampling={8}>
-        <N8AO distanceFalloff={1} aoRadius={1} intensity={4} />
-      </EffectComposer>
+      {/* N8AO ambient-occlusion postprocessing pass removed: it pulled the
+          entire @react-three/postprocessing library into this (already
+          heavy) lazy chunk for a subtle shadow that's barely visible
+          behind the contact form. The glass-connector look is unchanged. */}
       <Environment resolution={256}>
         <group rotation={[-Math.PI / 3, 0, 1]}>
           <Lightformer

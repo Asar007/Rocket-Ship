@@ -1,10 +1,15 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import { imagetools } from 'vite-imagetools'
 
 export default defineConfig({
   plugins: [
     react(),
+    // Responsive images: imports carrying a `?w=...&as=srcset` query are
+    // resized at build time into a srcset string. Plain image imports
+    // (no query) are untouched, so existing usages keep working.
+    imagetools(),
     VitePWA({
       registerType: 'autoUpdate',
       // Manual registration via deferred <script> in index.html so the
